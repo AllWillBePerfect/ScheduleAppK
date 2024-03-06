@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ScheduleAppK" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="toolbarStyle">@style/custom.toolbar</item>
+
+
+        <item name="android:statusBarColor">?attr/colorSurfaceContainer</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+    </style>
+
+    <style name="custom.toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurfaceContainer</item>
+    </style>
+
+    <style name="Theme.ScheduleAppK" parent="Base.Theme.ScheduleAppK" >
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+</resources>
