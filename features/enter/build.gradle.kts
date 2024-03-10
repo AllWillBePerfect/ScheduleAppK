@@ -44,6 +44,9 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(libs.keyboardvisibilityevent)
+
+
     implementation(project(":core:values"))
     implementation(project(":core:views"))
 }
