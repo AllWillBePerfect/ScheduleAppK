@@ -1,8 +1,8 @@
-
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 var versionMajor by extra(0)
@@ -48,6 +48,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -61,6 +64,26 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.keyboardvisibilityevent)
+
+    implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.rxjava2)
+    implementation(libs.rxkotlin2)
+    implementation(libs.rxandroid)
+
+    implementation (libs.rxbinding)
+//    implementation (libs.rxbinding.kotlin)
+
+    implementation(libs.retrofit)
+    implementation(libs.adapter.rxjava2)
+    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
+    implementation(libs.logging.interceptor)
+
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))
@@ -68,6 +91,7 @@ dependencies {
     implementation(project(":core:views"))
 
     implementation(project(":features:enter"))
+    implementation(project(":rxtest"))
 }
 
 fun generateVersionCode(): Int {

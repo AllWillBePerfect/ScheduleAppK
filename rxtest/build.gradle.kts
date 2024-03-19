@@ -1,13 +1,16 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
 
+
 android {
-    namespace = "com.example.database"
+    namespace = "com.example.rxtest"
     compileSdk = compileSdkVer
 
     defaultConfig {
@@ -33,6 +36,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -43,4 +52,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.rxjava2)
+    implementation(libs.rxkotlin2)
+    implementation(libs.rxandroid)
+
+    implementation(project(":core:values"))
+    implementation(project(":core:views"))
 }
