@@ -1,9 +1,10 @@
 [versions]
 agp = "8.3.0"
+converterMoshi = "2.10.0"
 converterScalars = "2.1.0"
 fragmentKtx = "1.6.2"
-hiltAndroidCompiler = "2.44"
-hiltAndroid = "2.44"
+hiltAndroidCompiler = "2.48"
+hiltAndroid = "2.48"
 keyboardvisibilityevent = "3.0.0-RC3"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
@@ -15,15 +16,24 @@ loggingInterceptor = "3.10.0"
 material = "1.10.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
-retrofit = "2.9.0"
+moshi = "1.15.1"
+moshiKotlin = "1.14.0"
+preferenceKtx = "1.2.1"
+retrofit = "2.10.0"
 rxandroid = "2.1.1"
 rxbinding = "2.2.0"
 rxjava2 = "2.2.9"
 rxkotlin2 = "2.3.0"
+jetbrainsKotlinJvm = "1.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
+moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
+moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "converterMoshi" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -53,4 +63,6 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
+hiltAndroid = {id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid"}
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 

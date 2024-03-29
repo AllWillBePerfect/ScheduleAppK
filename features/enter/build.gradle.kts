@@ -2,8 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
-}
+    alias(libs.plugins.hiltAndroid)}
 
 val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
@@ -70,9 +69,17 @@ dependencies {
     implementation(libs.adapter.rxjava2)
     implementation(libs.converter.gson)
     implementation(libs.converter.scalars)
+    implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
 
-    implementation(project(":core:values"))
-    implementation(project(":core:views"))
+    api(project(":core:values"))
+//    api(project(":core:views"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+
+
+
+
+
 }

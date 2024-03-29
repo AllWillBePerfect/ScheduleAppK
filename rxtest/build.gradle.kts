@@ -2,8 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
-}
+    alias(libs.plugins.hiltAndroid)}
 
 val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra

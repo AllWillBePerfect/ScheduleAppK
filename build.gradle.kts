@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.androidLibrary) apply false
-    id("com.google.dagger.hilt.android") version "2.44" apply false
+    alias(libs.plugins.hiltAndroid) apply false
+    alias(libs.plugins.jetbrainsKotlinJvm) apply false
 }
 
 val minSdkVer: Int by rootProject.extra{24}

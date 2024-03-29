@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.hiltAndroid)
 }
 
 var versionMajor by extra(0)
@@ -71,6 +71,8 @@ dependencies {
 
     implementation(libs.androidx.fragment.ktx)
 
+    implementation(libs.androidx.preference.ktx)
+
     implementation(libs.rxjava2)
     implementation(libs.rxkotlin2)
     implementation(libs.rxandroid)
@@ -82,15 +84,23 @@ dependencies {
     implementation(libs.adapter.rxjava2)
     implementation(libs.converter.gson)
     implementation(libs.converter.scalars)
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
-
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:values"))
     implementation(project(":core:views"))
+    implementation(project(":core:data"))
+    implementation(project(":core:sharpref"))
+    implementation(project(":core:models"))
+    implementation(project(":core:domain"))
 
     implementation(project(":features:enter"))
+    implementation(project(":features:schedule"))
+
     implementation(project(":rxtest"))
 }
 

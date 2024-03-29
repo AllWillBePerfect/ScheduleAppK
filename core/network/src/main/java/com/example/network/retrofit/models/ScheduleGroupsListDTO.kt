@@ -1,4 +1,5 @@
-package com.example.enter.retrofit.models
+package com.example.network.retrofit.models
+
 
 data class ScheduleGroupsListDTO(
     val choices: List<ScheduleGroupDTO>
@@ -9,3 +10,4 @@ data class ScheduleGroupsListDTO(
         val group: String
     )
 }
+

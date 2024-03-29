@@ -1,4 +1,5 @@
-package com.example.enter.retrofit.models
+package com.example.network.retrofit.models
+
 
 data class ScheduleDTO(
     val table: ScheduleDataDTO,
@@ -12,4 +13,7 @@ data class ScheduleDTO(
         val table: List<List<String>>,
         val link: String
     )
+
 }
+
+
