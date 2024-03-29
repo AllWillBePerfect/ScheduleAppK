@@ -3,12 +3,15 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
 }
 
+val compileSdkVer: Int by rootProject.extra
+val minSdkVer: Int by rootProject.extra
+
 android {
     namespace = "com.example.views"
-    compileSdk = 34
+    compileSdk = compileSdkVer
 
     defaultConfig {
-        minSdk = 24
+        minSdk = minSdkVer
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -29,6 +32,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 
