@@ -1,14 +1,18 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-}
+    kotlin("kapt")
+    alias(libs.plugins.hiltAndroid)}
+
+val compileSdkVer: Int by rootProject.extra
+val minSdkVer: Int by rootProject.extra
 
 android {
     namespace = "com.example.enter"
-    compileSdk = 34
+    compileSdk = compileSdkVer
 
     defaultConfig {
-        minSdk = 24
+        minSdk = minSdkVer
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -33,6 +37,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -44,6 +51,35 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":core:values"))
-    implementation(project(":core:views"))
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.keyboardvisibilityevent)
+
+    implementation(libs.rxjava2)
+    implementation(libs.rxkotlin2)
+    implementation(libs.rxandroid)
+
+    implementation (libs.rxbinding)
+//    implementation (libs.rxbinding.kotlin)
+
+    implementation(libs.retrofit)
+    implementation(libs.adapter.rxjava2)
+    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
+    implementation(libs.converter.moshi)
+    implementation(libs.logging.interceptor)
+
+
+    api(project(":core:values"))
+//    api(project(":core:views"))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+
+
+
+
+
 }

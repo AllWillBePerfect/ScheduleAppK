@@ -11,13 +11,17 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/database" />
+            <option value="$PROJECT_DIR$/core/domain" />
+            <option value="$PROJECT_DIR$/core/models" />
             <option value="$PROJECT_DIR$/core/network" />
+            <option value="$PROJECT_DIR$/core/sharpref" />
             <option value="$PROJECT_DIR$/core/values" />
             <option value="$PROJECT_DIR$/core/views" />
-            <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/enter" />
+            <option value="$PROJECT_DIR$/rxtest" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
