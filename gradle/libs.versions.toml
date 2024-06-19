@@ -3,8 +3,10 @@ agp = "8.3.0"
 converterMoshi = "2.10.0"
 converterScalars = "2.1.0"
 fragmentKtx = "1.6.2"
+gson = "2.10.1"
 hiltAndroidCompiler = "2.48"
 hiltAndroid = "2.48"
+hiltWork = "1.2.0"
 keyboardvisibilityevent = "3.0.0-RC3"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
@@ -20,17 +22,30 @@ moshi = "1.15.1"
 moshiKotlin = "1.14.0"
 preferenceKtx = "1.2.1"
 retrofit = "2.10.0"
+roomRuntime = "2.6.1"
 rxandroid = "2.1.1"
 rxbinding = "2.2.0"
 rxjava2 = "2.2.9"
 rxkotlin2 = "2.3.0"
 jetbrainsKotlinJvm = "1.9.0"
+swiperefreshlayout = "1.1.0"
+workRuntimeKtx = "2.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-preference-ktx = { module = "androidx.preference:preference-ktx", version.ref = "preferenceKtx" }
+androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-room-rxjava2 = { module = "androidx.room:room-rxjava2", version.ref = "roomRuntime" }
+androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtx" }
+androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "workRuntimeKtx" }
 converter-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "converterMoshi" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshiKotlin" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "converterMoshi" }

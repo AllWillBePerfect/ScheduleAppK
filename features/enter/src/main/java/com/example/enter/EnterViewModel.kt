@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ScheduleApiRepository
-import com.example.enter.adapter.GroupItem
+import com.example.views.adapter.GroupItem
 import com.example.models.ui.ScheduleEntity
 import com.example.models.ui.ScheduleGroupsListEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,16 +45,14 @@ class EnterViewModel @Inject constructor(
     private fun getGroupsSubject(): Observable<List<ScheduleGroupsListEntity.ScheduleGroupEntity>> =
         groupsSubject.hide().share()
 
-    private val _groupsLiveData = MutableLiveData<List<GroupItem>>(
-        emptyList()
-    )
+    private val _groupsLiveData = MutableLiveData<List<GroupItem>>(emptyList())
     val groupsLiveData: LiveData<List<GroupItem>> = _groupsLiveData
+
+    private val _fetchScheduleLiveData = MutableLiveData<FetchResult>()
+    val fetchScheduleLiveData: LiveData<FetchResult> = _fetchScheduleLiveData
 
     private val _loadingAppBarLiveData = MutableLiveData<Boolean>()
     val loadingAppBarLiveData: LiveData<Boolean> = _loadingAppBarLiveData
-
-    private val _loadingProgressBarLiveData = MutableLiveData<Boolean>()
-    val loadingProgressBarLiveData: LiveData<Boolean> = _loadingProgressBarLiveData
 
     init {
         getEditTextSubject()
@@ -71,6 +69,7 @@ class EnterViewModel @Inject constructor(
 //            .distinctUntilChanged()
             .observeOn(Schedulers.io()).switchMap {
                 scheduleApi.fetchGroupListObservable(it.toString())
+                    .map { it.copy(choices = it.choices.sortedBy { it.name }) }
                     /*.onErrorResumeNext(
                         Observable.just(
                             ScheduleGroupsListEntity(
@@ -119,11 +118,10 @@ class EnterViewModel @Inject constructor(
             }.addTo(disposables)
         Log.d("EnterViewModel Config", appConfigRepository.getAppState().name)
 
-
     }
 
     fun fetchGroup(groupName: String) {
-        _loadingProgressBarLiveData.value = true
+        _fetchScheduleLiveData.value = FetchResult.Loading(true)
         Observable.just(groupName)
             .switchMap {
                 scheduleApiRepository.fetchScheduleByGroupNameObservable(groupName)
@@ -135,19 +133,21 @@ class EnterViewModel @Inject constructor(
             .subscribeBy(
                 onNext = {
                     Log.d("EnterViewModel fetch", it.toString())
-                    _loadingProgressBarLiveData.value = false
+                    _fetchScheduleLiveData.value = FetchResult.Loading(false)
                     appConfigRepository.setSingleGroup(it.name)
+                    _fetchScheduleLiveData.value = FetchResult.Success(it)
                 },
                 onError = {
                     if (it is UnknownHostException)
                         Log.d("EnterViewModel error", "No network connection")
                     else
                         Log.d("EnterViewModel error", it.toString())
-                    _loadingProgressBarLiveData.value = false
+                    _fetchScheduleLiveData.value = FetchResult.Loading(false)
+                    _fetchScheduleLiveData.value = FetchResult.Error(it.message.toString(), it)
                 },
                 onComplete = {
                     Log.d("EnterViewModel complete", "fetch Completed")
-                    _loadingProgressBarLiveData.value = false
+                    _fetchScheduleLiveData.value = FetchResult.Loading(false)
                 }
             ).addTo(disposables)
 
@@ -158,7 +158,8 @@ class EnterViewModel @Inject constructor(
         Observable
             .just(groupName)
             .flatMap { scheduleApiRepository.fetchGroupListObservable(it) }
-            .flatMap { scheduleApiRepository.fetchScheduleByHtmlObservable(it.choices.first().group) }
+            .map { it.copy(choices = it.choices.sortedBy { it.name }) }
+            .flatMap { scheduleApiRepository.fetchScheduleByHtmlObservable((it.choices.find { it.name == groupName } ?: it.choices.first()).group) }
 
 
     private fun <T> Observable<T>.debounceIf(
@@ -179,5 +180,11 @@ class EnterViewModel @Inject constructor(
     override fun onCleared() {
         disposables.dispose()
         super.onCleared()
+    }
+
+    sealed class FetchResult {
+        data class Success(val schedule: ScheduleEntity) : FetchResult()
+        data class Error(val message: String, val error: Throwable) : FetchResult()
+        data class Loading(val isLoading: Boolean) : FetchResult()
     }
 }

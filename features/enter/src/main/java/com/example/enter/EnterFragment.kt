@@ -3,12 +3,14 @@ package com.example.enter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.PathParser
 import androidx.core.view.WindowCompat
@@ -16,14 +18,19 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.enter.adapter.GroupChooseAdapter
-import com.example.enter.adapter.GroupItem
+import androidx.fragment.app.viewModels
+import com.example.views.adapter.GroupChooseAdapter
+import com.example.views.adapter.GroupItem
 import com.example.enter.databinding.FragmentEnterBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.jakewharton.rxbinding2.view.RxView
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxkotlin.addTo
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import javax.inject.Inject
+import kotlin.math.log
 
 @AndroidEntryPoint
 class EnterFragment : Fragment() {
@@ -31,11 +38,24 @@ class EnterFragment : Fragment() {
     private var _binding: FragmentEnterBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by activityViewModels<EnterViewModel>()
+    private val viewModel by viewModels<EnterViewModel>()
 
     private lateinit var adapter: GroupChooseAdapter
 
     private var isLoading: Boolean = false
+    private var handler = Handler(Looper.getMainLooper())
+
+    @Inject
+    lateinit var enterFragmentContract: EnterFragmentContract
+
+    private var isAddingMode = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null)
+            isAddingMode = requireArguments().getBoolean(BOOLEAN_TAG, false)
+        Log.d("EnterFragment isAddingMode", isAddingMode.toString())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,8 +63,7 @@ class EnterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEnterBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,44 +73,92 @@ class EnterFragment : Fragment() {
         binding.chooseCardRecyclerView.adapter = adapter
         adapter.submitList(createEmptyList())
 
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
-        val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
-        toolbar?.title = "Enter"
-        toolbar?.setDisplayHomeAsUpEnabled(false)
-        toolbar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.textSwitcher.setText("Enter")
+        if (!isAddingMode) {
+            (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
+            val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
+            toolbar?.title = "Enter"
+            toolbar?.setDisplayHomeAsUpEnabled(false)
+            toolbar?.setDisplayShowTitleEnabled(false)
+            binding.toolbar.textSwitcher.setText("Enter")
+        } else {
+            (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
+            val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
+            toolbar?.setDisplayHomeAsUpEnabled(true)
+            toolbar?.setDisplayShowTitleEnabled(false)
+            binding.toolbar.textSwitcher.setText("Добавить группу")
+
+        }
+
 
         viewModel.groupsLiveData.observe(viewLifecycleOwner) {
             adapter.submitList(it)
             binding.chooseCardRecyclerView.scrollToPosition(0)
         }
 
+        viewModel.fetchScheduleLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is EnterViewModel.FetchResult.Success -> {
+                    WindowCompat.getInsetsController(
+                        requireActivity().window,
+                        binding.groupTextInputEditText
+                    ).hide(
+                        WindowInsetsCompat.Type.ime()
+                    )
+                    if (!isAddingMode)
+                        enterFragmentContract.navigateToScheduleScreen()
+                    else
+                        requireActivity().supportFragmentManager.popBackStack()
+                }
+
+                is EnterViewModel.FetchResult.Error -> {
+                    when (it.error) {
+                        is NullPointerException -> binding.groupTextInputEditText.error =
+                            "Такой группы не существует"
+
+                        is UnknownHostException -> Toast.makeText(
+                            requireContext(),
+                            "Проблема с интернет соединением",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        is SocketTimeoutException -> Toast.makeText(
+                            requireContext(),
+                            "Лимит отклика превышен. Повторите запрос",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        else -> Toast.makeText(
+                            requireContext(),
+                            "${it.error}: ${it.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }
+                }
+
+                is EnterViewModel.FetchResult.Loading -> if (it.isLoading) {
+                    binding.submitButton.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
+                } else {
+                    binding.progressBar.visibility = View.GONE
+                    binding.submitButton.visibility = View.VISIBLE
+                }
+
+            }
+        }
+
         viewModel.loadingAppBarLiveData.observe(viewLifecycleOwner) {
             if (it) {
-//                binding.submitButton.visibility = View.GONE
-//                binding.progressBar.visibility = View.VISIBLE
                 if (isLoading) return@observe
                 binding.toolbar.textSwitcher.setText("Loading")
                 isLoading = true
-
             } else {
-//                binding.progressBar.visibility = View.GONE
-//                binding.submitButton.visibility = View.VISIBLE
                 if (!isLoading) return@observe
                 binding.toolbar.textSwitcher.setText("Enter")
                 isLoading = false
             }
         }
 
-        viewModel.loadingProgressBarLiveData.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.submitButton.visibility = View.GONE
-                binding.progressBar.visibility = View.VISIBLE
-            } else {
-                binding.progressBar.visibility = View.GONE
-                binding.submitButton.visibility = View.VISIBLE
-            }
-        }
 
         binding.submitButton.isEnabled = false
         binding.groupTextInputEditText.doAfterTextChanged { text ->
@@ -106,6 +173,7 @@ class EnterFragment : Fragment() {
             requireContext(),
             com.example.values.R.anim.slide_in_up
         )
+
         binding.toolbar.textSwitcher.setOutAnimation(
             requireContext(),
             com.example.values.R.anim.slide_out_down
@@ -119,13 +187,15 @@ class EnterFragment : Fragment() {
         KeyboardVisibilityEvent.setEventListener(requireActivity(), viewLifecycleOwner) { isOpen ->
             if (isOpen) expand() else collapse()
         }
+
         startDelayedFocus(350)
 
     }
 
+
     private fun startDelayedFocus(millis: Long) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (binding.groupTextInputEditText.hasFocus()) return@postDelayed
+        val runnable = Runnable {
+            if (binding.groupTextInputEditText.hasFocus()) return@Runnable
             binding.groupTextInputEditText.requestFocus()
             WindowCompat.getInsetsController(
                 requireActivity().window,
@@ -133,28 +203,9 @@ class EnterFragment : Fragment() {
             ).show(
                 WindowInsetsCompat.Type.ime()
             )
-        }, millis)
-    }
+        }
 
-    private fun createList(): MutableList<GroupItem> {
-        return mutableListOf(
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-            GroupItem("", ""),
-        )
+        handler.postDelayed(runnable, millis)
     }
 
     private fun createEmptyList(): MutableList<GroupItem> {
@@ -208,8 +259,27 @@ class EnterFragment : Fragment() {
         binding.ll.startAnimation(a)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+    companion object {
+        private const val BOOLEAN_TAG = "isAdding"
+        fun newInstance(isAdding: Boolean): EnterFragment {
+            val args = Bundle()
+            args.putBoolean(BOOLEAN_TAG, isAdding)
+            val fragment = EnterFragment()
+            fragment.arguments = args
+            return fragment
+
+        }
+    }
+
+
 }

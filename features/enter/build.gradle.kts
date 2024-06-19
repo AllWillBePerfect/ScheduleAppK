@@ -74,7 +74,7 @@ dependencies {
 
 
     api(project(":core:values"))
-//    api(project(":core:views"))
+    api(project(":core:views"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.Material3.CardView.Elevated.BottomCorners" parent="@style/CardView.BottomCorners">
+        <item name="shapeAppearanceOverlay">@style/CardView.BottomCorners</item>
+    </style>
+
+    <style name="Widget.Material3.CardView.Elevated.TopCorners" parent="@style/CardView.TopCorners">
+        <item name="shapeAppearanceOverlay">@style/CardView.TopCorners</item>
+
+    </style>
+
+    <style name="Widget.Material3.CardView.Elevated.NotCorners" parent="@style/CardView.NotCorners">
+        <item name="shapeAppearanceOverlay">@style/CardView.NotCorners</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
+    <style name="CardView.BottomCorners" parent="Widget.Material3.CardView.Elevated">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">8dp</item>
+        <item name="cornerSizeBottomLeft">8dp</item>
+    </style>
+
+    <style name="CardView.TopCorners" parent="Widget.Material3.CardView.Elevated">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">8dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+
+    <style name="CardView.NotCorners" parent="Widget.Material3.CardView.Elevated">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+    </style>
+</resources>

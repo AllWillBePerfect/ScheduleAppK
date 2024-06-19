@@ -67,10 +67,17 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.room.compiler)
+    implementation(libs.androidx.room.rxjava2)
+
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     api(project(":core:sharpref"))
+    api(project(":core:utils"))
+
 
 
 }

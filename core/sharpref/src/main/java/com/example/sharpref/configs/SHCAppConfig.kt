@@ -4,7 +4,9 @@ import android.content.Context
 import com.example.models.sharpref.AppConfig
 import com.example.models.sharpref.AppState
 import com.example.models.sharpref.MultipleGroup
+import com.example.models.sharpref.MultipleGroupConfig
 import com.example.models.sharpref.SingleGroup
+import com.example.models.sharpref.SingleGroupConfig
 import com.example.sharpref.models.containers.AppConfigSPContainer
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -19,13 +21,20 @@ class SHCAppConfig @Inject constructor(@ApplicationContext context: Context) :
     override fun getDefaultValue(): AppConfigSPContainer = AppConfigSPContainer(
         AppConfig(
             AppState.UNSELECT,
-            SingleGroup(""),
-            MultipleGroup("", "", emptyList())
+            SingleGroupConfig(
+                SingleGroup(""),
+                mutableListOf()),
+            MultipleGroupConfig(
+                MultipleGroup("", "", emptyList()),
+                mutableListOf(),
+                listOf(1,2,3,4,5,6)
+            )
         )
     )
 
     override fun getAdapter(): JsonAdapter<AppConfigSPContainer> =
-        Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build().adapter(AppConfigSPContainer::class.java)
+        Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+            .adapter(AppConfigSPContainer::class.java)
 
     override fun mapFromValue(value: AppConfig): AppConfigSPContainer =
         AppConfigSPContainer(value)

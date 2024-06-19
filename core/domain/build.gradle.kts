@@ -1,14 +1,19 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    /*kotlin("kapt")
+    alias(libs.plugins.hiltAndroid)*/
 }
+
+val compileSdkVer: Int by rootProject.extra
+val minSdkVer: Int by rootProject.extra
 
 android {
     namespace = "com.example.domain"
-    compileSdk = 34
+    compileSdk = compileSdkVer
 
     defaultConfig {
-        minSdk = 24
+        minSdk = minSdkVer
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -30,6 +35,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    /*kapt {
+        correctErrorTypes = true
+    }*/
 }
 
 dependencies {
@@ -40,4 +48,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+
 }
