@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/configuration_title"
+            layout="@layout/part_section"
+            />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sharedOptionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="Общие"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/individualOptionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="Индивидуальные"
+                />
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggleGroupDays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/monday_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="пн"
+                android:textSize="11sp"
+                />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tuesday_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="вт"
+                android:textSize="11sp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/wednesday_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="ср"
+                android:textSize="11sp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/thursday_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="чт"
+                android:textSize="11sp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/friday_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="пт"
+                android:textSize="11sp"
+                />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saturday_option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_weight="1"
+                android:text="сб"
+                android:textSize="11sp"
+                />
+
+
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

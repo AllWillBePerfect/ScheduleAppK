@@ -2,11 +2,9 @@ package com.example.models.sharpref
 
 data class AppConfig(
     val appState: AppState,
-    val singleGroup: SingleGroup,
-    val multipleGroup: MultipleGroup
-) {
-
-}
+    val singleGroupConfig: SingleGroupConfig,
+    val multipleGroupConfig: MultipleGroupConfig
+)
 
 enum class AppState {
     SINGLE, MULTIPLE, UNSELECT
@@ -22,4 +20,17 @@ data class MultipleGroup(
     val groupNameFirstPosition: String,
     val groupNameSecondPosition: String,
     val daysToReplace: List<Int>
+)
+
+data class SingleGroupConfig(
+    val currentSingleGroup: SingleGroup,
+    val list: List<SingleGroup>
+
+)
+
+data class MultipleGroupConfig(
+    val currentMultipleGroup: MultipleGroup,
+    val list: List<MultipleGroup>,
+    val daysToReplaceShared: List<Int>
+
 )

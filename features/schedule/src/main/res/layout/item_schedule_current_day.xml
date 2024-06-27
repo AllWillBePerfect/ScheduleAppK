@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none"
+    >
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       android:padding="16dp"
+       >
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:gravity="center_vertical"
+           >
+           <TextView
+               android:id="@+id/date"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="16 апреля"
+               android:layout_marginEnd="16dp"
+               android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall" />
+
+
+           <View
+               android:layout_width="0dp"
+               android:layout_height="0dp"
+               android:layout_weight="1"/>
+
+           <com.google.android.material.card.MaterialCardView
+               android:id="@+id/weekDay_cardView"
+               style="@style/Widget.Material3.CardView.Filled"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:backgroundTint="?attr/colorPrimary"
+               app:cardCornerRadius="10dp"
+               android:layout_marginStart="16dp">
+
+               <TextView
+                   android:id="@+id/weekDay_textView"
+                   style="@style/TextAppearance.Material3.TitleSmall"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="2dp"
+                   android:text="Понедельник"
+                   android:textColor="?attr/colorSurface" />
+
+
+           </com.google.android.material.card.MaterialCardView>
+
+           <!--<com.google.android.material.card.MaterialCardView
+               style="@style/Widget.Material3.CardView.Filled"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:visibility="invisible"
+               app:cardCornerRadius="90dp">
+
+               <TextView
+                   style="@style/TextAppearance.Material3.TitleSmall"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="16dp"
+                   android:text="ПН" />
+
+
+           </com.google.android.material.card.MaterialCardView>-->
+
+       </LinearLayout>
+
+       <include android:id="@+id/before_lesson"
+           layout="@layout/part_lesson_time_over" />
+
+       <include android:id="@+id/first_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />
+-->
+       <include android:id="@+id/first_lesson_break"
+           layout="@layout/part_lesson_break"/>
+
+
+       <include android:id="@+id/second_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />-->
+
+       <include android:id="@+id/second_lesson_break"
+           layout="@layout/part_lesson_break"/>
+
+
+       <include android:id="@+id/third_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />-->
+
+       <include android:id="@+id/third_lesson_break"
+           layout="@layout/part_lesson_break"/>
+
+
+       <include android:id="@+id/fourth_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />-->
+
+       <include android:id="@+id/fourth_lesson_break"
+           layout="@layout/part_lesson_break"/>
+
+
+       <include android:id="@+id/fifth_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />-->
+
+       <include android:id="@+id/fifth_lesson_break"
+           layout="@layout/part_lesson_break"/>
+
+
+       <include android:id="@+id/sixth_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />-->
+
+       <include android:id="@+id/sixth_lesson_break"
+           layout="@layout/part_lesson_break"/>
+
+
+       <include android:id="@+id/seventh_lesson"
+           layout="@layout/part_lesson_current_day" />
+
+       <include android:id="@+id/after_lesson"
+           layout="@layout/part_lesson_time_over" />
+
+       <!--<com.google.android.material.divider.MaterialDivider
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content" />-->
+
+   </LinearLayout>
+
+
+</androidx.core.widget.NestedScrollView>

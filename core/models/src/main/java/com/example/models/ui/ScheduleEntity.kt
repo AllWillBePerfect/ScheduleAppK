@@ -8,7 +8,14 @@ data class ScheduleEntity(
     val group: String,
     val table: List<List<String>>,
     val link: String,
-    val weeks: List<Int>
+    val weeks: List<Int>,
+    val cacheTime: String,
+    val cacheDate: String,
+    val status: ScheduleEntityStatus
 )
+
+enum class ScheduleEntityStatus {
+    CACHE, NETWORK
+}
 
 

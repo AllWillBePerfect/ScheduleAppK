@@ -2,6 +2,7 @@ package com.example.sharpref.di
 
 import com.example.sharpref.sources.AppConfigContract
 import com.example.sharpref.sources.AppConfigContractImpl
+import com.example.sharpref.sources.NightModeContract
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,4 +16,8 @@ interface SharedPreferencesModule {
     @Binds
     @Singleton
     fun bindAppConfigSettings(appConfigSettingsImpl: AppConfigContractImpl): AppConfigContract
+
+    @Binds
+    @Singleton
+    fun bindNightModeSettings(nightModeContractImpl: NightModeContract.Impl): NightModeContract
 }

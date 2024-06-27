@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="?attr/actionBarSize"
-    tools:parentTag="android.widget.LinearLayout"
-    android:id="@+id/toolbar_merge">
+
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:id="@+id/toolbar"
         app:titleCentered="true"
-        >
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <TextSwitcher
             android:id="@+id/textSwitcher"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:gravity="center"
                 />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:gravity="center"
                 />
         </TextSwitcher>
 
     </com.google.android.material.appbar.MaterialToolbar>
 
-
-</merge>
