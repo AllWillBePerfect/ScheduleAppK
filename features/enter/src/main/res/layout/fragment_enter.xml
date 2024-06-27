@@ -4,16 +4,16 @@
     android:id="@+id/mainLl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
+
     android:orientation="vertical"
     android:weightSum="100">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_anim"
+        layout="@layout/toolbar_text_anim"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/group_TextInputLayout"
@@ -21,14 +21,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/group_TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Введите группу"
-            android:inputType="" />
+            android:inputType="text"
+            android:maxLines="1"
+            />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -36,12 +40,19 @@
         android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/group_TextInputLayout">
+        app:layout_constraintTop_toBottomOf="@id/group_TextInputLayout"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        >
 
-        <com.google.android.material.card.MaterialCardView xmlns:tools="http://schemas.android.com/tools"
+        <com.google.android.material.card.MaterialCardView
+            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/chooseCard_CardView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:cardElevation="4dp"
+            style="@style/Widget.Material3.CardView.Elevated"
+            >
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chooseCard_RecyclerView"
@@ -60,7 +71,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Получить расписание"
-        app:layout_constraintTop_toBottomOf="@id/ll" />
+        app:layout_constraintTop_toBottomOf="@id/ll"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"

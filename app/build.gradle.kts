@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
+//    id("com.google.devtools.ksp")
     alias(libs.plugins.hiltAndroid)
 }
 
@@ -16,6 +17,16 @@ val targetSdkVer: Int by rootProject.extra
 val compileSdkVer: Int by rootProject.extra
 
 android {
+    signingConfigs {
+        create("release") {
+            val filePath = project.rootProject.file("./app/keystore.jks")
+            storeFile =
+                file(filePath)
+            storePassword = "123456"
+            keyAlias = "key0"
+            keyPassword = "123456"
+        }
+    }
     namespace = "com.example.scheduleappk"
     compileSdk = compileSdkVer
 
@@ -36,6 +47,13 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
+            resValue("string", "app_name", "ScheduleAppK")
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-DEBUG"
+            resValue("string", "app_name", "DScheduleAppK")
         }
     }
     compileOptions {
@@ -73,12 +91,26 @@ dependencies {
 
     implementation(libs.androidx.preference.ktx)
 
+
     implementation(libs.rxjava2)
     implementation(libs.rxkotlin2)
     implementation(libs.rxandroid)
 
     implementation (libs.rxbinding)
 //    implementation (libs.rxbinding.kotlin)
+
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.rxjava2)
+    implementation(libs.androidx.hilt.work)
+    annotationProcessor(libs.androidx.hilt.compiler)
+
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    kapt(libs.androidx.room.room.compiler)
+    implementation(libs.androidx.room.rxjava2)
+
+    implementation(libs.gson)
+
 
     implementation(libs.retrofit)
     implementation(libs.adapter.rxjava2)
@@ -89,6 +121,9 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
+    implementation(libs.androidx.swiperefreshlayout)
+
+
     implementation(project(":core:network"))
     implementation(project(":core:database"))
     implementation(project(":core:values"))
@@ -96,10 +131,12 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:sharpref"))
     implementation(project(":core:models"))
+    implementation(project(":core:utils"))
     implementation(project(":core:domain"))
 
     implementation(project(":features:enter"))
     implementation(project(":features:schedule"))
+    implementation(project(":features:settings"))
 
     implementation(project(":rxtest"))
 }

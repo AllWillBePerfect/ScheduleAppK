@@ -1,4 +1,4 @@
-package com.example.enter.adapter
+package com.example.views.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.enter.databinding.ItemChooseGroupBinding
-import com.example.enter.R
+import com.example.views.databinding.ItemChooseGroupBinding
 
 class GroupChooseAdapter(
     private val onItemClickListener: ((GroupItem) -> Unit)
@@ -15,7 +14,7 @@ class GroupChooseAdapter(
     View.OnClickListener {
 
     override fun onClick(v: View?) {
-        if (v?.id == R.id.group_choose_item) {
+        if (v?.id == com.example.views.R.id.group_choose_item) {
             val item = (v.tag as GroupItem)
             onItemClickListener(item)
         }

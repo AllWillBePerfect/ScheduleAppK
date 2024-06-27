@@ -1,8 +1,6 @@
 package com.example.data.repositories
 
 
-
-
 import com.example.models.sharpref.AppState
 import com.example.models.sharpref.MultipleGroup
 import com.example.models.sharpref.SingleGroup
@@ -19,8 +17,19 @@ interface AppConfigRepository {
     fun setSingleGroup(groupName: String)
     fun getSingleGroup(): SingleGroup
 
-    fun setMultipleGroup(groupNameFirstPosition: String, groupNameSecondPosition: String, daysToReplace: List<Int>)
+    fun setMultipleGroup(
+        groupNameFirstPosition: String,
+        groupNameSecondPosition: String,
+        daysToReplace: List<Int>
+    )
+
     fun getMultipleGroup(): MultipleGroup
+
+    fun changeDaysToReplaceShared(daysToReplace: List<Int>)
+    fun getDaysToReplaceShared(): List<Int>
+
+    fun getSingleGroupList(): List<SingleGroup>
+    fun getMultipleGroupList(): List<MultipleGroup>
 
     class Impl @Inject constructor(private val appConfigSetting: AppConfigContract) :
         AppConfigRepository {
@@ -30,14 +39,33 @@ interface AppConfigRepository {
             appConfig = appConfig.copy(appState = state)
             appConfigSetting.setAppConfig(appConfig)
         }
-        private fun changeSingleGroup(singleGroup: SingleGroup) {
+
+        private fun changeToSingleGroup(singleGroup: SingleGroup) {
             var appConfig = appConfigSetting.getAppConfig()
-            appConfig = appConfig.copy(appState = AppState.SINGLE, singleGroup = singleGroup)
+            val list = appConfig.singleGroupConfig.list.toMutableList()
+            list.add(singleGroup)
+            appConfig = appConfig.copy(
+                appState = AppState.SINGLE,
+                singleGroupConfig = appConfig.singleGroupConfig.copy(
+                    currentSingleGroup = singleGroup,
+                    list = list.toList()
+                )
+            )
             appConfigSetting.setAppConfig(appConfig)
         }
-        private fun changeMultipleGroup(multipleGroup: MultipleGroup) {
+
+        private fun changeToMultipleGroup(multipleGroup: MultipleGroup) {
             var appConfig = appConfigSetting.getAppConfig()
-            appConfig = appConfig.copy(appState = AppState.MULTIPLE, multipleGroup = multipleGroup)
+            val list = appConfig.multipleGroupConfig.list.toMutableList()
+            list.add(multipleGroup)
+            appConfig =
+                appConfig.copy(
+                    appState = AppState.MULTIPLE,
+                    multipleGroupConfig = appConfig.multipleGroupConfig.copy(
+                        currentMultipleGroup = multipleGroup,
+                        list = list.toList()
+                    )
+                )
             appConfigSetting.setAppConfig(appConfig)
         }
 
@@ -46,17 +74,20 @@ interface AppConfigRepository {
         override fun changeAppStateToMultiple() = changeAppState(AppState.MULTIPLE)
         override fun getAppState(): AppState = appConfigSetting.getAppConfig().appState
 
-        override fun setSingleGroup(groupName: String) = changeSingleGroup(
+        override fun setSingleGroup(groupName: String) = changeToSingleGroup(
             SingleGroup(
                 groupName
             )
         )
-        override fun getSingleGroup(): SingleGroup = appConfigSetting.getAppConfig().singleGroup
+
+        override fun getSingleGroup(): SingleGroup =
+            appConfigSetting.getAppConfig().singleGroupConfig.currentSingleGroup
+
         override fun setMultipleGroup(
             groupNameFirstPosition: String,
             groupNameSecondPosition: String,
             daysToReplace: List<Int>
-        ) = changeMultipleGroup(
+        ) = changeToMultipleGroup(
             MultipleGroup(
                 groupNameFirstPosition,
                 groupNameSecondPosition,
@@ -64,6 +95,20 @@ interface AppConfigRepository {
             )
         )
 
-        override fun getMultipleGroup(): MultipleGroup = appConfigSetting.getAppConfig().multipleGroup
+        override fun getMultipleGroup(): MultipleGroup =
+            appConfigSetting.getAppConfig().multipleGroupConfig.currentMultipleGroup
+
+        override fun changeDaysToReplaceShared(daysToReplace: List<Int>) {
+            appConfigSetting.setAppConfig(appConfigSetting.getAppConfig().copy(multipleGroupConfig =
+            appConfigSetting.getAppConfig().multipleGroupConfig.copy(daysToReplaceShared = daysToReplace)))
+        }
+
+        override fun getDaysToReplaceShared(): List<Int> = appConfigSetting.getAppConfig().multipleGroupConfig.daysToReplaceShared
+
+        override fun getSingleGroupList(): List<SingleGroup> =
+            appConfigSetting.getAppConfig().singleGroupConfig.list
+
+        override fun getMultipleGroupList(): List<MultipleGroup> =
+            appConfigSetting.getAppConfig().multipleGroupConfig.list
     }
 }

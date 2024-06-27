@@ -5,6 +5,15 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="getCurrentPeriod()">
+        <State />
+      </entry>
+      <entry key="getLessonProgress()">
+        <State />
+      </entry>
+      <entry key="getSubtractBetweenTimePeriods()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>

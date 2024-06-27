@@ -1,14 +1,20 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("kapt")
+    alias(libs.plugins.hiltAndroid)
 }
+
+
+val compileSdkVer: Int by rootProject.extra
+val minSdkVer: Int by rootProject.extra
 
 android {
     namespace = "com.example.schedule"
-    compileSdk = 34
+    compileSdk = compileSdkVer
 
     defaultConfig {
-        minSdk = 24
+        minSdk = minSdkVer
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -30,6 +36,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -41,6 +53,23 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(libs.androidx.fragment.ktx)
+
+    implementation(libs.rxjava2)
+    implementation(libs.rxkotlin2)
+    implementation(libs.rxandroid)
+
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.keyboardvisibilityevent)
+
+
+
     api(project(":core:values"))
+    api(project(":core:views"))
+    implementation(project(":core:data"))
+
 
 }
