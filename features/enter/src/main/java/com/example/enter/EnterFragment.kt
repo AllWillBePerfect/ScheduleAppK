@@ -105,9 +105,11 @@ class EnterFragment : Fragment() {
                         WindowInsetsCompat.Type.ime()
                     )
                     if (!isAddingMode)
-                        enterFragmentContract.navigateToScheduleScreen()
-                    else
+                        enterFragmentContract.navigateToScheduleScreen(instanceState = savedInstanceState)
+                    else {
                         requireActivity().supportFragmentManager.popBackStack()
+                        viewModel.setRefreshLiveData()
+                    }
                 }
 
                 is EnterViewModel.FetchResult.Error -> {

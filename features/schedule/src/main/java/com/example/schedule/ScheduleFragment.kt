@@ -28,7 +28,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.data.repositories.CurrentLessonRepository
-import com.example.data.repositories.ScheduleItemListRepositoryV3
 import com.example.schedule.adapter.ScheduleAdapter
 import com.example.schedule.databinding.DrawerLayoutHeaderBinding
 import com.example.schedule.databinding.FragmentScheduleBinding
@@ -253,7 +252,7 @@ class ScheduleFragment : Fragment() {
                 }))
             }
 
-            viewModel.scheduleViewModel.observe(viewLifecycleOwner) { singleEvent ->
+            viewModel.scheduleLiveData.observe(viewLifecycleOwner) { singleEvent ->
                 singleEvent.event?.let {
                     adapterViewPager.submitList(it)
                     val currentDayIndex =
@@ -345,6 +344,12 @@ class ScheduleFragment : Fragment() {
                     ).show()
 
                 }
+            }
+        }
+
+        viewModel.getRefreshLiveData().observe(viewLifecycleOwner) {
+            it.event?.let {
+                viewModel.init()
             }
         }
     }

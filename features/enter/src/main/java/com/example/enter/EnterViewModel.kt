@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ScheduleApiRepository
+import com.example.data.service.RefreshService
 import com.example.views.adapter.GroupItem
 import com.example.models.ui.ScheduleEntity
 import com.example.models.ui.ScheduleGroupsListEntity
@@ -27,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class EnterViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
-    private val scheduleApiRepository: ScheduleApiRepository
+    private val scheduleApiRepository: ScheduleApiRepository,
+    private val refreshService: RefreshService
 ) : ViewModel() {
 
     private val scheduleApi = scheduleApiRepository
@@ -161,6 +163,7 @@ class EnterViewModel @Inject constructor(
             .map { it.copy(choices = it.choices.sortedBy { it.name }) }
             .flatMap { scheduleApiRepository.fetchScheduleByHtmlObservable((it.choices.find { it.name == groupName } ?: it.choices.first()).group) }
 
+    fun setRefreshLiveData() = refreshService.setRefreshLiveData()
 
     private fun <T> Observable<T>.debounceIf(
         predicate: (T) -> Boolean,

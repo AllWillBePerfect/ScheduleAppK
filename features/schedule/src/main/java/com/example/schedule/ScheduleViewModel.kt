@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ScheduleApiRepository
 import com.example.data.repositories.ScheduleItemListRepositoryV3
+import com.example.data.service.RefreshService
 import com.example.models.ui.ScheduleGroupsListEntity
 import com.example.utils.Result
 import com.example.utils.ScheduleItem
@@ -35,7 +36,8 @@ import javax.inject.Inject
 class ScheduleViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     private val scheduleItemListRepositoryV3: ScheduleItemListRepositoryV3,
-    private val scheduleApiRepository: ScheduleApiRepository
+    private val scheduleApiRepository: ScheduleApiRepository,
+    private val refreshService: RefreshService
 
 ) : ViewModel() {
 
@@ -43,8 +45,8 @@ class ScheduleViewModel @Inject constructor(
     private var isFirstLaunch: Boolean = true
 
 
-    private val _scheduleViewModel = SingleMutableLiveData<List<ScheduleItem>>()
-    val scheduleViewModel: SingleLiveData<List<ScheduleItem>> = _scheduleViewModel
+    private val _scheduleLiveData = SingleMutableLiveData<List<ScheduleItem>>()
+    val scheduleLiveData: SingleLiveData<List<ScheduleItem>> = _scheduleLiveData
 
     private val _weekViewModel = SingleMutableLiveData<WeekConfigContainer>()
     val weekViewModel: SingleLiveData<WeekConfigContainer> = _weekViewModel
@@ -282,7 +284,7 @@ class ScheduleViewModel @Inject constructor(
                             Log.d("ScheduleViewModel schedule fromDB success", res.data.toString())
                             _loadingAppBarLiveData.value =
                                 SingleEvent(AppBarLoading.Loaded(res.data.scheduleStatus))
-                            _scheduleViewModel.value = SingleEvent(res.data.list)
+                            _scheduleLiveData.value = SingleEvent(res.data.list)
                         }
 
                         is ScheduleResult.SuccessFromNetwork -> {
@@ -293,7 +295,7 @@ class ScheduleViewModel @Inject constructor(
                             )
                             _loadingAppBarLiveData.value =
                                 SingleEvent(AppBarLoading.Loaded(res.data.scheduleStatus))
-                            _scheduleViewModel.value = SingleEvent(res.data.list)
+                            _scheduleLiveData.value = SingleEvent(res.data.list)
                         }
 
                         is ScheduleResult.Error -> {
@@ -331,7 +333,7 @@ class ScheduleViewModel @Inject constructor(
                     when (res) {
                         is Result.Success -> {
                             Log.d("ScheduleViewModel reuse success", res.data.toString())
-                            _scheduleViewModel.value = SingleEvent(res.data.list)
+                            _scheduleLiveData.value = SingleEvent(res.data.list)
                         }
 
                         is Result.Error -> Log.d(
@@ -349,6 +351,8 @@ class ScheduleViewModel @Inject constructor(
                 onComplete = { Log.d("ScheduleViewModelV2 reuse onComplete", "onComplete reuse ") }
             ).addTo(disposables)
     }
+
+    fun getRefreshLiveData() = refreshService.getRefreshLiveData()
 
 
     override fun onCleared() {

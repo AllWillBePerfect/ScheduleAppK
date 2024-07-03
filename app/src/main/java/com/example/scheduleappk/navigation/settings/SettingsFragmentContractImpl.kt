@@ -13,6 +13,7 @@ class SettingsFragmentContractImpl @Inject constructor(
     override fun navigateToAddSingleGroupScreen() {
 
         navigateRouter.requireActivity().supportFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
             setCustomAnimations(
                 com.example.values.R.anim.slide_in,
                 com.example.values.R.anim.slide_out,
@@ -29,6 +30,7 @@ class SettingsFragmentContractImpl @Inject constructor(
 
     override fun navigateToMultipleGroupOptionFragment() {
         navigateRouter.requireActivity().supportFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
             setCustomAnimations(
                 com.example.values.R.anim.slide_in,
                 com.example.values.R.anim.slide_out,
