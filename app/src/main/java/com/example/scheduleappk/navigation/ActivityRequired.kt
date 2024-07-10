@@ -6,7 +6,11 @@ interface ActivityRequired {
 
     fun onCreated(activity: FragmentActivity)
 
-    fun onStarted()
+    fun onStarted(activity: FragmentActivity)
+
+    fun onResumed(activity: FragmentActivity)
+
+    fun onPause()
 
     fun onStopped()
 

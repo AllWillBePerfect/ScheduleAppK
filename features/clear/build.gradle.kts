@@ -9,7 +9,7 @@ val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
 
 android {
-    namespace = "com.example.data"
+    namespace = "com.example.clear"
     compileSdk = compileSdkVer
 
     defaultConfig {
@@ -35,6 +35,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
     kapt {
         correctErrorTypes = true
     }
@@ -52,33 +55,13 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
 
+    implementation(libs.androidx.fragment.ktx)
+
     implementation(libs.rxjava2)
     implementation(libs.rxkotlin2)
     implementation(libs.rxandroid)
 
-    implementation(libs.moshi)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.androidx.preference.ktx)
-
-    implementation(libs.retrofit)
-    implementation(libs.adapter.rxjava2)
-    implementation(libs.converter.gson)
-    implementation(libs.converter.scalars)
-    implementation(libs.converter.moshi)
-    implementation(libs.logging.interceptor)
-
-    implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.compiler)
-    kapt(libs.androidx.room.room.compiler)
-    implementation(libs.androidx.room.rxjava2)
-
-
-    implementation(project(":core:network"))
-    implementation(project(":core:database"))
-    api(project(":core:sharpref"))
-    api(project(":core:utils"))
-    implementation(project(":core:values"))
-
-
-
+    api(project(":core:values"))
+    api(project(":core:views"))
+    implementation(project(":core:data"))
 }

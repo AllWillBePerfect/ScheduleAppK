@@ -1,6 +1,7 @@
 package com.example.data.repositories.di
 
 import com.example.data.repositories.AppConfigRepository
+import com.example.data.repositories.ClearDataRepository
 import com.example.data.repositories.CurrentLessonRepository
 import com.example.data.repositories.ScheduleApiRepository
 import com.example.data.repositories.ScheduleItemListRepository
@@ -49,4 +50,8 @@ interface RepositoriesModule {
     @Binds
     @Singleton
     fun bindsSettingsOptionRepository(impl: SettingsOptionRepository.Impl): SettingsOptionRepository
+
+    @Binds
+    @Singleton
+    fun bindsClearDataRepository(impl: ClearDataRepository.Impl): ClearDataRepository
 }

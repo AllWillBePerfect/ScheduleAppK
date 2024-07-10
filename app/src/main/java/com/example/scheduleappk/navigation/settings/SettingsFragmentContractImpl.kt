@@ -1,6 +1,9 @@
 package com.example.scheduleappk.navigation.settings
 
+import android.content.Intent
+import androidx.core.content.ContextCompat.startActivity
 import com.example.enter.EnterFragment
+import com.example.scheduleappk.MainActivity
 import com.example.scheduleappk.R
 import com.example.scheduleappk.navigation.NavigateRouter
 import com.example.settings.SettingsFragmentContract
@@ -41,5 +44,13 @@ class SettingsFragmentContractImpl @Inject constructor(
             addToBackStack(null)
             commit()
         }
+    }
+
+    override fun reloadApp() {
+        val intent = Intent(navigateRouter.requireActivity(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        navigateRouter.requireActivity().startActivity(intent)
+        navigateRouter.requireActivity().overridePendingTransition(0, 0)
     }
 }

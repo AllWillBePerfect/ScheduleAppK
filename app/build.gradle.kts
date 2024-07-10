@@ -12,6 +12,8 @@ var versionPatch by extra(0)
 var versionClassifier: String? by extra(null)
 var isSnapshot by extra(true)
 
+var clearStorageFlag by extra(true)
+
 val minSdkVer: Int by rootProject.extra
 val targetSdkVer: Int by rootProject.extra
 val compileSdkVer: Int by rootProject.extra
@@ -41,6 +43,7 @@ android {
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -55,7 +58,12 @@ android {
             versionNameSuffix = "-DEBUG"
             resValue("string", "app_name", "DScheduleAppK")
         }
+        buildTypes.forEach {
+            it.resValue("string", "clear_storage_flag", clearStorageFlag.toString())
+        }
     }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -96,7 +104,7 @@ dependencies {
     implementation(libs.rxkotlin2)
     implementation(libs.rxandroid)
 
-    implementation (libs.rxbinding)
+    implementation(libs.rxbinding)
 //    implementation (libs.rxbinding.kotlin)
 
     implementation(libs.androidx.work.runtime.ktx)
@@ -137,6 +145,7 @@ dependencies {
     implementation(project(":features:enter"))
     implementation(project(":features:schedule"))
     implementation(project(":features:settings"))
+    implementation(project(":features:clear"))
 
     implementation(project(":rxtest"))
 }

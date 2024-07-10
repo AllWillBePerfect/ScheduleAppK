@@ -32,8 +32,8 @@ interface SettingsOptionRepository {
         override fun getNightMode(): NightMode = nightModeContract.getNightMode()
         override fun getNightModeInt(): Int = when (getNightMode()) {
             NightMode.NO -> 0
-            NightMode.YES -> 2
-            NightMode.FOLLOW_SYSTEM -> 1
+            NightMode.YES -> 1
+            NightMode.FOLLOW_SYSTEM -> 2
         }
     }
 }

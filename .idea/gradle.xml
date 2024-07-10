@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/core/values" />
             <option value="$PROJECT_DIR$/core/views" />
             <option value="$PROJECT_DIR$/features" />
+            <option value="$PROJECT_DIR$/features/clear" />
             <option value="$PROJECT_DIR$/features/enter" />
             <option value="$PROJECT_DIR$/features/schedule" />
             <option value="$PROJECT_DIR$/features/settings" />

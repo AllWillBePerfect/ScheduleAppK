@@ -1,21 +1,21 @@
 package com.example.scheduleappk
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.preference.PreferenceManager
+import com.example.clear.ClearFragment
 import com.example.data.repositories.AppConfigRepository
+import com.example.data.repositories.ClearDataRepository
 import com.example.data.repositories.SettingsOptionRepository
 import com.example.enter.EnterFragment
 import com.example.models.sharpref.AppState
-import com.example.rxtest.sharednumber.FlowNumberFragment
 import com.example.schedule.ScheduleFragment
-import com.example.schedule.v2.ScheduleFragmentV2
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
 import com.example.scheduleappk.workmanager.SomeWorkManager
-import com.example.utils.nightmode.NightModeUtils.applyNightAfterOnCrete
-import com.example.utils.nightmode.NightModeUtils.applyNightBeforeOnCrete
 import com.example.utils.nightmode.NightModeUtils.setupNightMode
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var appConfigRepository: AppConfigRepository
 
+    @Inject
+    lateinit var clearDataRepository: ClearDataRepository
+
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     internal interface SettingsOptionRepositoryEntryPoint {
@@ -47,7 +50,10 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val settingsOptionRepository = EntryPointAccessors.fromApplication(this, SettingsOptionRepositoryEntryPoint::class.java).settingsOptionRepository
+        val settingsOptionRepository = EntryPointAccessors.fromApplication(
+            this,
+            SettingsOptionRepositoryEntryPoint::class.java
+        ).settingsOptionRepository
 //        applyNightBeforeOnCrete(settingsOptionRepository.getNightModeInt())
 //        applyNightAfterOnCrete(settingsOptionRepository.getNightModeInt())
         setupNightMode(settingsOptionRepository.getNightModeInt())
@@ -62,17 +68,30 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        if (appConfigRepository.getAppState() != AppState.UNSELECT)
-            launchScheduleScreen()
-        else
-            launchEnterScreen()
-
-
-//        launchScheduleScreen()
-//        launchRxTestScreen()
+        if (checkClear())
+            launchClearScreen()
+        else {
+            clearDataRepository.saveChanges()
+            if (appConfigRepository.getAppState() != AppState.UNSELECT)
+                launchScheduleScreen()
+            else
+                launchEnterScreen()
+        }
 
         SomeWorkManager.launchPeriodicalWorkRequest(this)
+    }
+
+    private fun checkClear(): Boolean {
+        val sharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val packageInfo = packageManager.getPackageInfo(packageName, 0)
+        val versionName = packageInfo.versionName
+        val cachedValue: String =
+            sharedPreferences.getString("cached_version", versionName)!!
+        val firstCheck = cachedValue != versionName
+        val secondCheck = getString(R.string.clear_storage_flag).toBoolean()
+        Log.d("WHAT??", "$cachedValue --- $versionName")
+        return firstCheck && secondCheck
     }
 
     private fun launchEnterScreen() {
@@ -89,16 +108,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun launchScheduleScreenV2() {
+    private fun launchClearScreen() {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.container_main, ScheduleFragmentV2())
-            commit()
-        }
-    }
-
-    private fun launchRxTestScreen() {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.container_main, FlowNumberFragment())
+            replace(R.id.container_main, ClearFragment())
             commit()
         }
     }
@@ -111,11 +123,6 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return super.onSupportNavigateUp()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        activityRequiredSet.forEach { it.onDestroyed() }
     }
 
 

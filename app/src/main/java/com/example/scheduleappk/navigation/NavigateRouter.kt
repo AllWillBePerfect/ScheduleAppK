@@ -14,13 +14,23 @@ class NavigateRouter @Inject constructor() : ActivityRequired {
         this.activity = activity
     }
 
-    override fun onStarted() {
+    override fun onStarted(activity: FragmentActivity) {
+
+    }
+
+    override fun onResumed(activity: FragmentActivity) {
+//        this.activity = activity
+    }
+
+    override fun onPause() {
+//        this.activity = null
     }
 
     override fun onStopped() {
     }
 
     override fun onDestroyed() {
+        this.activity = null
     }
 
     fun getActivity(): FragmentActivity? = activity
