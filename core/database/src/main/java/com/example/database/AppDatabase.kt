@@ -32,6 +32,6 @@ abstract class AppDatabase : RoomDatabase() {
             }
 
 
-        const val DATABASE_NAME = "ScheduleApp_db"
+        private const val DATABASE_NAME = "ScheduleApp_db"
     }
 }

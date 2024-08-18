@@ -12,6 +12,7 @@ var versionPatch by extra(0)
 var versionClassifier: String? by extra(null)
 var isSnapshot by extra(true)
 
+//change this flag to "true" if you need clear storage data after realise new app version
 var clearStorageFlag by extra(true)
 
 val minSdkVer: Int by rootProject.extra

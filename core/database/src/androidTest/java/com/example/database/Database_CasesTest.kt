@@ -57,6 +57,5 @@ class Database_CasesTest {
         val res1 = scheduleDao.getScheduleByGroupSingle("КТбо4-11").blockingGet()
         val res2 = scheduleDao.getScheduleByGroupSingle("КТбо4-12").blockingGet()
         Assert.assertEquals(allResult, listOf(res1, res2))
-
     }
 }
