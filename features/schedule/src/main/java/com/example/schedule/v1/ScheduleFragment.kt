@@ -1,4 +1,4 @@
-package com.example.schedule
+package com.example.schedule.v1
 
 import android.R
 import android.os.Bundle
@@ -28,7 +28,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.data.repositories.CurrentLessonRepository
-import com.example.schedule.adapter.ScheduleAdapter
+import com.example.schedule.v1.adapter.ScheduleAdapter
 import com.example.schedule.databinding.DrawerLayoutHeaderBinding
 import com.example.schedule.databinding.FragmentScheduleBinding
 import com.example.utils.ScheduleItem

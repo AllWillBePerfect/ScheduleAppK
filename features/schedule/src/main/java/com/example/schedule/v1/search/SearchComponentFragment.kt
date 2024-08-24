@@ -1,4 +1,4 @@
-package com.example.schedule.search
+package com.example.schedule.v1.search
 
 import android.os.Bundle
 import android.view.View

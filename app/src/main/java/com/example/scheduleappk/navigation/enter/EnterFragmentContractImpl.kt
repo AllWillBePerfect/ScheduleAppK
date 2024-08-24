@@ -2,7 +2,7 @@ package com.example.scheduleappk.navigation.enter
 
 import android.os.Bundle
 import com.example.enter.EnterFragmentContract
-import com.example.schedule.ScheduleFragment
+import com.example.schedule.v1.ScheduleFragment
 import com.example.scheduleappk.R
 import com.example.scheduleappk.navigation.NavigateRouter
 import javax.inject.Inject

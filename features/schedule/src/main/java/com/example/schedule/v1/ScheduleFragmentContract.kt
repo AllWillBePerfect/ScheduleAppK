@@ -1,4 +1,4 @@
-package com.example.schedule
+package com.example.schedule.v1
 
 interface ScheduleFragmentContract {
     fun navigateToSettingsScreen()

@@ -1,4 +1,4 @@
-package com.example.schedule
+package com.example.schedule.v1
 
 import android.util.Log
 import androidx.lifecycle.LiveData

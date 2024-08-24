@@ -1,3 +1,6 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -52,15 +55,34 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
-            resValue("string", "app_name", "ScheduleAppK")
+            if (getCurrentFlavor().lowercase() == "full")
+                resValue("string", "app_name", "ScheduleAppK")
+            if (getCurrentFlavor().lowercase() == "demo")
+                resValue("string", "app_name", "FScheduleAppK")
+
+
         }
         debug {
-            applicationIdSuffix = ".debug"
             versionNameSuffix = "-DEBUG"
-            resValue("string", "app_name", "DScheduleAppK")
+            if (getCurrentFlavor().lowercase() == "full")
+                resValue("string", "app_name", "DScheduleAppK")
+            if (getCurrentFlavor().lowercase() == "demo")
+                resValue("string", "app_name", "DScheduleAppK")
         }
         buildTypes.forEach {
             it.resValue("string", "clear_storage_flag", clearStorageFlag.toString())
+        }
+    }
+    flavorDimensions.add("app_type")
+    productFlavors {
+        create("demo") {
+            dimension = "app_type"
+            applicationIdSuffix = ".demo"
+        }
+
+        create("full") {
+            dimension = "app_type"
+            applicationIdSuffix = ".full"
         }
     }
 
@@ -167,4 +189,27 @@ fun generateVersionName(): String {
 
     return versionName
 
+}
+
+fun getCurrentFlavor(): String {
+    val gradle = gradle
+    val tskReqStr = gradle.startParameter.taskRequests.toString()
+
+    var pattern: Pattern? = null
+
+    pattern = if (tskReqStr.contains("assemble")) // to run ./gradlew assembleRelease to build APK
+        Pattern.compile("assemble(\\w+)(Release|Debug)")
+    else if (tskReqStr.contains("bundle")) // to run ./gradlew bundleRelease to build .aab
+        Pattern.compile("bundle(\\w+)(Release|Debug)")
+    else
+        Pattern.compile("generate(\\w+)(Release|Debug)")
+
+    val matcher = pattern.matcher(tskReqStr)
+
+    if (matcher.find())
+        return matcher.group(1).toLowerCase()
+    else {
+        println("NO MATCH FOUND")
+        return ""
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.scheduleappk.navigation.schedule
 
-import com.example.schedule.ScheduleFragmentContract
+import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.scheduleappk.R
 import com.example.scheduleappk.navigation.NavigateRouter
 import com.example.settings.SettingsFragment

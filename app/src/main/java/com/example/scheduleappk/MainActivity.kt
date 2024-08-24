@@ -12,7 +12,7 @@ import com.example.data.repositories.ClearDataRepository
 import com.example.data.repositories.SettingsOptionRepository
 import com.example.enter.EnterFragment
 import com.example.models.sharpref.AppState
-import com.example.schedule.ScheduleFragment
+import com.example.schedule.v1.ScheduleFragment
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
 import com.example.scheduleappk.workmanager.SomeWorkManager

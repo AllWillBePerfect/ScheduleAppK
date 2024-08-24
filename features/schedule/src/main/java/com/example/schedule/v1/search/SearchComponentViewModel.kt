@@ -1,4 +1,4 @@
-package com.example.schedule.search
+package com.example.schedule.v1.search
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

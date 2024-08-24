@@ -1,4 +1,4 @@
-package com.example.schedule.adapter
+package com.example.schedule.v1.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +19,7 @@ import com.example.utils.StudyPeriod
 import com.google.android.material.shape.CornerFamily
 
 
-class ScheduleAdapter(private val attrColors: ScheduleAdapter.AttrColors) :
+class ScheduleAdapter(private val attrColors: AttrColors) :
     ListAdapter<ScheduleItem, RecyclerView.ViewHolder>(ScheduleItemDiffUtils()) {
 
 
