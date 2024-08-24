@@ -4,11 +4,12 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import com.example.schedule.databinding.FragmentScheduleBinding
+import com.example.schedule.databinding.V2FragmentScheduleBinding
 import com.example.views.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ScheduleFragmentV2: BaseFragment<FragmentScheduleBinding>(FragmentScheduleBinding::inflate) {
+class ScheduleFragmentV2: BaseFragment<V2FragmentScheduleBinding>(V2FragmentScheduleBinding::inflate) {
 
     private val viewModel by activityViewModels<ScheduleViewModelV2>()
 

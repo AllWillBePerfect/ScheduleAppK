@@ -13,6 +13,7 @@ import com.example.data.repositories.SettingsOptionRepository
 import com.example.enter.EnterFragment
 import com.example.models.sharpref.AppState
 import com.example.schedule.v1.ScheduleFragment
+import com.example.schedule.v2.ScheduleFragmentV2
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
 import com.example.scheduleappk.workmanager.SomeWorkManager
@@ -73,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         else {
             clearDataRepository.saveChanges()
             if (appConfigRepository.getAppState() != AppState.UNSELECT)
-                launchScheduleScreen()
+                launchScheduleScreenV2()
             else
                 launchEnterScreen()
         }
@@ -104,6 +105,13 @@ class MainActivity : AppCompatActivity() {
     private fun launchScheduleScreen() {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.container_main, ScheduleFragment())
+            commit()
+        }
+    }
+
+    private fun launchScheduleScreenV2() {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.container_main, ScheduleFragmentV2())
             commit()
         }
     }
