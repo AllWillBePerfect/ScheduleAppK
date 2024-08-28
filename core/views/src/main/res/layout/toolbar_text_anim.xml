@@ -17,6 +17,7 @@
             >
 
             <TextView
+                android:id="@+id/textSwitcher_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
@@ -24,6 +25,7 @@
                 />
 
             <TextView
+                android:id="@+id/textSwitcher_second"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"

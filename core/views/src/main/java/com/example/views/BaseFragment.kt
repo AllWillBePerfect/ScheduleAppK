@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.appbar.MaterialToolbar
 
 abstract class BaseFragment<T : ViewBinding>(private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> T) :
     Fragment() {
@@ -26,4 +29,16 @@ abstract class BaseFragment<T : ViewBinding>(private val inflate: (LayoutInflate
         super.onDestroyView()
         _binding = null
     }
+
+    fun setupAppbar(toolBar: MaterialToolbar, title: String) {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolBar)
+        val toolbar = getToolbar()
+        toolbar?.title = title
+    }
+
+    fun setupNullAppbar() {
+        (requireActivity() as AppCompatActivity).setSupportActionBar(null)
+    }
+
+    fun getToolbar(): ActionBar? = (requireActivity() as AppCompatActivity).supportActionBar
 }

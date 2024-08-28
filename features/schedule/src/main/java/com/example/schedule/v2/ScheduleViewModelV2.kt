@@ -1,5 +1,6 @@
 package com.example.schedule.v2
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.data.repositories.ScheduleItemListRepositoryV3
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -8,10 +9,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleViewModelV2 @Inject constructor(
-    private val scheduleItemListRepositoryV3: ScheduleItemListRepositoryV3,
 ) : ViewModel() {
 
     private val disposables = CompositeDisposable()
+
+    init {
+        Log.d("ScheduleViewModelV2", "init")
+    }
 
 
     override fun onCleared() {

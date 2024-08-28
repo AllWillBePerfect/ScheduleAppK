@@ -14,6 +14,7 @@ import com.example.enter.EnterFragment
 import com.example.models.sharpref.AppState
 import com.example.schedule.v1.ScheduleFragment
 import com.example.schedule.v2.ScheduleFragmentV2
+import com.example.schedule.v2.search.SearchFragment
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
 import com.example.scheduleappk.workmanager.SomeWorkManager
@@ -78,6 +79,9 @@ class MainActivity : AppCompatActivity() {
             else
                 launchEnterScreen()
         }
+
+        launchScheduleScreenV2()
+
 
         SomeWorkManager.launchPeriodicalWorkRequest(this)
     }

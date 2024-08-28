@@ -23,6 +23,6 @@
     <style name="Theme.ScheduleAppK" parent="Base.Theme.ScheduleAppK" >
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:fontFamily">@font/nunito_medium</item>
+<!--        <item name="android:fontFamily">@font/nunito_medium</item>-->
     </style>
 </resources>
