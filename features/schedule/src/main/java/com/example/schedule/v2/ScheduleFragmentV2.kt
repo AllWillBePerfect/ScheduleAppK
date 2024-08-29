@@ -54,6 +54,10 @@ class ScheduleFragmentV2 :
             )
         }
 
+        binding.weeksTabLayout.post {
+            binding.weeksTabLayout.getTabAt(19)?.select()
+        }
+
 
         binding.toolbar.textSwitcher.setOnClickListener {
             val textSwitcherHeight = binding.toolbar.textSwitcher.layoutParams.height

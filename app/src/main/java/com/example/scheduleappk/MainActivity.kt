@@ -79,10 +79,6 @@ class MainActivity : AppCompatActivity() {
             else
                 launchEnterScreen()
         }
-
-        launchScheduleScreenV2()
-
-
         SomeWorkManager.launchPeriodicalWorkRequest(this)
     }
 
