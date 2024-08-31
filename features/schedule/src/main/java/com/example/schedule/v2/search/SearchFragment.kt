@@ -26,15 +26,15 @@ import com.example.views.BaseFragment
 import com.example.views.adapter.GroupChooseAdapter
 import com.example.views.adapter.GroupItem
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import net.yslibrary.android.keyboardvisibilityevent.Unregistrar
 
 class SearchFragment :
     BaseFragment<V2PartSearchFragmentBinding>(V2PartSearchFragmentBinding::inflate) {
 
     private lateinit var adapterGroup: GroupChooseAdapter
-
     private val handler = Handler(Looper.getMainLooper())
-
     private lateinit var rect: Rect
+    private lateinit var keyboardListener: Unregistrar
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,40 +65,24 @@ class SearchFragment :
             )
         }
 
-//        handler.postDelayed({
-//            WindowCompat.getInsetsController(
-//                requireActivity().window,
-//                binding.groupTextInputEditText
-//            ).hide(
-//                WindowInsetsCompat.Type.ime()
-//            )
-//        }, 1000)
-
-//        val lp = binding.partSearchFragment.layoutParams as FrameLayout.LayoutParams
-//        lp.height = ConstraintLayout.LayoutParams.MATCH_PARENT
-//        binding.partSearchFragment.layoutParams = lp
-//
-//        val gll = ViewTreeObserver.OnGlobalLayoutListener {
-//            val height = binding.partSearchFragment.height
-//            // Теперь у вас есть высота в пикселях
-//            Toast.makeText(requireContext(), "height: $height", Toast.LENGTH_SHORT).show()
-//        }
-//
-//        binding.root.viewTreeObserver.addOnGlobalLayoutListener(gll)
-        setupKeyboardAppearListener()
+        setupKeyboardAppearListener(true)
 
     }
 
-    private fun setupKeyboardAppearListener() {
-        KeyboardVisibilityEvent.setEventListener(requireActivity(), viewLifecycleOwner) { isOpen ->
-            rect = Rect()
-            binding.root.getWindowVisibleDisplayFrame(rect)
-            if (isOpen) {
-                expand()
-            } else {
-                collapse()
+    private fun setupKeyboardAppearListener(setup: Boolean) {
+        if (setup) {
+            keyboardListener = KeyboardVisibilityEvent.registerEventListener(requireActivity()) { isOpen ->
+                rect = Rect()
+                binding.root.getWindowVisibleDisplayFrame(rect)
+                if (isOpen) {
+                    expand()
+                } else {
+                    collapse()
+                }
             }
         }
+        else keyboardListener.unregister()
+
     }
 
 
@@ -116,7 +100,7 @@ class SearchFragment :
 
         val a = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-                if (interpolatedTime < 0.98f)
+                if (interpolatedTime < 0.96f)
                     binding.partSearchFragment.layoutParams.height =
                         (targetHeight * interpolatedTime).toInt()
                 else {
@@ -174,6 +158,7 @@ class SearchFragment :
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)
+        setupKeyboardAppearListener(false)
         super.onDestroyView()
     }
 

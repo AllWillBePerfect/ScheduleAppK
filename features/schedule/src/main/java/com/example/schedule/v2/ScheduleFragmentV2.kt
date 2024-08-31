@@ -3,23 +3,26 @@ package com.example.schedule.v2
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.PathParser
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import com.example.schedule.databinding.V2FragmentScheduleBinding
+import com.example.schedule.v2.adapter.recyclerview.model.TimetableItem
+import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayCurrentDelegate
+import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayDelegate
+import com.example.schedule.v2.adapter.viewpager.model.ViewPagerItem
 import com.example.schedule.v2.search.SearchFragment
 import com.example.views.BaseFragment
+import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 
 @AndroidEntryPoint
 class ScheduleFragmentV2 :
@@ -28,6 +31,7 @@ class ScheduleFragmentV2 :
     private val viewModel by activityViewModels<ScheduleViewModelV2>()
     private val handler = Handler(Looper.getMainLooper())
 
+    private lateinit var adapter: UniversalRecyclerViewAdapter<ViewPagerItem>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,6 +42,7 @@ class ScheduleFragmentV2 :
         toolbar?.setDisplayHomeAsUpEnabled(false)
         toolbar?.setDisplayShowTitleEnabled(false)
         binding.toolbar.textSwitcher.setText("Расписание")
+        binding.toolbar.textSwitcher.setText("Loading...")
         binding.toolbar.textSwitcher.setInAnimation(
             requireContext(),
             com.example.values.R.anim.slide_in_up
@@ -54,16 +59,44 @@ class ScheduleFragmentV2 :
             )
         }
 
+        adapter = UniversalRecyclerViewAdapter(
+            delegates = listOf(RecyclerViewDayDelegate(), RecyclerViewDayCurrentDelegate()),
+            diffUtilCallback = ViewPagerItem.ViewPagerItemDiffUtil()
+        )
+        binding.viewPager.adapter = adapter
+        binding.viewPager.offscreenPageLimit = 6
+
+
+        TabLayoutMediator(binding.daysBottomTabLayout, binding.viewPager) { tab, position ->
+            when (position) {
+                0 -> tab.text = "ПН"
+                1 -> tab.text = "ВТ"
+                2 -> tab.text = "СР"
+                3 -> tab.text = "ЧТ"
+                4 -> tab.text = "ПТ"
+                5 -> tab.text = "СБ"
+            }
+        }.attach()
+
         binding.weeksTabLayout.post {
+
             binding.weeksTabLayout.getTabAt(19)?.select()
+            adapter.items = listOf(
+                ViewPagerItem.RecyclerViewCurrentDay(generateLessonsCurrentList()),
+                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+            )
+            binding.toolbar.textSwitcher.setText("Расписание")
+
         }
 
 
         binding.toolbar.textSwitcher.setOnClickListener {
-            val textSwitcherHeight = binding.toolbar.textSwitcher.layoutParams.height
-            val toolbarHeight = binding.toolbar.textSwitcher.layoutParams.height
-            Log.d("ScheduleFragmentV2", "textSwitcherHeight: $textSwitcherHeight \n toolbarHeight: $toolbarHeight")
             binding.toolbar.textSwitcher.setText("Loading")
+
 
             val fragment = childFragmentManager.findFragmentByTag(TAG) as SearchFragment?
 
@@ -86,12 +119,120 @@ class ScheduleFragmentV2 :
 
     }
 
+    private fun generateLessonsList(): List<TimetableItem> = listOf(
+        TimetableItem.Title(
+            date = "1 сентября",
+            dayOfWeekName = "Понедельник",
+            groupName = "КТбо4-2"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+    )
 
+    private fun generateLessonsCurrentList(): List<TimetableItem> = listOf(
+        TimetableItem.TitleCurrent(
+            date = "1 сентября",
+            dayOfWeekName = "Понедельник",
+            groupName = "КТбо4-2"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Break(
+            time = "00:00-00:00",
+            lessonName = "Перерыв, флексим",
+            progressValue = 66
+        ),
+        TimetableItem.LessonCurrent(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1",
+            progressValue = 66
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+        TimetableItem.Lesson(
+            time = "00:00-00:00",
+            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
+        ),
+    )
 
-    fun getInnerFragmentContainerHeight(): Int = binding.root.height
-    fun getToolbarHeight(): Int = binding.toolbar.toolbar.height
-    fun hideToolbar() = collapse()
-    fun showToolbar() = expand()
 
 
     private fun expand() {
@@ -154,6 +295,9 @@ class ScheduleFragmentV2 :
         a.interpolator = pathInterpolator
         binding.toolbar.toolbar.startAnimation(a)
     }
+
+    fun hideToolbar() = collapse()
+    fun showToolbar() = expand()
 
     companion object {
         private const val TAG = "ScheduleFragmentV2"
