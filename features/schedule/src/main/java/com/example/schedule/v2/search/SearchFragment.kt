@@ -13,6 +13,7 @@ import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -20,14 +21,19 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.PathParser
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.replace
 import com.example.schedule.databinding.V2PartSearchFragmentBinding
+import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.schedule.v2.ScheduleFragmentV2
 import com.example.views.BaseFragment
 import com.example.views.adapter.GroupChooseAdapter
 import com.example.views.adapter.GroupItem
+import dagger.hilt.android.AndroidEntryPoint
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.Unregistrar
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class SearchFragment :
     BaseFragment<V2PartSearchFragmentBinding>(V2PartSearchFragmentBinding::inflate) {
 
@@ -36,11 +42,15 @@ class SearchFragment :
     private lateinit var rect: Rect
     private lateinit var keyboardListener: Unregistrar
 
+    @Inject
+    lateinit var router: ScheduleFragmentContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapterGroup = GroupChooseAdapter {}
+        adapterGroup = GroupChooseAdapter {
+            router.navigateToSettingsScreen()
+        }
         binding.chooseCardRecyclerView.adapter = adapterGroup
         adapterGroup.submitList(
             listOf(
@@ -55,33 +65,23 @@ class SearchFragment :
                 GroupItem("hgt", "9"),
             )
         )
-
-        binding.submitButton.setOnClickListener {
-            WindowCompat.getInsetsController(
-                requireActivity().window,
-                binding.groupTextInputEditText
-            ).show(
-                WindowInsetsCompat.Type.ime()
-            )
-        }
-
         setupKeyboardAppearListener(true)
 
     }
 
     private fun setupKeyboardAppearListener(setup: Boolean) {
         if (setup) {
-            keyboardListener = KeyboardVisibilityEvent.registerEventListener(requireActivity()) { isOpen ->
-                rect = Rect()
-                binding.root.getWindowVisibleDisplayFrame(rect)
-                if (isOpen) {
-                    expand()
-                } else {
-                    collapse()
+            keyboardListener =
+                KeyboardVisibilityEvent.registerEventListener(requireActivity()) { isOpen ->
+                    rect = Rect()
+                    binding.root.getWindowVisibleDisplayFrame(rect)
+                    if (isOpen) {
+                        expand()
+                    } else {
+                        collapse()
+                    }
                 }
-            }
-        }
-        else keyboardListener.unregister()
+        } else keyboardListener.unregister()
 
     }
 
@@ -162,7 +162,14 @@ class SearchFragment :
         super.onDestroyView()
     }
 
-    fun getTextInputEditText() = binding.groupTextInputEditText
+    override fun onResume() {
+        super.onResume()
+        editTextRequestFocus()
+    }
+
+    fun getTextInputEditText(): EditText = binding.groupTextInputEditText
+    /** Нужно вызывать этот метот в onResume, чтобы клавиатура смогла отображатся после совершения popbackstack.*/
+    private fun editTextRequestFocus() = binding.groupTextInputEditText.requestFocus()
 
 
 }

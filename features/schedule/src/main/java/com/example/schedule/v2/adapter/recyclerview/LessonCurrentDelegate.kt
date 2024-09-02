@@ -3,19 +3,30 @@ package com.example.schedule.v2.adapter.recyclerview
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedule.databinding.V2ItemLessonCurrentBinding
 import com.example.schedule.v2.adapter.recyclerview.model.TimetableItem
 import com.example.views.adapter.adaptersdelegate.AdapterItemDelegate
 
-class LessonCurrentDelegate: AdapterItemDelegate<TimetableItem> {
+class LessonCurrentDelegate(
+    private val onItemClickListener: ((TimetableItem) -> Unit)
+): AdapterItemDelegate<TimetableItem>, OnClickListener {
+
+    override fun onClick(p0: View?) {
+        if (p0?.id == com.example.schedule.R.id.v2_item_lesson_current)
+            onItemClickListener.invoke(p0.tag as TimetableItem)
+    }
+
     override fun forItem(item: TimetableItem): Boolean = item is TimetableItem.LessonCurrent
 
     override fun getViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         Log.d("TimetableItem", "LessonCurrentDelegate create")
-        val layoutInflater = LayoutInflater.from(parent.context)
-        return LessonCurrentViewHolder(V2ItemLessonCurrentBinding.inflate(layoutInflater, parent, false))
+        val binding = V2ItemLessonCurrentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding.root.setOnClickListener(this)
+        return LessonCurrentViewHolder(binding)
     }
 
     override fun bindViewHolder(
@@ -32,6 +43,9 @@ class LessonCurrentDelegate: AdapterItemDelegate<TimetableItem> {
             binding.timeTextView.text = item.time
             binding.lessonTextView.text = item.lessonName
             binding.progressIndicator.progress = item.progressValue
+            binding.root.tag = item
         }
     }
+
+
 }

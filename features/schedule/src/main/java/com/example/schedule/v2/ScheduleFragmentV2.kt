@@ -1,5 +1,6 @@
 package com.example.schedule.v2
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,12 +9,15 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.PathParser
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
 import com.example.schedule.databinding.V2FragmentScheduleBinding
+import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.schedule.v2.adapter.recyclerview.model.TimetableItem
 import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayCurrentDelegate
 import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayDelegate
@@ -23,6 +27,7 @@ import com.example.views.BaseFragment
 import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ScheduleFragmentV2 :
@@ -32,6 +37,9 @@ class ScheduleFragmentV2 :
     private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var adapter: UniversalRecyclerViewAdapter<ViewPagerItem>
+
+    @Inject
+    lateinit var router: ScheduleFragmentContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,7 +68,9 @@ class ScheduleFragmentV2 :
         }
 
         adapter = UniversalRecyclerViewAdapter(
-            delegates = listOf(RecyclerViewDayDelegate(), RecyclerViewDayCurrentDelegate()),
+            delegates = listOf(RecyclerViewDayDelegate(), RecyclerViewDayCurrentDelegate {
+                router.navigateToSettingsScreen()
+            }),
             diffUtilCallback = ViewPagerItem.ViewPagerItemDiffUtil()
         )
         binding.viewPager.adapter = adapter
@@ -94,23 +104,7 @@ class ScheduleFragmentV2 :
         }
 
 
-        binding.toolbar.textSwitcher.setOnClickListener {
-            binding.toolbar.textSwitcher.setText("Loading")
-
-
-            val fragment = childFragmentManager.findFragmentByTag(TAG) as SearchFragment?
-
-            fragment?.let {
-                WindowCompat.getInsetsController(
-                    requireActivity().window,
-                    it.getTextInputEditText()
-                ).show(
-                    WindowInsetsCompat.Type.ime()
-                )
-            }
-
-        }
-
+        binding.toolbar.textSwitcher.setOnClickListener(::showKeyboardClickListener)
 
         childFragmentManager.beginTransaction().apply {
             replace(com.example.schedule.R.id.v2_inner_fragment, SearchFragment(), TAG)
@@ -233,7 +227,34 @@ class ScheduleFragmentV2 :
         ),
     )
 
+    private fun showKeyboardClickListener(view: View) {
+        binding.toolbar.textSwitcher.setText("Loading")
+        val fragment = childFragmentManager.findFragmentByTag(TAG) as SearchFragment?
 
+        fragment?.let {
+            showKeyboardV2(it.getTextInputEditText())
+        }
+    }
+    @Deprecated("Метод не работает в требуемых условиях")
+    private fun showKeyboard(view: EditText?) {
+        if (view == null) return
+        view.requestFocus()
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+
+    }
+
+    /**Вторая версия работает в условиях когда edittext находится во viewgroup с шириной 0dp.*/
+    private fun showKeyboardV2(view: EditText?) {
+        if (view == null) return
+        WindowCompat.getInsetsController(
+            requireActivity().window,
+            view
+        ).show(
+            WindowInsetsCompat.Type.ime()
+        )
+
+    }
 
     private fun expand() {
         val tv = TypedValue()
@@ -245,7 +266,6 @@ class ScheduleFragmentV2 :
             val a = object : Animation() {
                 override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
                     val calculatedHeight = (targetHeight * interpolatedTime).toInt()
-
 
                     if (calculatedHeight == 0)
                         binding.toolbar.toolbar.layoutParams.height = 1

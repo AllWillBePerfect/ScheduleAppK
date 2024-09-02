@@ -45,7 +45,7 @@ class RecyclerViewDayDelegate : AdapterItemDelegate<ViewPagerItem> {
         var adapter: UniversalRecyclerViewAdapter<TimetableItem> = UniversalRecyclerViewAdapter(
             delegates = listOf(
                 LessonDelegate(),
-                LessonCurrentDelegate(),
+                LessonCurrentDelegate {},
                 TitleDelegate(),
                 TitleCurrentDelegate(),
                 BreakDelegate()

@@ -15,7 +15,9 @@ import com.example.schedule.v2.adapter.viewpager.model.ViewPagerItem
 import com.example.views.adapter.adaptersdelegate.AdapterItemDelegate
 import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
 
-class RecyclerViewDayCurrentDelegate : AdapterItemDelegate<ViewPagerItem> {
+class RecyclerViewDayCurrentDelegate(
+    private val onItemClickListener: (() -> Unit)
+) : AdapterItemDelegate<ViewPagerItem> {
     override fun forItem(item: ViewPagerItem): Boolean =
         item is ViewPagerItem.RecyclerViewCurrentDay
 
@@ -46,7 +48,7 @@ class RecyclerViewDayCurrentDelegate : AdapterItemDelegate<ViewPagerItem> {
         var adapter: UniversalRecyclerViewAdapter<TimetableItem> = UniversalRecyclerViewAdapter(
             delegates = listOf(
                 LessonDelegate(),
-                LessonCurrentDelegate(),
+                LessonCurrentDelegate {onItemClickListener.invoke()},
                 TitleDelegate(),
                 TitleCurrentDelegate(),
                 BreakDelegate()

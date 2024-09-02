@@ -14,7 +14,8 @@
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
     android:paddingTop="2dp"
-    android:paddingBottom="2dp">
+    android:paddingBottom="2dp"
+    android:id="@+id/v2_item_lesson_current">
 
     <TextView
         android:id="@+id/time_textView"
