@@ -2,13 +2,15 @@ package com.example.settings
 
 import androidx.lifecycle.ViewModel
 import com.example.data.repositories.SettingsOptionRepository
+import com.example.data.repositories.settings.DynamicColorsRepository
 import com.example.models.sharpref.NightMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsOptionRepository: SettingsOptionRepository
+    private val settingsOptionRepository: SettingsOptionRepository,
+    private val dynamicColorsRepository: DynamicColorsRepository
 ) : ViewModel() {
 
     fun getNightMode(): Int {
@@ -26,4 +28,7 @@ class SettingsViewModel @Inject constructor(
             2 -> settingsOptionRepository.setFollowSystemMode()
         }
     }
+
+    fun getDynamicColors() = dynamicColorsRepository.getDynamicColorsState()
+    fun changeDynamicColors() = dynamicColorsRepository.changeDynamicColors()
 }

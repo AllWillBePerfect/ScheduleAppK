@@ -126,7 +126,7 @@ class SearchFragment :
     }
 
     private fun collapse() {
-        val lp = binding.partSearchFragment.layoutParams as ViewGroup.LayoutParams
+//        val lp = binding.partSearchFragment.layoutParams as ViewGroup.LayoutParams
         val initialHeight = binding.partSearchFragment.layoutParams.height
         (parentFragment as ScheduleFragmentV2).showToolbar()
         val a: Animation = object : Animation() {

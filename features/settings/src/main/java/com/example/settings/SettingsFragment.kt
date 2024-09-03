@@ -2,50 +2,55 @@ package com.example.settings
 
 import android.app.UiModeManager
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.example.settings.databinding.FragmentSettingsBinding
+import com.example.settings.adapter.SectionDelegate
+import com.example.settings.adapter.PressOptionDelegate
+import com.example.settings.adapter.SwitchOptionDelegate
+import com.example.settings.adapter.model.SettingsItem
+import com.example.settings.databinding.V2FragmentSettingsBinding
 import com.example.values.R
+import com.example.views.BaseFragment
+import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class SettingsFragment : Fragment() {
+class SettingsFragment :
+    BaseFragment<V2FragmentSettingsBinding>(V2FragmentSettingsBinding::inflate) {
 
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding: FragmentSettingsBinding get() = _binding!!
 
     private val viewModel by activityViewModels<SettingsViewModel>()
+
+    private lateinit var adapter: UniversalRecyclerViewAdapter<SettingsItem>
 
     @Inject
     lateinit var router: SettingsFragmentContract
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAppBar()
-        initSettings()
+
+        adapter = UniversalRecyclerViewAdapter(
+            delegates = listOf(
+                SectionDelegate(),
+                PressOptionDelegate(),
+                SwitchOptionDelegate(),
+            ),
+            diffUtilCallback = SettingsItem.SettingsItemDiffUtil()
+        )
+
+        binding.recyclerView.adapter = adapter
+        adapter.items = createFirstSection() + createSecondSection() + createThirdSection()
     }
 
     private fun setupAppBar() {
@@ -57,72 +62,19 @@ class SettingsFragment : Fragment() {
         toolbar?.title = title
     }
 
-    private fun initSettings() {
+    private fun developToast() =
+        Toast.makeText(requireContext(), "В разработке*", Toast.LENGTH_SHORT).show()
 
-        /*single group*/
-        binding.groupSection.title.text = "Общее"
-
-        binding.groupChooseOption.title.text = "Одна группа"
-        binding.groupChooseOption.subtitle.text =
-            "Нажмите, чтобы выбрать отображаемую группу на экране расписания"
-        binding.groupChooseOption.icon.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.group
-            )
-        )
-
-        binding.groupChooseOption.root.setOnClickListener {
-            router.navigateToAddSingleGroupScreen()
-        }
-
-    /*multiple group*/
-        binding.groupsChooseOption.title.text = "Несколько групп"
-        binding.groupsChooseOption.subtitle.text =
-            "Нажмите, чтобы выбрать несколько отображаемых групп на экране расписания"
-        binding.groupsChooseOption.icon.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.groups
-            )
-        )
-
-        binding.groupsChooseOption.root.setOnClickListener {
-            router.navigateToMultipleGroupOptionFragment()
-        }
-
-        binding.groupChooseOption.root.shapeAppearanceModel =
-            binding.groupChooseOption.root.shapeAppearanceModel.toBuilder()
-                .setTopLeftCornerSize(CORNER_SIZE_VALUE)
-                .setTopRightCornerSize(CORNER_SIZE_VALUE)
-                .build()
-
-        binding.groupsChooseOption.root.shapeAppearanceModel =
-            binding.groupsChooseOption.root.shapeAppearanceModel.toBuilder()
-                .setBottomLeftCornerSize(CORNER_SIZE_VALUE)
-                .setBottomRightCornerSize(CORNER_SIZE_VALUE)
-                .build()
-
-        binding.personalSection.title.text = "Оформление"
-
-        /*night mode*/
-        binding.nightModeOption.title.text = "Тема приложения"
-        binding.nightModeOption.subtitle.text = "Нажмите, чтобы выбрать тему приложения"
-        binding.nightModeOption.icon.setImageDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.dark_mode
-            )
-        )
-
-        binding.nightModeOption.root.setOnClickListener {
-            setupNightModeDialog()
-        }
-
-        binding.nightModeOption.root.shapeAppearanceModel =
-            binding.nightModeOption.root.shapeAppearanceModel.toBuilder()
-                .setAllCornerSizes(CORNER_SIZE_VALUE)
-                .build()
+    private fun setupDynamicColorsDialog() {
+        val string = if (viewModel.getDynamicColors()) "Отключить" else "Активировать"
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("DynamicColors")
+            .setMessage("Эта опция активирует/отключает цветовую палитру из акцентных цветов темы устройства")
+            .setPositiveButton(string) { _, _ ->
+                viewModel.changeDynamicColors()
+                router.recreateApp()
+            }
+            .show()
     }
 
     private fun setupNightModeDialog() {
@@ -172,15 +124,89 @@ class SettingsFragment : Fragment() {
             }
         }
         viewModel.setNightMode(modeState)
-        router.reloadApp()
+        router.intentReloadApp()
 
     }
 
+    @DrawableRes
+    fun getNightModeDrawable(): Int =
+        when (viewModel.getNightMode()) {
+            0 -> R.drawable.light_mode
+            1 -> R.drawable.dark_mode
+            2 -> R.drawable.follow_system_mode
+            else -> throw IllegalStateException("Unknown night mode")
+        }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+    private fun createFirstSection(): List<SettingsItem> = listOf(
+        SettingsItem.Section("Общие"),
+        SettingsItem.PressOption(
+            "Одна группа",
+            "Выберите группу для отображения на экране расписания",
+            R.drawable.group,
+            SettingsItem.CornersType.TOP
+        ) { router.navigateToAddSingleGroupScreen() },
+        SettingsItem.PressOption(
+            "Режим ВПК",
+            "Выберите несколько групп для отображения на экране расписания",
+            R.drawable.groups,
+            SettingsItem.CornersType.NO_CORNERS
+        ) { router.navigateToMultipleGroupOptionFragment() },
+        SettingsItem.PressOption(
+            "Много групп",
+            "Выберите нужные группы для отображения друг под другом на экране расписания",
+            R.drawable.many_groups,
+            SettingsItem.CornersType.BOTTOM,
+            ::developToast
+        ),
+    )
+
+    private fun createSecondSection(): List<SettingsItem> =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+            listOf(
+                SettingsItem.Section("Оформление"),
+                SettingsItem.SwitchOption(
+                    "Dynamic colors",
+                    "Активировируйте динамические цвета",
+                    R.drawable.palette,
+                    viewModel.getDynamicColors(),
+                    SettingsItem.CornersType.TOP,
+                    ::setupDynamicColorsDialog
+                ),
+                SettingsItem.PressOption(
+                    "Тема приложения",
+                    "Выберите тему приложения",
+                    getNightModeDrawable(),
+                    SettingsItem.CornersType.BOTTOM
+                ) { setupNightModeDialog() },
+            )
+        else listOf(
+            SettingsItem.PressOption(
+                "Тема приложения",
+                "Выберите тему приложения",
+                getNightModeDrawable(),
+                SettingsItem.CornersType.SINGLE
+            ) { setupNightModeDialog() },
+        )
+
+
+    private fun createThirdSection(): List<SettingsItem> = listOf(
+        SettingsItem.Section("Определенно киллер фичи ☜(ﾟヮﾟ☜)"),
+        SettingsItem.PressOption(
+            "Цитаты Стейтема",
+            "Каждые день будет отображаться случайная цитата Стейтема из его золотой коллекции цитат",
+            R.drawable.mood,
+            SettingsItem.CornersType.TOP,
+            ::developToast
+        ),
+        SettingsItem.PressOption(
+            "Бизнес-ланчи в сфеду кафе",
+            "Информация о бизнес-ланчах в сфеду кафе по будням",
+            R.drawable.food,
+            SettingsItem.CornersType.BOTTOM,
+            ::developToast
+        ),
+    )
+
 
     companion object {
         private const val CORNER_SIZE_VALUE = 40F

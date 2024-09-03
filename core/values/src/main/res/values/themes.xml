@@ -7,22 +7,44 @@
         <item name="toolbarStyle">@style/custom.toolbar</item>
 
 
-        <item name="android:statusBarColor">@color/material_dynamic_primary95</item>
-        <item name="android:navigationBarColor">@color/material_dynamic_primary95</item>
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
 
-        <item name="android:colorBackground">@color/material_dynamic_primary95</item>
-        <item name="colorSurface">@color/white</item>
-        <item name="colorSurfaceContainer">@color/white</item>
+<!--        <item name="android:colorBackground">@color/material_dynamic_primary90</item>-->
+<!--        <item name="colorSurface">@color/material_dynamic_primary95</item>-->
+<!--        <item name="colorSurfaceContainer">@color/material_dynamic_primary95</item>-->
+
+    </style>
+
+    <style name="DynamicColors.Theme.ScheduleAppK" parent="Theme.Material3.DynamicColors.DayNight">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="toolbarStyle">@style/custom.toolbar</item>
+
+
+        <item name="android:statusBarColor">?attr/colorSurface</item>
+        <item name="android:navigationBarColor">?attr/colorSurface</item>
+
+        <!--        <item name="android:colorBackground">@color/material_dynamic_primary90</item>-->
+        <!--        <item name="colorSurface">@color/material_dynamic_primary95</item>-->
+        <!--        <item name="colorSurfaceContainer">@color/material_dynamic_primary95</item>-->
 
     </style>
 
     <style name="custom.toolbar" parent="Widget.Material3.Toolbar">
-        <item name="android:background">@color/material_dynamic_primary95</item>
+<!--        <item name="android:background">@color/material_dynamic_primary95</item>-->
     </style>
 
     <style name="Theme.ScheduleAppK" parent="Base.Theme.ScheduleAppK" >
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 <!--        <item name="android:fontFamily">@font/nunito_medium</item>-->
+    </style>
+
+    <style name="Theme.ScheduleAppK.DynamicColors" parent="DynamicColors.Theme.ScheduleAppK" >
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!--        <item name="android:fontFamily">@font/nunito_medium</item>-->
     </style>
 </resources>

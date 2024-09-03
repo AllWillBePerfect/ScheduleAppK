@@ -39,7 +39,7 @@
             tools:text="Sample text"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             app:layout_constraintBottom_toTopOf="@id/subtitle"
-            app:layout_constraintEnd_toEndOf="@id/cl"
+            app:layout_constraintEnd_toStartOf="@id/switchWidget"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintTop_toTopOf="@id/cl" />
 
@@ -53,9 +53,17 @@
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
 
             app:layout_constraintBottom_toBottomOf="@id/cl"
-            app:layout_constraintEnd_toEndOf="@id/cl"
+            app:layout_constraintEnd_toStartOf="@id/switchWidget"
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchWidget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

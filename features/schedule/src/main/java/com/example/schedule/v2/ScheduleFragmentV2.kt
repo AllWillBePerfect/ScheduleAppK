@@ -88,19 +88,20 @@ class ScheduleFragmentV2 :
             }
         }.attach()
 
-        binding.weeksTabLayout.post {
 
-            binding.weeksTabLayout.getTabAt(19)?.select()
-            adapter.items = listOf(
-                ViewPagerItem.RecyclerViewCurrentDay(generateLessonsCurrentList()),
-                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-            )
-            binding.toolbar.textSwitcher.setText("Расписание")
-
+        handler.post {
+            binding.weeksTabLayout.post {
+                binding.weeksTabLayout.getTabAt(19)?.select()
+                adapter.items = listOf(
+                    ViewPagerItem.RecyclerViewCurrentDay(generateLessonsCurrentList()),
+                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
+                )
+                binding.toolbar.textSwitcher.setText("Расписание")
+            }
         }
 
 
@@ -318,6 +319,11 @@ class ScheduleFragmentV2 :
 
     fun hideToolbar() = collapse()
     fun showToolbar() = expand()
+
+    override fun onDestroyView() {
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroyView()
+    }
 
     companion object {
         private const val TAG = "ScheduleFragmentV2"

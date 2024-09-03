@@ -10,7 +10,7 @@ plugins {
 
 var versionMajor by extra(0)
 var versionMinor by extra(1)
-var versionPatch by extra(0)
+var versionPatch by extra(1)
 var versionClassifier: String? by extra(null)
 var isSnapshot by extra(true)
 

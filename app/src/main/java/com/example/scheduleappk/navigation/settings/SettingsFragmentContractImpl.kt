@@ -46,11 +46,13 @@ class SettingsFragmentContractImpl @Inject constructor(
         }
     }
 
-    override fun reloadApp() {
+    override fun intentReloadApp() {
         val intent = Intent(navigateRouter.requireActivity(), MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         navigateRouter.requireActivity().startActivity(intent)
         navigateRouter.requireActivity().overridePendingTransition(0, 0)
     }
+
+    override fun recreateApp() = navigateRouter.requireActivity().recreate()
 }

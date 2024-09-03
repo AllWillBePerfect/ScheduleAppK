@@ -10,10 +10,12 @@ import com.example.clear.ClearFragment
 import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ClearDataRepository
 import com.example.data.repositories.SettingsOptionRepository
+import com.example.data.repositories.settings.DynamicColorsRepository
 import com.example.enter.EnterFragment
 import com.example.models.sharpref.AppState
 import com.example.schedule.v1.ScheduleFragment
 import com.example.schedule.v2.ScheduleFragmentV2
+import com.example.schedule.v2.adapter.container.NavigationDrawerContainerFragment
 import com.example.schedule.v2.search.SearchFragment
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
@@ -45,20 +47,30 @@ class MainActivity : AppCompatActivity() {
     @InstallIn(SingletonComponent::class)
     internal interface SettingsOptionRepositoryEntryPoint {
         val settingsOptionRepository: SettingsOptionRepository.Impl
+        val dynamicColorsRepository: DynamicColorsRepository.Impl
     }
 
     @Inject
     lateinit var settingsOptionRepository: SettingsOptionRepository
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val settingsOptionRepository = EntryPointAccessors.fromApplication(
             this,
             SettingsOptionRepositoryEntryPoint::class.java
         ).settingsOptionRepository
+        val dynamicColorsRepository = EntryPointAccessors.fromApplication(
+            this,
+            SettingsOptionRepositoryEntryPoint::class.java
+        ).dynamicColorsRepository
+
 //        applyNightBeforeOnCrete(settingsOptionRepository.getNightModeInt())
 //        applyNightAfterOnCrete(settingsOptionRepository.getNightModeInt())
         setupNightMode(settingsOptionRepository.getNightModeInt())
+        if (dynamicColorsRepository.getDynamicColorsState())
+            setTheme(com.example.values.R.style.Theme_ScheduleAppK_DynamicColors)
+        else
+            setTheme(com.example.values.R.style.Theme_ScheduleAppK)
+
         super.onCreate(savedInstanceState)
         activityRequiredSet.forEach { it.onCreated(this) }
         _binding = ActivityMainBinding.inflate(layoutInflater)
@@ -111,7 +123,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun launchScheduleScreenV2() {
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.container_main, ScheduleFragmentV2())
+//            replace(R.id.container_main, ScheduleFragmentV2())
+            replace(R.id.container_main, NavigationDrawerContainerFragment())
             commit()
         }
     }
