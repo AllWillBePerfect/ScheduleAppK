@@ -1,30 +1,23 @@
 package com.example.schedule.v2.search
 
 import android.graphics.Rect
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.WindowInsets
 import android.view.animation.Animation
 import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.PathParser
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.fragment.app.replace
+import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.activityViewModels
 import com.example.schedule.databinding.V2PartSearchFragmentBinding
 import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.schedule.v2.ScheduleFragmentV2
+import com.example.utils.Result
 import com.example.views.BaseFragment
 import com.example.views.adapter.GroupChooseAdapter
 import com.example.views.adapter.GroupItem
@@ -36,6 +29,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SearchFragment :
     BaseFragment<V2PartSearchFragmentBinding>(V2PartSearchFragmentBinding::inflate) {
+
+    private val viewModel by activityViewModels<SearchViewModel>()
 
     private lateinit var adapterGroup: GroupChooseAdapter
     private val handler = Handler(Looper.getMainLooper())
@@ -49,23 +44,55 @@ class SearchFragment :
         super.onViewCreated(view, savedInstanceState)
 
         adapterGroup = GroupChooseAdapter {
-            router.navigateToSettingsScreen()
+            viewModel.fetchGroup(it.groupName)
         }
         binding.chooseCardRecyclerView.adapter = adapterGroup
-        adapterGroup.submitList(
-            listOf(
-                GroupItem("123", "1"),
-                GroupItem("qwer", "2"),
-                GroupItem("fgh", "3"),
-                GroupItem("bmf", "4"),
-                GroupItem("xcvf", "5"),
-                GroupItem("df6", "6"),
-                GroupItem("hjkm", "7"),
-                GroupItem("987j", "8"),
-                GroupItem("hgt", "9"),
-            )
-        )
         setupKeyboardAppearListener(true)
+
+        viewModel.groupLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Result.Success -> {
+                    adapterGroup.submitList(it.data.map { GroupItem(it.name, it.group) })
+                    binding.chooseCardRecyclerView.scrollToPosition(0)
+                }
+
+                is Result.Loading -> {}
+                is Result.Error -> {}
+
+            }
+        }
+
+        viewModel.fetchLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Result.Success -> {
+                    Toast.makeText(requireContext(), it.data.name, Toast.LENGTH_SHORT).show()
+                    fetchLoading(false)
+                }
+
+                is Result.Loading -> {
+                    fetchLoading(true)
+                }
+
+                is Result.Error -> {
+                    Toast.makeText(requireContext(), "${it.exception.message}", Toast.LENGTH_SHORT)
+                        .show()
+                    fetchLoading(false)
+                }
+            }
+        }
+
+        binding.submitButton.isEnabled = false
+        binding.groupTextInputEditText.doAfterTextChanged { text ->
+            binding.submitButton.isEnabled = !text.isNullOrEmpty()
+            binding.groupTextInputEditText.error?.let {
+                binding.groupTextInputEditText.error = null
+            }
+            viewModel.setText(text.toString())
+        }
+
+        binding.submitButton.setOnClickListener {
+            viewModel.fetchGroup(binding.groupTextInputEditText.text.toString())
+        }
 
     }
 
@@ -168,6 +195,17 @@ class SearchFragment :
     }
 
     fun getTextInputEditText(): EditText = binding.groupTextInputEditText
+
+    private fun fetchLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.submitButton.visibility = View.INVISIBLE
+            binding.fetchLoading.visibility = View.VISIBLE
+        } else {
+            binding.fetchLoading.visibility = View.INVISIBLE
+            binding.submitButton.visibility = View.VISIBLE
+        }
+    }
+
     /** Нужно вызывать этот метот в onResume, чтобы клавиатура смогла отображатся после совершения popbackstack.*/
     private fun editTextRequestFocus() = binding.groupTextInputEditText.requestFocus()
 

@@ -57,13 +57,16 @@
             app:layout_constraintStart_toEndOf="@id/icon"
             app:layout_constraintTop_toBottomOf="@id/title" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/switchWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.PathInterpolator
@@ -13,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.PathParser
+import androidx.core.view.GravityCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
@@ -22,6 +25,7 @@ import com.example.schedule.v2.adapter.recyclerview.model.TimetableItem
 import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayCurrentDelegate
 import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayDelegate
 import com.example.schedule.v2.adapter.viewpager.model.ViewPagerItem
+import com.example.schedule.v2.container.NavigationDrawerContainerFragment
 import com.example.schedule.v2.search.SearchFragment
 import com.example.views.BaseFragment
 import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
@@ -110,6 +114,12 @@ class ScheduleFragmentV2 :
         childFragmentManager.beginTransaction().apply {
             replace(com.example.schedule.R.id.v2_inner_fragment, SearchFragment(), TAG)
             commit()
+        }
+
+        binding.toolbar.menuIcon.visibility = View.VISIBLE
+        binding.toolbar.menuIcon.setOnClickListener {
+            val parentFragment = parentFragment as NavigationDrawerContainerFragment?
+            parentFragment?.manageDrawer()
         }
 
     }
@@ -319,6 +329,11 @@ class ScheduleFragmentV2 :
 
     fun hideToolbar() = collapse()
     fun showToolbar() = expand()
+
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(com.example.values.R.menu.app_bar_menu, menu)
+//        super.onCreateOptionsMenu(menu, inflater)
+//    }
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)

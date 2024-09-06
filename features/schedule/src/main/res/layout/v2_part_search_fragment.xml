@@ -45,4 +45,15 @@
         android:text="Получить расписание"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/fetch_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/submitButton"
+        app:layout_constraintBottom_toBottomOf="@id/submitButton"
+        app:layout_constraintStart_toStartOf="@id/submitButton"
+        app:layout_constraintEnd_toEndOf="@id/submitButton"
+        android:indeterminate="true"
+        android:visibility="invisible"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

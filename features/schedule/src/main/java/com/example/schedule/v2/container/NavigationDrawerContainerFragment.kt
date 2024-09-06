@@ -1,8 +1,9 @@
-package com.example.schedule.v2.adapter.container
+package com.example.schedule.v2.container
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.schedule.databinding.V2PartNavigationDrawerContainerFragmentBinding
 import com.example.schedule.v1.ScheduleFragmentContract
@@ -37,6 +38,17 @@ class NavigationDrawerContainerFragment :
             commit()
         }
     }
+
+    fun manageDrawer() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.END))
+            drawerLayout.closeDrawer(GravityCompat.END)
+        else
+            drawerLayout.openDrawer(navView)
+    }
+
+    fun stateDrawer() = drawerLayout.isDrawerOpen(GravityCompat.END)
+    fun closeDrawer() = drawerLayout.closeDrawer(GravityCompat.END)
+
 
     private fun setupDrawer() {
         drawerLayout = binding.navigationDrawer

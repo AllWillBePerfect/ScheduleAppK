@@ -15,7 +15,7 @@ import com.example.enter.EnterFragment
 import com.example.models.sharpref.AppState
 import com.example.schedule.v1.ScheduleFragment
 import com.example.schedule.v2.ScheduleFragmentV2
-import com.example.schedule.v2.adapter.container.NavigationDrawerContainerFragment
+import com.example.schedule.v2.container.NavigationDrawerContainerFragment
 import com.example.schedule.v2.search.SearchFragment
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     private fun launchScheduleScreenV2() {
         supportFragmentManager.beginTransaction().apply {
 //            replace(R.id.container_main, ScheduleFragmentV2())
-            replace(R.id.container_main, NavigationDrawerContainerFragment())
+            replace(R.id.container_main, NavigationDrawerContainerFragment(), TAG)
             commit()
         }
     }
@@ -144,6 +144,25 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return super.onSupportNavigateUp()
+    }
+
+    override fun onBackPressed() {
+        val fragment = supportFragmentManager.findFragmentByTag(TAG)
+        if (fragment is NavigationDrawerContainerFragment)
+            if (fragment.isVisible)
+                if (fragment.stateDrawer()) fragment.closeDrawer()
+                else
+                    super.onBackPressed()
+            else
+                super.onBackPressed()
+        else
+            super.onBackPressed()
+
+
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
 

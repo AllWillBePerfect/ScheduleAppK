@@ -10,6 +10,7 @@ import com.example.data.repositories.ScheduleItemListRepositoryV3
 import com.example.data.repositories.SettingsOptionRepository
 import com.example.data.repositories.TimeProgressIndicatorRepository
 import com.example.data.repositories.settings.DynamicColorsRepository
+import com.example.data.repositories.v2.WriteAndSearchListOfGroupsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -59,4 +60,8 @@ interface RepositoriesModule {
     @Binds
     @Singleton
     fun bindsDynamicColorsRepository(impl: DynamicColorsRepository.Impl): DynamicColorsRepository
+
+    @Binds
+    @Singleton
+    fun bindsWriteAndSearchListOfGroupsRepository(impl: WriteAndSearchListOfGroupsRepository.Impl): WriteAndSearchListOfGroupsRepository
 }
