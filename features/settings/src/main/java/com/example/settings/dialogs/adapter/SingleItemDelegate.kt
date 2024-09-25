@@ -37,7 +37,7 @@ class SingleItemDelegate(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: GroupItem.Single) {
-            binding.groupName.text = if (item.isSelected) item.groupName + " *" else item.groupName
+            binding.groupName.text = if (item.isSelected) "* " + item.groupName else item.groupName
             binding.root.tag = item
         }
     }

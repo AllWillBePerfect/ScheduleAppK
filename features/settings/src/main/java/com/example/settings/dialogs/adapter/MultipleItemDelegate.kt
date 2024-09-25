@@ -37,7 +37,7 @@ class MultipleItemDelegate(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: GroupItem.Multiple) {
-            binding.groupName.text = if (item.isSelected) item.groupName + " *" else item.groupName
+            binding.groupName.text = if (item.isSelected) "* " + item.groupName else item.groupName
             binding.root.tag = item
         }
     }

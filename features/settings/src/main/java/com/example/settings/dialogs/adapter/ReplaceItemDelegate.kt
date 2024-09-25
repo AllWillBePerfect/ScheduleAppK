@@ -61,8 +61,8 @@ class ReplaceItemDelegate(private val onItemClickListener: (GroupItem.Replace) -
             }
 
         fun bind(item: GroupItem.Replace) {
-            binding.groupName.text = item.groupName
-            binding.vpkName.text = if (item.isSelected) " | ${item.vpkName} *" else " | ${item.vpkName}"
+            binding.groupName.text = if (item.isSelected) "* " + item.groupName else item.groupName
+            binding.vpkName.text = item.vpkName
             adapter.items = mapList(item.replacedDays)
             binding.daysRecyclerView.visibility = if (item.isShowDays) View.VISIBLE else View.GONE
             binding.root.tag = item
