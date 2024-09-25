@@ -37,7 +37,10 @@ android {
                 keyPassword = "$keystorePropFile.keyPassword"
             } else {
                 /** CI github check */
-
+                storeFile = file("keystore/keystore.jks")
+                storePassword = System.getenv("KEYSTORE_STORE_PASSWORD")
+                keyAlias = System.getenv("KEYSTORE_KEY_ALIAS")
+                keyPassword = System.getenv("KEYSTORE_KEY_PASSWORD")
             }
         }
     }
