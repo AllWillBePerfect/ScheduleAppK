@@ -9,7 +9,7 @@ val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
 
 android {
-    namespace = "com.example.clear"
+    namespace = "com.schedule.clear"
     compileSdk = compileSdkVer
 
     defaultConfig {

@@ -73,7 +73,7 @@
             app:tabContentStart="56dp"
             app:tabMode="scrollable" />
 
-        <com.example.views.CustomSwipeRefreshLayout
+        <com.schedule.views.CustomSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -84,7 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </com.example.views.CustomSwipeRefreshLayout>
+        </com.schedule.views.CustomSwipeRefreshLayout>
 
 
         <com.google.android.material.tabs.TabLayout

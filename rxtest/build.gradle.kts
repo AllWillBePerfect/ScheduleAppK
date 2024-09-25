@@ -9,7 +9,7 @@ val minSdkVer: Int by rootProject.extra
 
 
 android {
-    namespace = "com.example.rxtest"
+    namespace = "com.schedule.rxtest"
     compileSdk = compileSdkVer
 
     defaultConfig {

@@ -44,11 +44,11 @@ android {
             }
         }
     }
-    namespace = "com.example.scheduleappk"
+    namespace = "com.schedule.scheduleappk"
     compileSdk = compileSdkVer
 
     defaultConfig {
-        applicationId = "com.example.scheduleappk"
+        applicationId = "com.schedule.scheduleappk"
         minSdk = minSdkVer
         targetSdk = targetSdkVer
         versionCode = generateVersionCode()

@@ -8,7 +8,7 @@ val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
 
 android {
-    namespace = "com.example.enter"
+    namespace = "com.schedule.enter"
     compileSdk = compileSdkVer
 
     defaultConfig {

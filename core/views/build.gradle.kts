@@ -7,7 +7,7 @@ val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
 
 android {
-    namespace = "com.example.views"
+    namespace = "com.schedule.views"
     compileSdk = compileSdkVer
 
     defaultConfig {

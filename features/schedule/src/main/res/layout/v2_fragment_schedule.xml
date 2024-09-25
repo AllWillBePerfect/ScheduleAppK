@@ -34,7 +34,7 @@
 
 
 
-    <com.example.views.CustomSwipeRefreshLayout
+    <com.schedule.views.CustomSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -49,7 +49,7 @@
             app:layout_constraintBottom_toTopOf="@id/days_bottomTabLayout"
             />
 
-    </com.example.views.CustomSwipeRefreshLayout>
+    </com.schedule.views.CustomSwipeRefreshLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/days_bottomTabLayout"
