@@ -97,8 +97,6 @@ class ScheduleFragment : Fragment() {
         setupLiveDates()
         setupTabLayoutMediator()
         setupKeyboardAppearListener()
-
-
     }
 
     private fun setupAppBar() {

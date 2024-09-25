@@ -23,13 +23,15 @@ sealed class TimetableItem {
     data class Title(
         val date: String,
         val dayOfWeekName: String,
-        val groupName: String
+        val groupName: String,
+        val isTitleEnabled: Boolean
     ) : TimetableItem()
 
     data class TitleCurrent(
         val date: String,
         val dayOfWeekName: String,
-        val groupName: String
+        val groupName: String,
+        val isTitleEnabled: Boolean
     ) : TimetableItem()
 
 

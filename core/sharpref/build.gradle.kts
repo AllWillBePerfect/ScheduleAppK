@@ -55,6 +55,7 @@ dependencies {
 
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.moshi.adapters)
     implementation(libs.androidx.preference.ktx)
 
     api(project(":core:models"))

@@ -1,7 +1,6 @@
 package com.example.schedule.v2.adapter.recyclerview
 
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -23,7 +22,7 @@ class LessonCurrentDelegate(
     override fun forItem(item: TimetableItem): Boolean = item is TimetableItem.LessonCurrent
 
     override fun getViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        Log.d("TimetableItem", "LessonCurrentDelegate create")
+//        Log.d("TimetableItem", "LessonCurrentDelegate create")
         val binding = V2ItemLessonCurrentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         binding.root.setOnClickListener(this)
         return LessonCurrentViewHolder(binding)
@@ -34,7 +33,7 @@ class LessonCurrentDelegate(
         item: TimetableItem,
         payloads: MutableList<Any>
     ) {
-        Log.d("TimetableItem", "LessonCurrentDelegate bind")
+//        Log.d("TimetableItem", "LessonCurrentDelegate bind")
         (viewHolder as LessonCurrentViewHolder).bind(item as TimetableItem.LessonCurrent)
     }
 

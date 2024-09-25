@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuInflater
@@ -13,12 +14,15 @@ import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.PathParser
 import androidx.core.view.GravityCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.example.schedule.databinding.V2FragmentScheduleBinding
 import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.schedule.v2.adapter.recyclerview.model.TimetableItem
@@ -26,9 +30,15 @@ import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayCurrentDelegate
 import com.example.schedule.v2.adapter.viewpager.RecyclerViewDayDelegate
 import com.example.schedule.v2.adapter.viewpager.model.ViewPagerItem
 import com.example.schedule.v2.container.NavigationDrawerContainerFragment
+import com.example.schedule.v2.container.NavigationDrawerContainerFragment.Companion
 import com.example.schedule.v2.search.SearchFragment
+import com.example.utils.Result
+import com.example.utils.sources.DateUtils
+import com.example.utils.sources.SingleEvent
 import com.example.views.BaseFragment
 import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -42,8 +52,8 @@ class ScheduleFragmentV2 :
 
     private lateinit var adapter: UniversalRecyclerViewAdapter<ViewPagerItem>
 
-    @Inject
-    lateinit var router: ScheduleFragmentContract
+//    @Inject
+//    lateinit var router: ScheduleFragmentContract
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,8 +63,6 @@ class ScheduleFragmentV2 :
         val toolbar = getToolbar()
         toolbar?.setDisplayHomeAsUpEnabled(false)
         toolbar?.setDisplayShowTitleEnabled(false)
-        binding.toolbar.textSwitcher.setText("Расписание")
-        binding.toolbar.textSwitcher.setText("Loading...")
         binding.toolbar.textSwitcher.setInAnimation(
             requireContext(),
             com.example.values.R.anim.slide_in_up
@@ -64,16 +72,16 @@ class ScheduleFragmentV2 :
             com.example.values.R.anim.slide_out_down
         )
 
-        for (i in 1..20) {
-            binding.weeksTabLayout.addTab(
-                binding.weeksTabLayout.newTab()
-                    .setText(i.toString() + " Нед.")
-            )
-        }
+//        for (i in 1..20) {
+//            binding.weeksTabLayout.addTab(
+//                binding.weeksTabLayout.newTab()
+//                    .setText(i.toString() + " Нед.")
+//            )
+//        }
 
         adapter = UniversalRecyclerViewAdapter(
             delegates = listOf(RecyclerViewDayDelegate(), RecyclerViewDayCurrentDelegate {
-                router.navigateToSettingsScreen()
+                viewModel.initializeSchedule()
             }),
             diffUtilCallback = ViewPagerItem.ViewPagerItemDiffUtil()
         )
@@ -92,29 +100,14 @@ class ScheduleFragmentV2 :
             }
         }.attach()
 
-
-        handler.post {
-            binding.weeksTabLayout.post {
-                binding.weeksTabLayout.getTabAt(19)?.select()
-                adapter.items = listOf(
-                    ViewPagerItem.RecyclerViewCurrentDay(generateLessonsCurrentList()),
-                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                    ViewPagerItem.RecyclerViewDay(generateLessonsList()),
-                )
-                binding.toolbar.textSwitcher.setText("Расписание")
-            }
-        }
-
-
         binding.toolbar.textSwitcher.setOnClickListener(::showKeyboardClickListener)
 
-        childFragmentManager.beginTransaction().apply {
-            replace(com.example.schedule.R.id.v2_inner_fragment, SearchFragment(), TAG)
-            commit()
-        }
+        val fragment = childFragmentManager.findFragmentByTag(TAG)
+        if (fragment == null)
+            childFragmentManager.beginTransaction().apply {
+                replace(com.example.schedule.R.id.v2_inner_fragment, SearchFragment(), TAG)
+                commit()
+            }
 
         binding.toolbar.menuIcon.visibility = View.VISIBLE
         binding.toolbar.menuIcon.setOnClickListener {
@@ -122,130 +115,138 @@ class ScheduleFragmentV2 :
             parentFragment?.manageDrawer()
         }
 
+        viewModel.testLiveData.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is Result.Success -> {
+                    adapter.items = event.data
+                    binding.viewPager.post {
+                        val index =
+                            event.data.indexOfFirst { item -> item is ViewPagerItem.RecyclerViewCurrentDay }
+                        if (index != -1)
+                            binding.viewPager.setCurrentItem(index, true)
+                    }
+                    binding.toolbar.textSwitcher.setText(viewModel.getTitle())
+
+                }
+
+                is Result.Error -> {
+                    binding.toolbar.textSwitcher.setText(viewModel.getTitle())
+                    Toast.makeText(requireContext(), event.exception.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                Result.Loading -> {
+                    binding.toolbar.textSwitcher.setText("Загрузка...")
+                }
+
+            }
+        }
+
+        viewModel.weeksLiveData.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is ScheduleViewModelV2.ResultWeeksConfig.Success -> {
+                    binding.weeksTabLayout.clearOnTabSelectedListeners()
+                    binding.weeksTabLayout.post {
+                        if (!event.data.isRepeating)
+                            for (i in 1..event.data.weeks.size) {
+                                binding.weeksTabLayout.addTab(
+                                    binding.weeksTabLayout.newTab()
+                                        .setText("$i Нед.")
+                                )
+                            }
+                    }
+                    handler.post {
+                        binding.weeksTabLayout.post {
+                            binding.weeksTabLayout.getTabAt(event.data.currentWeek - 1)
+                                ?.select()
+                            binding.weeksTabLayout.addOnTabSelectedListener(WeekTabListener {
+                                viewModel.fetchByWeek((it + 1).toString())
+                            })
+                            viewModel.setBlockingTabsClicks(true)
+                            binding.weeksTabLayout.visibility = View.VISIBLE
+
+                        }
+
+                    }
+
+
+                }
+
+                is ScheduleViewModelV2.ResultWeeksConfig.Error -> {
+                    viewModel.setBlockingTabsClicks(true)
+                    binding.weeksTabLayout.visibility = View.VISIBLE
+
+                }
+
+                is ScheduleViewModelV2.ResultWeeksConfig.ErrorFetchWeek -> {
+                    binding.weeksTabLayout.clearOnTabSelectedListeners()
+                    binding.weeksTabLayout.post {
+                        if (!event.oldValue.isRepeating)
+                            for (i in 1..event.oldValue.weeks.size) {
+                                binding.weeksTabLayout.addTab(
+                                    binding.weeksTabLayout.newTab()
+                                        .setText("$i Нед.")
+                                )
+                            }
+                    }
+                    handler.post {
+                        binding.weeksTabLayout.post {
+                            binding.weeksTabLayout.getTabAt(event.oldValue.currentWeek - 1)
+                                ?.select()
+                            binding.weeksTabLayout.addOnTabSelectedListener(WeekTabListener {
+                                viewModel.fetchByWeek((it + 1).toString())
+                            })
+                            viewModel.setBlockingTabsClicks(true)
+                            binding.weeksTabLayout.visibility = View.VISIBLE
+
+                        }
+
+                    }
+
+                }
+
+                ScheduleViewModelV2.ResultWeeksConfig.Loading -> {
+                    viewModel.setBlockingTabsClicks(false)
+                }
+
+                ScheduleViewModelV2.ResultWeeksConfig.InitLoading -> {binding.weeksTabLayout.visibility = View.INVISIBLE}
+            }
+
+        }
+
+        viewModel.initScheduleLiveData.observe(viewLifecycleOwner) {
+            it.event?.let {
+                viewModel.isBackStackReturn = true
+                viewModel.initSchedule()
+            }
+        }
+
+        viewModel.blockingTabsClicks.observe(viewLifecycleOwner, ::enableTabClicks)
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.initializeSchedule()
+            binding.swipeRefresh.isRefreshing = false
+        }
+
     }
 
-    private fun generateLessonsList(): List<TimetableItem> = listOf(
-        TimetableItem.Title(
-            date = "1 сентября",
-            dayOfWeekName = "Понедельник",
-            groupName = "КТбо4-2"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-    )
 
-    private fun generateLessonsCurrentList(): List<TimetableItem> = listOf(
-        TimetableItem.TitleCurrent(
-            date = "1 сентября",
-            dayOfWeekName = "Понедельник",
-            groupName = "КТбо4-2"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Break(
-            time = "00:00-00:00",
-            lessonName = "Перерыв, флексим",
-            progressValue = 66
-        ),
-        TimetableItem.LessonCurrent(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1",
-            progressValue = 66
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-        TimetableItem.Lesson(
-            time = "00:00-00:00",
-            lessonName = "лек.Методы оптимизации Липко Ю. Ю. LMS Гладков Л. А. LMS-1"
-        ),
-    )
+    private fun enableTabClicks(isEnable: SingleEvent<Boolean>) {
+        isEnable.event?.let {
+            for (i in 0 until binding.weeksTabLayout.tabCount) {
+                binding.weeksTabLayout.getTabAt(i)?.view?.isEnabled = it
+            }
+        }
+    }
 
     private fun showKeyboardClickListener(view: View) {
-        binding.toolbar.textSwitcher.setText("Loading")
         val fragment = childFragmentManager.findFragmentByTag(TAG) as SearchFragment?
 
         fragment?.let {
             showKeyboardV2(it.getTextInputEditText())
         }
     }
+
     @Deprecated("Метод не работает в требуемых условиях")
     private fun showKeyboard(view: EditText?) {
         if (view == null) return
@@ -265,6 +266,26 @@ class ScheduleFragmentV2 :
             WindowInsetsCompat.Type.ime()
         )
 
+    }
+
+    private inner class WeekTabListener(
+        private val tabSelected: (Int) -> Unit
+    ) : OnTabSelectedListener {
+//        private var isFirstFetch = true
+
+        override fun onTabSelected(p0: TabLayout.Tab?) {
+//            if (!isFirstFetch)
+            tabSelected.invoke(p0?.position ?: 0)
+//            else
+//                isFirstFetch = false
+        }
+
+        override fun onTabUnselected(p0: TabLayout.Tab?) {
+
+        }
+
+        override fun onTabReselected(p0: TabLayout.Tab?) {
+        }
     }
 
     private fun expand() {
@@ -330,15 +351,21 @@ class ScheduleFragmentV2 :
     fun hideToolbar() = collapse()
     fun showToolbar() = expand()
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(com.example.values.R.menu.app_bar_menu, menu)
-//        super.onCreateOptionsMenu(menu, inflater)
-//    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.isBackStackReturn)
+            viewModel.restoreAdapter()
+        viewModel.isBackStackReturn = false
+    }
 
     override fun onDestroyView() {
         handler.removeCallbacksAndMessages(null)
+        viewModel.restoreStateAfterPopBackStack()
         super.onDestroyView()
+
     }
+
 
     companion object {
         private const val TAG = "ScheduleFragmentV2"

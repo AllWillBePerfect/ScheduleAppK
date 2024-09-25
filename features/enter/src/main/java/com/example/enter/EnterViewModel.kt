@@ -6,7 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ScheduleApiRepository
-import com.example.data.service.RefreshService
+import com.example.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
+import com.example.data.event_manager.RefreshEventManager
+import com.example.data.event_manager.RestoreDialogEventManager
 import com.example.views.adapter.GroupItem
 import com.example.models.ui.ScheduleEntity
 import com.example.models.ui.ScheduleGroupsListEntity
@@ -28,8 +30,10 @@ import javax.inject.Inject
 @HiltViewModel
 class EnterViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
+    private val appConfigRepositoryV2: AppConfigRepositoryV2,
     private val scheduleApiRepository: ScheduleApiRepository,
-    private val refreshService: RefreshService
+    private val refreshEventManager: RefreshEventManager,
+    private val restoreDialogEventManager: RestoreDialogEventManager
 ) : ViewModel() {
 
     private val scheduleApi = scheduleApiRepository
@@ -122,7 +126,7 @@ class EnterViewModel @Inject constructor(
 
     }
 
-    fun fetchGroup(groupName: String) {
+    fun fetchGroupSingle(groupName: String) {
         _fetchScheduleLiveData.value = FetchResult.Loading(true)
         Observable.just(groupName)
             .switchMap {
@@ -137,6 +141,42 @@ class EnterViewModel @Inject constructor(
                     Log.d("EnterViewModel fetch", it.toString())
                     _fetchScheduleLiveData.value = FetchResult.Loading(false)
                     appConfigRepository.setSingleGroup(it.name)
+                    appConfigRepositoryV2.authorize(it.name)
+                    _fetchScheduleLiveData.value = FetchResult.Success(it)
+                },
+                onError = {
+                    if (it is UnknownHostException)
+                        Log.d("EnterViewModel error", "No network connection")
+                    else
+                        Log.d("EnterViewModel error", it.toString())
+                    _fetchScheduleLiveData.value = FetchResult.Loading(false)
+                    _fetchScheduleLiveData.value = FetchResult.Error(it.message.toString(), it)
+                },
+                onComplete = {
+                    Log.d("EnterViewModel complete", "fetch Completed")
+                    _fetchScheduleLiveData.value = FetchResult.Loading(false)
+                }
+            ).addTo(disposables)
+
+
+    }
+
+    fun fetchGroupMultiple(groupName: String) {
+        _fetchScheduleLiveData.value = FetchResult.Loading(true)
+        Observable.just(groupName)
+            .switchMap {
+                scheduleApiRepository.fetchScheduleByGroupNameObservable(groupName)
+                    .onErrorResumeNext(htmObservable(groupName))
+            }
+            .doOnDispose { Log.d("EnterViewModel dispose", "dispose") }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onNext = {
+                    Log.d("EnterViewModel fetch", it.toString())
+                    _fetchScheduleLiveData.value = FetchResult.Loading(false)
+                    appConfigRepository.setSingleGroup(it.name)
+                    appConfigRepositoryV2.addMultipleGroupAndSetState(it.name)
                     _fetchScheduleLiveData.value = FetchResult.Success(it)
                 },
                 onError = {
@@ -163,7 +203,9 @@ class EnterViewModel @Inject constructor(
             .map { it.copy(choices = it.choices.sortedBy { it.name }) }
             .flatMap { scheduleApiRepository.fetchScheduleByHtmlObservable((it.choices.find { it.name == groupName } ?: it.choices.first()).group) }
 
-    fun setRefreshLiveData() = refreshService.setRefreshLiveData()
+    fun setRefreshLiveData() = refreshEventManager.setRefreshLiveData()
+    fun restoreSingleDialog() = restoreDialogEventManager.setSingle()
+    fun restoreMultipleDialog() = restoreDialogEventManager.setMultiple()
 
     private fun <T> Observable<T>.debounceIf(
         predicate: (T) -> Boolean,

@@ -19,7 +19,7 @@ class ClearFragmentContractImpl @Inject constructor(
                 com.example.values.R.anim.slide_out_back,
 
                 )
-            replace(R.id.container_main, EnterFragment.newInstance(false))
+            replace(R.id.container_main, EnterFragment.newInstance())
             commit()
         }
     }

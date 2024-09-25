@@ -11,12 +11,11 @@ import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ClearDataRepository
 import com.example.data.repositories.SettingsOptionRepository
 import com.example.data.repositories.settings.DynamicColorsRepository
+import com.example.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
 import com.example.enter.EnterFragment
-import com.example.models.sharpref.AppState
+import com.example.models.sharpref.v1.AppState
 import com.example.schedule.v1.ScheduleFragment
-import com.example.schedule.v2.ScheduleFragmentV2
 import com.example.schedule.v2.container.NavigationDrawerContainerFragment
-import com.example.schedule.v2.search.SearchFragment
 import com.example.scheduleappk.databinding.ActivityMainBinding
 import com.example.scheduleappk.navigation.ActivityRequired
 import com.example.scheduleappk.workmanager.SomeWorkManager
@@ -39,6 +38,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var appConfigRepository: AppConfigRepository
+
+    @Inject
+    lateinit var appConfigRepositoryV2: AppConfigRepositoryV2
 
     @Inject
     lateinit var clearDataRepository: ClearDataRepository
@@ -76,6 +78,12 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_main)
 
+//        appConfigRepositoryV2.addMultipleGroupAndSetState("ктбо4-2")
+//        appConfigRepositoryV2.addMultipleGroupAndSetState("впк 1-8")
+//        appConfigRepositoryV2.addMultipleGroupAndSetState("ктбо4-1")
+//        appConfigRepositoryV2.addMultipleGroupAndSetState("ктбо4-3")
+//        appConfigRepositoryV2.addReplaceGroupAndSetState("КТбо4-5", "ВПК 3-8", listOf(1, 5))
+
 //        enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -92,6 +100,7 @@ class MainActivity : AppCompatActivity() {
                 launchEnterScreen()
         }
         SomeWorkManager.launchPeriodicalWorkRequest(this)
+        
     }
 
     private fun checkClear(): Boolean {
@@ -144,21 +153,6 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return super.onSupportNavigateUp()
-    }
-
-    override fun onBackPressed() {
-        val fragment = supportFragmentManager.findFragmentByTag(TAG)
-        if (fragment is NavigationDrawerContainerFragment)
-            if (fragment.isVisible)
-                if (fragment.stateDrawer()) fragment.closeDrawer()
-                else
-                    super.onBackPressed()
-            else
-                super.onBackPressed()
-        else
-            super.onBackPressed()
-
-
     }
 
     companion object {

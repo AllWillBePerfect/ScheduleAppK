@@ -9,13 +9,13 @@ plugins {
 }
 
 var versionMajor by extra(0)
-var versionMinor by extra(1)
-var versionPatch by extra(1)
+var versionMinor by extra(9)
+var versionPatch by extra(0)
 var versionClassifier: String? by extra(null)
 var isSnapshot by extra(true)
 
 //change this flag to "true" if you need clear storage data after realise new app version
-var clearStorageFlag by extra(true)
+var clearStorageFlag by extra(false)
 
 val minSdkVer: Int by rootProject.extra
 val targetSdkVer: Int by rootProject.extra
@@ -55,7 +55,7 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
             if (getCurrentFlavor().lowercase() == "full")
-                resValue("string", "app_name", "ScheduleAppK")
+                resValue("string", "app_name", "Расписание ИКТИБ")
             if (getCurrentFlavor().lowercase() == "demo")
                 resValue("string", "app_name", "FScheduleAppK")
 
@@ -148,10 +148,12 @@ dependencies {
     implementation(libs.converter.scalars)
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
+    implementation(libs.moshi.adapters)
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.shimmer)
 
 
     implementation(project(":core:network"))

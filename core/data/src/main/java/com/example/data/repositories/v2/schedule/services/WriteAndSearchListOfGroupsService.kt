@@ -1,4 +1,4 @@
-package com.example.data.repositories.v2
+package com.example.data.repositories.v2.schedule.services
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -6,8 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.data.repositories.ScheduleApiRepository
 import com.example.models.ui.ScheduleEntity
 import com.example.models.ui.ScheduleGroupsListEntity
-import com.example.utils.CustomExceptions
 import com.example.utils.Result
+import com.example.utils.sources.SingleEvent
+import com.example.utils.sources.SingleLiveData
+import com.example.utils.sources.SingleMutableLiveData
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,19 +24,19 @@ import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 import javax.inject.Inject
 
-interface WriteAndSearchListOfGroupsRepository {
+interface WriteAndSearchListOfGroupsService {
     fun setText(charSequence: CharSequence)
 
     fun runTypeSubject()
     fun fetchGroup(groupName: String)
 
     fun getGroupsLiveData(): LiveData<Result<List<ScheduleGroupsListEntity.ScheduleGroupEntity>>>
-    fun getFetchScheduleLiveData(): LiveData<Result<ScheduleEntity>>
+    fun getFetchScheduleLiveData(): SingleLiveData<Result<ScheduleEntity>>
 
     fun clear()
     class Impl @Inject constructor(
         private val scheduleApiRepository: ScheduleApiRepository
-    ) : WriteAndSearchListOfGroupsRepository {
+    ) : WriteAndSearchListOfGroupsService {
 
         private val disposables = CompositeDisposable()
 
@@ -57,8 +59,8 @@ interface WriteAndSearchListOfGroupsRepository {
         override fun getGroupsLiveData(): LiveData<Result<List<ScheduleGroupsListEntity.ScheduleGroupEntity>>> =
             _groupsLiveData
 
-        private val _fetchScheduleLiveData = MutableLiveData<Result<ScheduleEntity>>()
-        override fun getFetchScheduleLiveData(): LiveData<Result<ScheduleEntity>> =
+        private val _fetchScheduleLiveData = SingleMutableLiveData<Result<ScheduleEntity>>()
+        override fun getFetchScheduleLiveData(): SingleLiveData<Result<ScheduleEntity>> =
             _fetchScheduleLiveData
 
 
@@ -72,13 +74,18 @@ interface WriteAndSearchListOfGroupsRepository {
                 .switchMapSingle { string ->
                     scheduleApiRepository.fetchGroupListSingle(string.toString())
                         .map { listGroups -> listGroups.choices.sortedBy { group -> group.name } }
-                        .doOnError{ Log.d("WriteAndSearchListOfGroupsRepository", "editTextSubject onError: $it")}
+                        .doOnError {
+                            Log.d(
+                                "WriteAndSearchListOfGroupsService",
+                                "editTextSubject onError: $it"
+                            )
+                        }
                         .onErrorReturn { emptyList() }
                 }
                 .subscribeBy(
                     onNext = { list ->
                         Log.d(
-                            "WriteAndSearchListOfGroupsRepository",
+                            "WriteAndSearchListOfGroupsService",
                             "editTextSubject onNext: $list"
                         )
                         if (list.isNullOrEmpty())
@@ -108,7 +115,7 @@ interface WriteAndSearchListOfGroupsRepository {
         }
 
         override fun fetchGroup(groupName: String) {
-            _fetchScheduleLiveData.value = Result.Loading
+            _fetchScheduleLiveData.value = SingleEvent(Result.Loading)
             Observable.just(groupName)
                 .switchMapSingle {
                     scheduleApiRepository.fetchScheduleByGroupNameSingle(it)
@@ -126,24 +133,24 @@ interface WriteAndSearchListOfGroupsRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
-                    Log.d("WriteAndSearchListOfGroupsRepository", "fetchGroup onError: $it")
+                    Log.d("WriteAndSearchListOfGroupsService", "fetchGroup onError: $it")
                 }
                 .subscribeBy(
                     onNext = { schedule ->
-                        _fetchScheduleLiveData.value = Result.Success(schedule)
+                        _fetchScheduleLiveData.value = SingleEvent(Result.Success(schedule))
                     },
                     onComplete = {},
                     onError = {
                         when (it) {
                             is UnknownHostException ->
                                 _fetchScheduleLiveData.value =
-                                    Result.Error(Throwable("Отсутствует подключение к интернету"))
+                                    SingleEvent(Result.Error(Throwable("Отсутствует подключение к интернету")))
 
                             is NullPointerException ->
                                 _fetchScheduleLiveData.value =
-                                    Result.Error(Throwable("Не удалось получить группу. Возможно, группы не существует"))
+                                    SingleEvent(Result.Error(Throwable("Не удалось получить группу. Возможно, группы не существует")))
 
-                            else -> _fetchScheduleLiveData.value = Result.Error(it)
+                            else -> _fetchScheduleLiveData.value = SingleEvent(Result.Error(it))
                         }
                     },
                 ).addTo(disposables)

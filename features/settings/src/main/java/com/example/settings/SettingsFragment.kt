@@ -4,17 +4,24 @@ import android.app.UiModeManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
-import com.example.settings.adapter.SectionDelegate
+import com.example.data.event_manager.RestoreDialogEventManager
+import com.example.settings.adapter.PressExpandableOptionDelegate
 import com.example.settings.adapter.PressOptionDelegate
+import com.example.settings.adapter.SectionDelegate
 import com.example.settings.adapter.SwitchOptionDelegate
 import com.example.settings.adapter.model.SettingsItem
 import com.example.settings.databinding.V2FragmentSettingsBinding
+import com.example.settings.dialogs.multiple.MultipleOptionDialog
+import com.example.settings.dialogs.replace.ReplaceOptionDialog
+import com.example.settings.dialogs.single.SingleOptionDialog
 import com.example.values.R
 import com.example.views.BaseFragment
 import com.example.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
@@ -44,13 +51,45 @@ class SettingsFragment :
             delegates = listOf(
                 SectionDelegate(),
                 PressOptionDelegate(),
+                PressExpandableOptionDelegate(),
                 SwitchOptionDelegate(),
             ),
             diffUtilCallback = SettingsItem.SettingsItemDiffUtil()
         )
 
         binding.recyclerView.adapter = adapter
-        adapter.items = createFirstSection() + createSecondSection() + createThirdSection()
+        adapter.items = createGroupSection() + createStyleSection()
+//        + createKillerFeaturesSection()
+
+        viewModel.updateUiLiveData.observe(viewLifecycleOwner) {
+            it.eventForCheck.let { adapter.items = createGroupSection() + createStyleSection()
+//                + createKillerFeaturesSection()
+            }
+        }
+
+        viewModel.restoreDialogLiveData.observe(viewLifecycleOwner) {
+            it.event?.let {event ->
+                when (event) {
+                    RestoreDialogEventManager.Companion.RestoreDialogState.Single -> {
+                        val dialog = SingleOptionDialog()
+                        dialog.show(requireActivity().supportFragmentManager, "singleOption")
+                    }
+                    RestoreDialogEventManager.Companion.RestoreDialogState.Replace -> {
+                        val dialog = ReplaceOptionDialog()
+                        dialog.show(requireActivity().supportFragmentManager, "replaceOption")
+                    }
+                    RestoreDialogEventManager.Companion.RestoreDialogState.Multiple -> {
+                        val dialog = MultipleOptionDialog()
+                        dialog.show(requireActivity().supportFragmentManager, "multipleOption")
+                    }
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback {
+            Log.d("backPressed", "from $TAG")
+            requireActivity().supportFragmentManager.popBackStack()
+        }
     }
 
     private fun setupAppBar() {
@@ -68,7 +107,7 @@ class SettingsFragment :
     private fun setupDynamicColorsDialog() {
         val string = if (viewModel.getDynamicColors()) "Отключить" else "Активировать"
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("DynamicColors")
+            .setTitle("Dynamic Colors")
             .setMessage("Эта опция активирует/отключает цветовую палитру из акцентных цветов темы устройства")
             .setPositiveButton(string) { _, _ ->
                 viewModel.changeDynamicColors()
@@ -137,78 +176,104 @@ class SettingsFragment :
             else -> throw IllegalStateException("Unknown night mode")
         }
 
-    private fun createFirstSection(): List<SettingsItem> = listOf(
+    private fun createGroupSection(): List<SettingsItem> = listOf(
         SettingsItem.Section("Общие"),
         SettingsItem.PressOption(
-            "Одна группа",
-            "Выберите группу для отображения на экране расписания",
-            R.drawable.group,
-            SettingsItem.CornersType.TOP
-        ) { router.navigateToAddSingleGroupScreen() },
+            title = "Одна группа",
+            subtitle = "Выберите группу для отображения на экране расписания",
+            icon = R.drawable.group,
+            cornersType = SettingsItem.CornersType.TOP,
+            changeBackgroundColor = viewModel.singleGroupStateCheck()
+        ) {
+//            router.navigateToAddSingleGroupScreen()
+//            val singleOptionConfigModal = SingleOptionConfigModal()
+//            singleOptionConfigModal.show(requireActivity().supportFragmentManager, SingleOptionConfigModal.TAG)
+            val dialog = SingleOptionDialog()
+            dialog.show(requireActivity().supportFragmentManager, "singleOption")
+        },
         SettingsItem.PressOption(
-            "Режим ВПК",
-            "Выберите несколько групп для отображения на экране расписания",
-            R.drawable.groups,
-            SettingsItem.CornersType.NO_CORNERS
-        ) { router.navigateToMultipleGroupOptionFragment() },
+            title = "Режим ВПК",
+            subtitle = "Выберите несколько групп для отображения на экране расписания",
+            icon = R.drawable.groups,
+            cornersType = SettingsItem.CornersType.NO_CORNERS,
+            changeBackgroundColor = viewModel.replaceGroupStateCheck()
+        ) {
+//            router.navigateToMultipleGroupOptionFragment()
+            val dialog = ReplaceOptionDialog()
+            dialog.show(requireActivity().supportFragmentManager, "replaceOption")
+        },
         SettingsItem.PressOption(
-            "Много групп",
-            "Выберите нужные группы для отображения друг под другом на экране расписания",
-            R.drawable.many_groups,
-            SettingsItem.CornersType.BOTTOM,
-            ::developToast
-        ),
+            title = "Много групп",
+            subtitle = "Выберите нужные группы для отображения друг под другом на экране расписания",
+            icon = R.drawable.many_groups,
+            cornersType = SettingsItem.CornersType.BOTTOM,
+            changeBackgroundColor = viewModel.multipleGroupStateCheck()
+        ) {
+//            developToast()
+            val dialog = MultipleOptionDialog()
+            dialog.show(requireActivity().supportFragmentManager, "multipleOption")
+        },
     )
 
-    private fun createSecondSection(): List<SettingsItem> =
+    private fun performClick(it: SettingsItem.PressExpandableOption) {
+        val list = adapter.items.toMutableList()
+        val item = it.copy(isExpand = !it.isExpand)
+        list[adapter.items.indexOf(it)] = item
+        adapter.items = list
+    }
+
+    private fun createStyleSection(): List<SettingsItem> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
             listOf(
                 SettingsItem.Section("Оформление"),
                 SettingsItem.SwitchOption(
-                    "Dynamic colors",
-                    "Активировируйте динамические цвета",
-                    R.drawable.palette,
-                    viewModel.getDynamicColors(),
-                    SettingsItem.CornersType.TOP,
-                    ::setupDynamicColorsDialog
+                    title = "Dynamic colors",
+                    subtitle = "Активировируйте динамические цвета",
+                    icon = R.drawable.palette,
+                    isChecked = viewModel.getDynamicColors(),
+                    cornersType = SettingsItem.CornersType.TOP,
+                    action = ::setupDynamicColorsDialog
                 ),
                 SettingsItem.PressOption(
-                    "Тема приложения",
-                    "Выберите тему приложения",
-                    getNightModeDrawable(),
-                    SettingsItem.CornersType.BOTTOM
+                    title = "Тема приложения",
+                    subtitle = "Выберите тему приложения",
+                    icon = getNightModeDrawable(),
+                    cornersType = SettingsItem.CornersType.BOTTOM
                 ) { setupNightModeDialog() },
             )
         else listOf(
+            SettingsItem.Section("Оформление"),
             SettingsItem.PressOption(
-                "Тема приложения",
-                "Выберите тему приложения",
-                getNightModeDrawable(),
-                SettingsItem.CornersType.SINGLE
+                title = "Тема приложения",
+                subtitle = "Выберите тему приложения",
+                icon = getNightModeDrawable(),
+                cornersType = SettingsItem.CornersType.SINGLE
             ) { setupNightModeDialog() },
         )
 
 
-    private fun createThirdSection(): List<SettingsItem> = listOf(
+    private fun createKillerFeaturesSection(): List<SettingsItem> = listOf(
         SettingsItem.Section("Определенно киллер фичи ☜(ﾟヮﾟ☜)"),
         SettingsItem.PressOption(
-            "Цитаты Стейтема",
-            "Каждые день будет отображаться случайная цитата Стейтема из его золотой коллекции цитат",
-            R.drawable.mood,
-            SettingsItem.CornersType.TOP,
-            ::developToast
+            title = "Цитаты Стейтема",
+            subtitle = "Каждые день будет отображаться случайная цитата Стейтема из его золотой коллекции цитат",
+            icon = R.drawable.mood,
+            cornersType = SettingsItem.CornersType.TOP,
+            action = ::developToast
         ),
         SettingsItem.PressOption(
-            "Бизнес-ланчи в сфеду кафе",
-            "Информация о бизнес-ланчах в сфеду кафе по будням",
-            R.drawable.food,
-            SettingsItem.CornersType.BOTTOM,
-            ::developToast
+            title = "Бизнес-ланчи в сфеду кафе",
+            subtitle = "Информация о бизнес-ланчах в сфеду кафе по будням",
+            icon = R.drawable.food,
+            cornersType = SettingsItem.CornersType.BOTTOM,
+            action = ::developToast
         ),
     )
 
 
     companion object {
         private const val CORNER_SIZE_VALUE = 40F
+
+        private const val TAG = "SettingsFragment"
     }
 }

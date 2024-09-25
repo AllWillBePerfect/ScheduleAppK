@@ -12,11 +12,14 @@ import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.graphics.PathParser
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
 import com.example.schedule.databinding.V2PartSearchFragmentBinding
 import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.schedule.v2.ScheduleFragmentV2
+import com.example.schedule.v2.ScheduleFragmentV2V2
 import com.example.utils.Result
 import com.example.views.BaseFragment
 import com.example.views.adapter.GroupChooseAdapter
@@ -57,26 +60,30 @@ class SearchFragment :
                 }
 
                 is Result.Loading -> {}
-                is Result.Error -> {}
+                is Result.Error -> {Log.d(TAG, it.toString())}
 
             }
         }
 
         viewModel.fetchLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is Result.Success -> {
-                    Toast.makeText(requireContext(), it.data.name, Toast.LENGTH_SHORT).show()
-                    fetchLoading(false)
-                }
+            it.event?.let { event ->
+                when (event) {
+                    is Result.Success -> {
+                        Toast.makeText(requireContext(), event.data.name, Toast.LENGTH_SHORT).show()
+                        viewModel.setSingleConfig(event.data.name)
+                        closeKeyboard()
+                        fetchLoading(false)
+                    }
 
-                is Result.Loading -> {
-                    fetchLoading(true)
-                }
+                    is Result.Loading -> {
+                        fetchLoading(true)
+                    }
 
-                is Result.Error -> {
-                    Toast.makeText(requireContext(), "${it.exception.message}", Toast.LENGTH_SHORT)
-                        .show()
-                    fetchLoading(false)
+                    is Result.Error -> {
+                        Toast.makeText(requireContext(), "${event.exception.message}", Toast.LENGTH_SHORT)
+                            .show()
+                        fetchLoading(false)
+                    }
                 }
             }
         }
@@ -94,6 +101,15 @@ class SearchFragment :
             viewModel.fetchGroup(binding.groupTextInputEditText.text.toString())
         }
 
+    }
+
+    private fun closeKeyboard() {
+        WindowCompat.getInsetsController(
+            requireActivity().window,
+            binding.groupTextInputEditText
+        ).hide(
+            WindowInsetsCompat.Type.ime()
+        )
     }
 
     private fun setupKeyboardAppearListener(setup: Boolean) {
@@ -123,7 +139,8 @@ class SearchFragment :
             "SearchFragment expand",
             "targetHeight: $targetHeight \n rectBottom: ${rect.bottom} \n rectTop: ${rect.top}"
         )
-        (parentFragment as ScheduleFragmentV2).hideToolbar()
+        (parentFragment as? ScheduleFragmentV2)?.hideToolbar()
+        (parentFragment as? ScheduleFragmentV2V2)?.hideToolbar()
 
         val a = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
@@ -155,7 +172,8 @@ class SearchFragment :
     private fun collapse() {
 //        val lp = binding.partSearchFragment.layoutParams as ViewGroup.LayoutParams
         val initialHeight = binding.partSearchFragment.layoutParams.height
-        (parentFragment as ScheduleFragmentV2).showToolbar()
+        (parentFragment as? ScheduleFragmentV2)?.showToolbar()
+        (parentFragment as? ScheduleFragmentV2V2)?.showToolbar()
         val a: Animation = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
 //                if (interpolatedTime == 0F)
@@ -187,7 +205,9 @@ class SearchFragment :
         handler.removeCallbacksAndMessages(null)
         setupKeyboardAppearListener(false)
         super.onDestroyView()
+
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -209,5 +229,8 @@ class SearchFragment :
     /** Нужно вызывать этот метот в onResume, чтобы клавиатура смогла отображатся после совершения popbackstack.*/
     private fun editTextRequestFocus() = binding.groupTextInputEditText.requestFocus()
 
+    companion object {
+        private const val TAG = "SearchFragment"
+    }
 
 }

@@ -3,10 +3,12 @@ package com.example.scheduleappk.navigation.settings
 import android.content.Intent
 import androidx.core.content.ContextCompat.startActivity
 import com.example.enter.EnterFragment
+import com.example.schedule.v2.container.NavigationDrawerContainerFragment
 import com.example.scheduleappk.MainActivity
 import com.example.scheduleappk.R
 import com.example.scheduleappk.navigation.NavigateRouter
 import com.example.settings.SettingsFragmentContract
+import com.example.settings.dialogs.replace.add.FragmentAddReplaceGroup
 import com.example.settings.options.multiple_group.MultipleGroupOptionFragment
 import javax.inject.Inject
 
@@ -24,11 +26,43 @@ class SettingsFragmentContractImpl @Inject constructor(
                 com.example.values.R.anim.slide_out_back,
 
                 )
-            replace(R.id.container_main, EnterFragment.newInstance(true))
+            replace(R.id.container_main, EnterFragment.newInstanceSingleMode())
             addToBackStack(null)
             commit()
         }
 
+    }
+
+    override fun navigateToAddReplaceGroupScreen() {
+        navigateRouter.requireActivity().supportFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
+            setCustomAnimations(
+                com.example.values.R.anim.slide_in,
+                com.example.values.R.anim.slide_out,
+                com.example.values.R.anim.slide_in_back,
+                com.example.values.R.anim.slide_out_back,
+
+                )
+            replace(R.id.container_main, FragmentAddReplaceGroup())
+            addToBackStack(null)
+            commit()
+        }
+    }
+
+    override fun navigateToAddMultipleGroupScreen() {
+        navigateRouter.requireActivity().supportFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
+            setCustomAnimations(
+                com.example.values.R.anim.slide_in,
+                com.example.values.R.anim.slide_out,
+                com.example.values.R.anim.slide_in_back,
+                com.example.values.R.anim.slide_out_back,
+
+                )
+            replace(R.id.container_main, EnterFragment.newInstanceMultipleMode())
+            addToBackStack(null)
+            commit()
+        }
     }
 
     override fun navigateToMultipleGroupOptionFragment() {
@@ -39,8 +73,23 @@ class SettingsFragmentContractImpl @Inject constructor(
                 com.example.values.R.anim.slide_out,
                 com.example.values.R.anim.slide_in_back,
                 com.example.values.R.anim.slide_out_back,
-                )
+            )
             replace(R.id.container_main, MultipleGroupOptionFragment())
+            addToBackStack(null)
+            commit()
+        }
+    }
+
+    override fun popBackStack() {
+        navigateRouter.requireActivity().supportFragmentManager.beginTransaction().apply {
+            setReorderingAllowed(true)
+            setCustomAnimations(
+                com.example.values.R.anim.slide_in,
+                com.example.values.R.anim.slide_out,
+                com.example.values.R.anim.slide_in_back,
+                com.example.values.R.anim.slide_out_back,
+            )
+            replace(R.id.container_main, NavigationDrawerContainerFragment())
             addToBackStack(null)
             commit()
         }

@@ -1,13 +1,14 @@
-package com.example.sharpref.configs
+package com.example.sharpref.configs.v1
 
 import android.content.Context
-import com.example.models.sharpref.AppConfig
-import com.example.models.sharpref.AppState
-import com.example.models.sharpref.MultipleGroup
-import com.example.models.sharpref.MultipleGroupConfig
-import com.example.models.sharpref.SingleGroup
-import com.example.models.sharpref.SingleGroupConfig
-import com.example.sharpref.models.containers.AppConfigSPContainer
+import com.example.models.sharpref.v1.AppConfig
+import com.example.models.sharpref.v1.AppState
+import com.example.models.sharpref.v1.MultipleGroup
+import com.example.models.sharpref.v1.MultipleGroupConfig
+import com.example.models.sharpref.v1.SingleGroup
+import com.example.models.sharpref.v1.SingleGroupConfig
+import com.example.sharpref.configs.SettingsHolderConfig
+import com.example.sharpref.models.containers.v1.AppConfigSPContainer
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory

@@ -9,9 +9,12 @@
     android:focusable="true"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
-    android:id="@+id/v2_item_lesson_current">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:id="@+id/v2_item_lesson_current"
+    android:background="?attr/colorSurfaceContainer"
+    android:layout_marginBottom="2dp"
+    >
 
     <TextView
         android:id="@+id/time_textView"

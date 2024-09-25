@@ -11,6 +11,8 @@
     android:paddingEnd="16dp"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
+    android:background="?attr/colorSurfaceContainer"
+    android:layout_marginBottom="2dp"
     >
 
     <TextView
@@ -46,6 +48,7 @@
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/dayOfWeekName_textView"
         app:layout_constraintEnd_toEndOf="parent"
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

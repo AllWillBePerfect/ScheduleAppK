@@ -10,11 +10,19 @@ import com.example.data.repositories.ScheduleItemListRepositoryV3
 import com.example.data.repositories.SettingsOptionRepository
 import com.example.data.repositories.TimeProgressIndicatorRepository
 import com.example.data.repositories.settings.DynamicColorsRepository
-import com.example.data.repositories.v2.WriteAndSearchListOfGroupsRepository
+import com.example.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
+import com.example.data.repositories.v2.schedule.services.WriteAndSearchListOfGroupsService
+import com.example.data.repositories.v2.schedule.repository.impl.MultipleImpl
+import com.example.data.repositories.v2.schedule.repository.impl.ReplaceImpl
+import com.example.data.repositories.v2.schedule.repository.impl.SingleImpl
+import com.example.data.repositories.v2.schedule.repository.impl.ContainerImpl
+import com.example.data.repositories.v2.schedule.repository.ScheduleRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -61,7 +69,54 @@ interface RepositoriesModule {
     @Singleton
     fun bindsDynamicColorsRepository(impl: DynamicColorsRepository.Impl): DynamicColorsRepository
 
+
     @Binds
     @Singleton
-    fun bindsWriteAndSearchListOfGroupsRepository(impl: WriteAndSearchListOfGroupsRepository.Impl): WriteAndSearchListOfGroupsRepository
+    @SingleImplementation
+    fun bindsSingleScheduleRepository(singleImpl: SingleImpl): ScheduleRepository
+
+    @Binds
+    @Singleton
+    @ReplaceImplementation
+    fun bindsReplaceScheduleRepository(replaceImpl: ReplaceImpl): ScheduleRepository
+
+    @Binds
+    @Singleton
+    @MultipleImplementation
+    fun bindsMultipleScheduleRepository(multipleImpl: MultipleImpl): ScheduleRepository
+
+    @Binds
+    @Singleton
+    @ContainerImplementation
+    fun bindsContainerScheduleRepository(containerImpl: ContainerImpl): ScheduleRepository
+
+    @Binds
+    @Singleton
+    fun bindAppConfigRepositoryV2(impl: AppConfigRepositoryV2.Impl): AppConfigRepositoryV2
+
 }
+
+@Module
+@InstallIn(ViewModelComponent::class)
+interface RepositoryViewModelModule {
+
+    @Binds
+    fun bindsWriteAndSearchListOfGroupsService(impl: WriteAndSearchListOfGroupsService.Impl): WriteAndSearchListOfGroupsService
+
+}
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class SingleImplementation
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ReplaceImplementation
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class MultipleImplementation
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ContainerImplementation

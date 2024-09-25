@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_text_anim"
+        layout="@layout/toolbar_text_anim_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         />
@@ -19,24 +19,37 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toTopOf="@id/weeks_tabLayout"/>
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/weeks_tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/v2_inner_fragment"
-        android:backgroundTint="@android:color/transparent"
-        app:tabContentStart="56dp"
-        app:tabMode="scrollable"
-        />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/weeks_tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/v2_inner_fragment"
+            android:backgroundTint="@android:color/transparent"
+            app:tabContentStart="56dp"
+            app:tabMode="scrollable"
+            />
+
+
+
+
+    <com.example.views.CustomSwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/weeks_tabLayout"
-        app:layout_constraintBottom_toTopOf="@id/days_bottomTabLayout"
-        />
+        android:layout_weight="1">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layout_constraintTop_toBottomOf="@id/weeks_tabLayout"
+            app:layout_constraintBottom_toTopOf="@id/days_bottomTabLayout"
+            />
+
+    </com.example.views.CustomSwipeRefreshLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/days_bottomTabLayout"

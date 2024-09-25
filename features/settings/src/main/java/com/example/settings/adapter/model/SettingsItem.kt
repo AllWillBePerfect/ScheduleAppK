@@ -13,8 +13,20 @@ sealed class SettingsItem {
         @DrawableRes
         val icon: Int,
         val cornersType: CornersType,
+        val changeBackgroundColor: Boolean = false,
         val action: () -> Unit,
     ) : SettingsItem()
+
+    data class PressExpandableOption(
+        val title: String,
+        val subtitle: String,
+        @DrawableRes
+        val icon: Int,
+        val cornersType: CornersType,
+        val isExpand: Boolean,
+        val action: (item: PressExpandableOption) -> Unit
+    ) : SettingsItem()
+
     data class SwitchOption(
         val title: String,
         val subtitle: String,
@@ -23,12 +35,11 @@ sealed class SettingsItem {
         val isChecked: Boolean,
         val cornersType: CornersType,
         val action: () -> Unit,
-    ): SettingsItem()
+    ) : SettingsItem()
 
     enum class CornersType {
         SINGLE, TOP, BOTTOM, NO_CORNERS
     }
-
 
 
     class SettingsItemDiffUtil : CustomDiffUtilCallback<SettingsItem> {
@@ -41,9 +52,13 @@ sealed class SettingsItem {
             val oldItem = oldList[oldItemPosition]
             val newItem = newList[newItemPosition]
             return if (oldItem is Section && newItem is Section)
-                oldItem == newItem
+                oldItem.title == newItem.title
             else if (oldItem is PressOption && newItem is PressOption)
-                oldItem == newItem
+                oldItem.title == newItem.title
+            else if (oldItem is PressExpandableOption && newItem is PressExpandableOption)
+                oldItem.title == newItem.title
+            else if (oldItem is SwitchOption && newItem is SwitchOption)
+                oldItem.title == newItem.title
             else false
         }
 
@@ -63,12 +78,23 @@ sealed class SettingsItem {
             newItemPosition: Int,
             oldList: List<SettingsItem>,
             newList: List<SettingsItem>
-        ): Any? = null
+        ): Any? {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+            return if (oldItem is PressExpandableOption && newItem is PressExpandableOption)
+                oldItem.isExpand != newItem.isExpand
+            else
+
+               return false
+        }
     }
 
     companion object {
         const val CORNER_SIZE_VALUE = 40F
-        fun setupCornersToMaterialCardView(cornersType: SettingsItem.CornersType, view: MaterialCardView): ShapeAppearanceModel {
+        fun setupCornersToMaterialCardView(
+            cornersType: SettingsItem.CornersType,
+            view: MaterialCardView
+        ): ShapeAppearanceModel {
             return when (cornersType) {
                 SettingsItem.CornersType.SINGLE -> view.shapeAppearanceModel.toBuilder()
                     .setAllCornerSizes(SettingsItem.CORNER_SIZE_VALUE).build()

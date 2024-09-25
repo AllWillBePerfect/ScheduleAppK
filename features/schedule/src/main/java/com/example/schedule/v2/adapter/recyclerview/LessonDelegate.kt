@@ -12,7 +12,7 @@ class LessonDelegate: AdapterItemDelegate<TimetableItem> {
     override fun forItem(item: TimetableItem): Boolean = item is TimetableItem.Lesson
 
     override fun getViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        Log.d("TimetableItem", "LessonDelegate create")
+//        Log.d("TimetableItem", "LessonDelegate create")
         val layoutInflater = LayoutInflater.from(parent.context)
         return LessonViewHolder(V2ItemLessonBinding.inflate(layoutInflater, parent, false))
     }
@@ -22,7 +22,7 @@ class LessonDelegate: AdapterItemDelegate<TimetableItem> {
         item: TimetableItem,
         payloads: MutableList<Any>
     ) {
-        Log.d("TimetableItem", "LessonDelegate bind")
+//        Log.d("TimetableItem", "LessonDelegate bind")
         (viewHolder as LessonViewHolder).bind(item as TimetableItem.Lesson)
     }
 

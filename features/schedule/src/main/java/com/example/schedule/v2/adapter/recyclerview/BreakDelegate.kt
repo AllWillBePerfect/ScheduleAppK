@@ -12,7 +12,7 @@ class BreakDelegate : AdapterItemDelegate<TimetableItem> {
     override fun forItem(item: TimetableItem): Boolean = item is TimetableItem.Break
 
     override fun getViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        Log.d("TimetableItem", "BreakDelegate create")
+//        Log.d("TimetableItem", "BreakDelegate create")
         val layoutInflater = LayoutInflater.from(parent.context)
         return BreakViewHolder(V2ItemLessonBreakBinding.inflate(layoutInflater, parent, false))
     }
@@ -22,7 +22,7 @@ class BreakDelegate : AdapterItemDelegate<TimetableItem> {
         item: TimetableItem,
         payloads: MutableList<Any>
     ) {
-        Log.d("TimetableItem", "BreakDelegate bind")
+//        Log.d("TimetableItem", "BreakDelegate bind")
         (viewHolder as BreakViewHolder).bind(item as TimetableItem.Break)
     }
 

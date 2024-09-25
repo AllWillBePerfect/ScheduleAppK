@@ -22,7 +22,7 @@ class RecyclerViewDayCurrentDelegate(
         item is ViewPagerItem.RecyclerViewCurrentDay
 
     override fun getViewHolder(parent: ViewGroup): ViewHolder {
-        Log.d("ViewPagerItem", "RecyclerViewDayCurrentDelegate create")
+//        Log.d("ViewPagerItem", "RecyclerViewDayCurrentDelegate create")
         val layoutInflater = LayoutInflater.from(parent.context)
         return RecyclerViewDayCurrentViewHolder(
             V2ItemRecyclerViewDayBinding.inflate(
@@ -38,7 +38,7 @@ class RecyclerViewDayCurrentDelegate(
         item: ViewPagerItem,
         payloads: MutableList<Any>
     ) {
-        Log.d("ViewPagerItem", "RecyclerViewDayCurrentDelegate bind")
+//        Log.d("ViewPagerItem", "RecyclerViewDayCurrentDelegate bind")
         (viewHolder as RecyclerViewDayCurrentViewHolder).bind(item as ViewPagerItem.RecyclerViewCurrentDay)
     }
 

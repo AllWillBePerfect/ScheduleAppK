@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.rxandroid)
 
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.shimmer)
     implementation(libs.keyboardvisibilityevent)
 
 

@@ -56,6 +56,9 @@ dependencies {
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.fragment.ktx)
 
+    implementation(libs.keyboardvisibilityevent)
+
+
 
     api(project(":core:values"))
     api(project(":core:views"))

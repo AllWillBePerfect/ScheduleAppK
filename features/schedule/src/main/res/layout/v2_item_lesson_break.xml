@@ -9,8 +9,10 @@
     android:foreground="?attr/selectableItemBackground"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp">
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="?attr/colorSurfaceContainer"
+    android:layout_marginBottom="2dp">
 
     <TextView
         android:id="@+id/time_textView"

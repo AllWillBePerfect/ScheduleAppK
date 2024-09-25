@@ -1,16 +1,16 @@
-package com.example.data.service
+package com.example.data.event_manager
 
 import com.example.utils.sources.SingleEvent
 import com.example.utils.sources.SingleLiveData
 import com.example.utils.sources.SingleMutableLiveData
 import javax.inject.Inject
 
-interface RefreshService {
+interface RefreshEventManager {
 
     fun getRefreshLiveData(): SingleLiveData<Boolean>
     fun setRefreshLiveData()
 
-    class Impl @Inject constructor() : RefreshService {
+    class Impl @Inject constructor() : RefreshEventManager {
 
         private val refreshLiveData: SingleMutableLiveData<Boolean> = SingleMutableLiveData(SingleEvent(null))
 

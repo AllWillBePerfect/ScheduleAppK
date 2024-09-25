@@ -1,10 +1,10 @@
 package com.example.data.repositories
 
 
-import com.example.models.sharpref.AppState
-import com.example.models.sharpref.MultipleGroup
-import com.example.models.sharpref.SingleGroup
-import com.example.sharpref.sources.AppConfigContract
+import com.example.models.sharpref.v1.AppState
+import com.example.models.sharpref.v1.MultipleGroup
+import com.example.models.sharpref.v1.SingleGroup
+import com.example.sharpref.sources.v1.AppConfigContract
 import javax.inject.Inject
 
 interface AppConfigRepository {

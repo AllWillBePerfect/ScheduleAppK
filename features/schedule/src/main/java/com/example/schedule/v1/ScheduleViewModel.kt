@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.data.repositories.AppConfigRepository
 import com.example.data.repositories.ScheduleApiRepository
 import com.example.data.repositories.ScheduleItemListRepositoryV3
-import com.example.data.service.RefreshService
+import com.example.data.event_manager.RefreshEventManager
 import com.example.models.ui.ScheduleGroupsListEntity
 import com.example.utils.Result
 import com.example.utils.ScheduleItem
@@ -37,7 +37,7 @@ class ScheduleViewModel @Inject constructor(
     private val appConfigRepository: AppConfigRepository,
     private val scheduleItemListRepositoryV3: ScheduleItemListRepositoryV3,
     private val scheduleApiRepository: ScheduleApiRepository,
-    private val refreshService: RefreshService
+    private val refreshEventManager: RefreshEventManager
 
 ) : ViewModel() {
 
@@ -352,7 +352,7 @@ class ScheduleViewModel @Inject constructor(
             ).addTo(disposables)
     }
 
-    fun getRefreshLiveData() = refreshService.getRefreshLiveData()
+    fun getRefreshLiveData() = refreshEventManager.getRefreshLiveData()
 
 
     override fun onCleared() {

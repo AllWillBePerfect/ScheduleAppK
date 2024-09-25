@@ -17,11 +17,10 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.example.enter.databinding.FragmentEnterBinding
 import com.example.views.adapter.GroupChooseAdapter
 import com.example.views.adapter.GroupItem
-import com.example.enter.databinding.FragmentEnterBinding
 import com.google.android.material.appbar.MaterialToolbar
 import com.jakewharton.rxbinding2.view.RxView
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +29,6 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.log
 
 @AndroidEntryPoint
 class EnterFragment : Fragment() {
@@ -49,11 +47,19 @@ class EnterFragment : Fragment() {
     lateinit var enterFragmentContract: EnterFragmentContract
 
     private var isAddingMode = false
+    private var funcMode = FuncMode.ENTER
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null)
-            isAddingMode = requireArguments().getBoolean(BOOLEAN_TAG, false)
+        if (arguments != null) {
+            val value = requireArguments().getString(BOOLEAN_TAG, "")
+//            isAddingMode = requireArguments().getBoolean(BOOLEAN_TAG, false)
+            funcMode = when (value) {
+                ADD_SINGLE_GROUP_TAG -> FuncMode.ADD_SINGLE
+                ADD_MULTIPLE_GROUP_TAG -> FuncMode.ADD_MULTIPLE
+                else -> FuncMode.ENTER
+            }
+        }
         Log.d("EnterFragment isAddingMode", isAddingMode.toString())
     }
 
@@ -69,18 +75,22 @@ class EnterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = GroupChooseAdapter { viewModel.fetchGroup(it.groupName) }
+        adapter = GroupChooseAdapter {
+            if (funcMode == FuncMode.ADD_MULTIPLE) viewModel.fetchGroupMultiple(it.groupName) else viewModel.fetchGroupSingle(
+                it.groupName
+            )
+        }
         binding.chooseCardRecyclerView.adapter = adapter
         adapter.submitList(createEmptyList())
 
-        if (!isAddingMode) {
+        if (funcMode == FuncMode.ENTER) {
             (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
             val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
             toolbar?.title = "Enter"
             toolbar?.setDisplayHomeAsUpEnabled(false)
             toolbar?.setDisplayShowTitleEnabled(false)
             binding.toolbar.textSwitcher.setText("Enter")
-        } else {
+        } else if (funcMode == FuncMode.ADD_SINGLE || funcMode == FuncMode.ADD_MULTIPLE) {
             (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
             val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
             toolbar?.setDisplayHomeAsUpEnabled(true)
@@ -104,9 +114,10 @@ class EnterFragment : Fragment() {
                     ).hide(
                         WindowInsetsCompat.Type.ime()
                     )
-                    if (!isAddingMode)
-                        enterFragmentContract.navigateToScheduleScreen(instanceState = savedInstanceState)
-                    else {
+                    if (funcMode == FuncMode.ENTER)
+//                        enterFragmentContract.navigateToScheduleScreen(instanceState = savedInstanceState)
+                        requireActivity().recreate()
+                    else if (funcMode == FuncMode.ADD_SINGLE || funcMode == FuncMode.ADD_MULTIPLE) {
                         requireActivity().supportFragmentManager.popBackStack()
                         viewModel.setRefreshLiveData()
                     }
@@ -152,11 +163,14 @@ class EnterFragment : Fragment() {
         viewModel.loadingAppBarLiveData.observe(viewLifecycleOwner) {
             if (it) {
                 if (isLoading) return@observe
-                binding.toolbar.textSwitcher.setText("Loading")
+                binding.toolbar.textSwitcher.setText("Загрузка...")
                 isLoading = true
             } else {
                 if (!isLoading) return@observe
-                binding.toolbar.textSwitcher.setText("Enter")
+                if (funcMode == FuncMode.ENTER)
+                    binding.toolbar.textSwitcher.setText("Enter")
+                else
+                    binding.toolbar.textSwitcher.setText("Добавить группу")
                 isLoading = false
             }
         }
@@ -182,7 +196,11 @@ class EnterFragment : Fragment() {
         )
 
         RxView.clicks(binding.submitButton).subscribe {
-            viewModel.fetchGroup(binding.groupTextInputEditText.text.toString())
+            if (funcMode == FuncMode.ADD_MULTIPLE)
+                viewModel.fetchGroupMultiple(binding.groupTextInputEditText.text.toString())
+            else
+                viewModel.fetchGroupSingle(binding.groupTextInputEditText.text.toString())
+
         }.addTo(viewModel.disposables)
 
 
@@ -263,23 +281,51 @@ class EnterFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+
         handler.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroyView() {
+        if (funcMode == FuncMode.ADD_SINGLE)
+            viewModel.restoreSingleDialog()
+        else if (funcMode == FuncMode.ADD_MULTIPLE)
+            viewModel.restoreMultipleDialog()
         super.onDestroyView()
         _binding = null
     }
 
     companion object {
         private const val BOOLEAN_TAG = "isAdding"
-        fun newInstance(isAdding: Boolean): EnterFragment {
+        private const val ADD_SINGLE_GROUP_TAG = "addSingleGroup"
+        private const val ADD_MULTIPLE_GROUP_TAG = "addMultipleGroup"
+        fun newInstance(): EnterFragment {
             val args = Bundle()
-            args.putBoolean(BOOLEAN_TAG, isAdding)
+            args.putString(BOOLEAN_TAG, "")
+            val fragment = EnterFragment()
+            fragment.arguments = args
+            return fragment
+        }
+
+        fun newInstanceSingleMode(): EnterFragment {
+            val args = Bundle()
+            args.putString(BOOLEAN_TAG, ADD_SINGLE_GROUP_TAG)
             val fragment = EnterFragment()
             fragment.arguments = args
             return fragment
 
+        }
+
+        fun newInstanceMultipleMode(): EnterFragment {
+            val args = Bundle()
+            args.putString(BOOLEAN_TAG, ADD_MULTIPLE_GROUP_TAG)
+            val fragment = EnterFragment()
+            fragment.arguments = args
+            return fragment
+
+        }
+
+        enum class FuncMode {
+            ENTER, ADD_SINGLE, ADD_MULTIPLE
         }
     }
 

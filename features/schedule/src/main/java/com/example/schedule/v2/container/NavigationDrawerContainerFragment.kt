@@ -1,13 +1,16 @@
 package com.example.schedule.v2.container
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.activity.addCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.schedule.databinding.V2PartNavigationDrawerContainerFragmentBinding
 import com.example.schedule.v1.ScheduleFragmentContract
 import com.example.schedule.v2.ScheduleFragmentV2
+import com.example.schedule.v2.ScheduleFragmentV2V2
 import com.example.values.R
 import com.example.views.BaseFragment
 import com.google.android.material.navigation.NavigationView
@@ -32,10 +35,19 @@ class NavigationDrawerContainerFragment :
 
         setupDrawer()
 //        drawerLayout.openDrawer(navView)
-
+        val fragment = childFragmentManager.findFragmentByTag(TAG)
+        if (fragment == null)
         childFragmentManager.beginTransaction().apply {
-            replace(com.example.schedule.R.id.navigationDrawerContainer, ScheduleFragmentV2(), TAG)
+            replace(com.example.schedule.R.id.navigationDrawerContainer, ScheduleFragmentV2V2(), TAG)
             commit()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            Log.d("backPressed", "from $TAG")
+            if (stateDrawer())
+                closeDrawer()
+            else
+                requireActivity().finish()
         }
     }
 

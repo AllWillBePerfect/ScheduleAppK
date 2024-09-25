@@ -1,4 +1,4 @@
-package com.example.models.sharpref
+package com.example.models.sharpref.v1
 
 data class AppConfig(
     val appState: AppState,

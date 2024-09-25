@@ -48,6 +48,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.shimmer)
+
 
 
     implementation(project(":core:values"))

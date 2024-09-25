@@ -1,8 +1,10 @@
 package com.example.schedule.v2.adapter.viewpager
 
-import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.schedule.databinding.V2ItemRecyclerViewDayBinding
 import com.example.schedule.v2.adapter.recyclerview.BreakDelegate
@@ -19,7 +21,7 @@ class RecyclerViewDayDelegate : AdapterItemDelegate<ViewPagerItem> {
     override fun forItem(item: ViewPagerItem): Boolean = item is ViewPagerItem.RecyclerViewDay
 
     override fun getViewHolder(parent: ViewGroup): ViewHolder {
-        Log.d("ViewPagerItem", "RecyclerViewDayDelegate create")
+//        Log.d("ViewPagerItem", "RecyclerViewDayDelegate create")
         val layoutInflater = LayoutInflater.from(parent.context)
         return RecyclerViewDayViewHolder(
             V2ItemRecyclerViewDayBinding.inflate(
@@ -35,7 +37,7 @@ class RecyclerViewDayDelegate : AdapterItemDelegate<ViewPagerItem> {
         item: ViewPagerItem,
         payloads: MutableList<Any>
     ) {
-        Log.d("ViewPagerItem", "RecyclerViewDayDelegate bind")
+//        Log.d("ViewPagerItem", "RecyclerViewDayDelegate bind")
         (viewHolder as RecyclerViewDayViewHolder).bind(item as ViewPagerItem.RecyclerViewDay)
     }
 
@@ -53,12 +55,52 @@ class RecyclerViewDayDelegate : AdapterItemDelegate<ViewPagerItem> {
             diffUtilCallback = TimetableItem.TimetableItemDiffUtil()
         )
 
+
         init {
             binding.recyclerView.adapter = adapter
+            binding.recyclerView.addOnItemTouchListener(CustomOnItemTouchListener())
         }
 
         fun bind(item: ViewPagerItem.RecyclerViewDay) {
             adapter.items = item.lessons
+        }
+
+        inner class CustomOnItemTouchListener() : OnItemTouchListener {
+
+            private var startX = 0f
+            private var startY = 0f
+
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        startX = e.x
+                        startY = e.y
+                        rv.parent.requestDisallowInterceptTouchEvent(true)
+                    }
+
+                    MotionEvent.ACTION_MOVE -> {
+                        val dx = e.x - startX
+                        val dy = e.y - startY
+
+                        if (Math.abs(dy) > Math.abs(dx)) {
+                            // Вертикальная прокрутка: запрещаем ViewPager2 перехватывать касания
+                            rv.parent.requestDisallowInterceptTouchEvent(true)
+                        } else {
+                            // Горизонтальная прокрутка: разрешаем ViewPager2 перехватывать касания
+                            rv.parent.requestDisallowInterceptTouchEvent(false)
+                        }
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                // Не требуется дополнительной обработки
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                // Не требуется дополнительной обработки
+            }
         }
 
     }

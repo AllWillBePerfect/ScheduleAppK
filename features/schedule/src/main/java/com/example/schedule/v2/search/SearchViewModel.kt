@@ -1,27 +1,39 @@
 package com.example.schedule.v2.search
 
 import androidx.lifecycle.ViewModel
-import com.example.data.repositories.v2.WriteAndSearchListOfGroupsRepository
+import com.example.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
+import com.example.data.repositories.v2.schedule.services.WriteAndSearchListOfGroupsService
+import com.example.data.event_manager.RefreshEventManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val writeAndSearchListOfGroupsRepository: WriteAndSearchListOfGroupsRepository
-): ViewModel() {
+    private val writeAndSearchListOfGroupsService: WriteAndSearchListOfGroupsService,
+    private val appConfigRepositoryV2: AppConfigRepositoryV2,
+    private val refreshEventManager: RefreshEventManager
 
-    val groupLiveData = writeAndSearchListOfGroupsRepository.getGroupsLiveData()
-    val fetchLiveData = writeAndSearchListOfGroupsRepository.getFetchScheduleLiveData()
+) : ViewModel() {
+
+    val groupLiveData = writeAndSearchListOfGroupsService.getGroupsLiveData()
+    val fetchLiveData = writeAndSearchListOfGroupsService.getFetchScheduleLiveData()
 
     init {
-        writeAndSearchListOfGroupsRepository.runTypeSubject()
+        writeAndSearchListOfGroupsService.runTypeSubject()
     }
 
-    fun setText(charSequence: CharSequence) = writeAndSearchListOfGroupsRepository.setText(charSequence)
-    fun fetchGroup(groupName: String) = writeAndSearchListOfGroupsRepository.fetchGroup(groupName)
+    fun setText(charSequence: CharSequence) =
+        writeAndSearchListOfGroupsService.setText(charSequence)
+
+    fun fetchGroup(groupName: String) = writeAndSearchListOfGroupsService.fetchGroup(groupName)
+
+    fun setSingleConfig(groupName: String) {
+        appConfigRepositoryV2.addSingleGroupAndSetState(groupName)
+        refreshEventManager.setRefreshLiveData()
+    }
 
     override fun onCleared() {
         super.onCleared()
-        writeAndSearchListOfGroupsRepository.clear()
+        writeAndSearchListOfGroupsService.clear()
     }
 }

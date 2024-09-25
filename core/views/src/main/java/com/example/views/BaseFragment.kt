@@ -1,6 +1,7 @@
 package com.example.views
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,13 +22,26 @@ abstract class BaseFragment<T : ViewBinding>(private val inflate: (LayoutInflate
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+//        Log.d(javaClass.simpleName, "onCreateView")
         _binding = inflate.invoke(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+//        Log.d(javaClass.simpleName, "onViewCreated")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+//        Log.d(javaClass.simpleName, "onDestroyView")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+//        Log.d(javaClass.simpleName, "onDestroy")
+
     }
 
     fun setupAppbar(toolBar: MaterialToolbar, title: String) {
