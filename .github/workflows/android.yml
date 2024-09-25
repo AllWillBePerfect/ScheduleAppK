@@ -2,7 +2,7 @@ name: Android CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "release/*" ]
   pull_request:
     branches: [ "master" ]
 
@@ -14,7 +14,7 @@ env:
 jobs:
 
   build_apk:
-    if: startsWith(github.head_ref, 'release/') == true || startsWith(github.ref, 'refs/heads/master') == true
+    if: $(echo "${{ github.ref }}" | cut -d '/' -f 3) == release/*
     name: Build release artifacts
     runs-on: ubuntu-latest
     steps:
@@ -45,10 +45,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-release.apk
-          path: app/build/outputs/apk/release/app-release.apk
+          path: app/build/outputs/apk/full/release/app-release.apk
 
       - name: Upload AAB Bundle
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
-          path: app/build/outputs/bundle/release/app-release.aab
+          path: app/build/outputs/bundle/fullRelease/app-release.aab

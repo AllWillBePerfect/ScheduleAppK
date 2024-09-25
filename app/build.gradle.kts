@@ -31,10 +31,10 @@ android {
             if (keystorePropFile.exists()) {
                 /** local check */
                 keystorePropFile.inputStream().use { keystoreProp.load(it) }
-                storeFile = file("$keystorePropFile.storeFile")
-                storePassword = "$keystorePropFile.storePassword"
-                keyAlias = "$keystorePropFile.keyAlias"
-                keyPassword = "$keystorePropFile.keyPassword"
+                storeFile = file(keystoreProp["storeFile"] as String)
+                storePassword = keystoreProp["storePassword"] as String
+                keyAlias = keystoreProp["keyAlias"] as String
+                keyPassword = keystoreProp["keyPassword"] as String
             } else {
                 /** CI github check */
                 storeFile = file("keystore/keystore.jks")
