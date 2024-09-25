@@ -43,7 +43,7 @@ class MultipleOptionViewModel @Inject constructor(
         setList()
     }
 
-    fun isSelected(groupName: String): Boolean =
+    fun isSelected(): Boolean =
         appConfigRepositoryV2.getMultipleAppStateOrNull() != null
 
     fun navigate() = router.navigateToAddMultipleGroupScreen()

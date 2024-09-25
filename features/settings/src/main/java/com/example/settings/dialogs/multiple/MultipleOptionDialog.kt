@@ -49,10 +49,10 @@ class MultipleOptionDialog : BaseDialogFragment<V2MultipleOptionDialogBinding>(
                 it.map { groupName ->
                     GroupItem.Multiple(
                         groupName = groupName,
-                        isSelected = viewModel.isSelected(groupName)
+                        isSelected = viewModel.isSelected()
                     )
                 }
-            dialogBinding.activate.isEnabled = it.isNotEmpty()
+            dialogBinding.activate.isEnabled = it.isNotEmpty() && !viewModel.isSelected()
         }
 
 
