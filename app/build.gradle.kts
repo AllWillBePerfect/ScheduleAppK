@@ -1,3 +1,4 @@
+import java.util.Properties
 import java.util.regex.Pattern
 
 plugins {
@@ -24,12 +25,20 @@ val compileSdkVer: Int by rootProject.extra
 android {
     signingConfigs {
         create("release") {
-            val filePath = project.rootProject.file("./app/keystore.jks")
-            storeFile =
-                file(filePath)
-            storePassword = "123456"
-            keyAlias = "key0"
-            keyPassword = "123456"
+            val keystoreProp = Properties()
+            val keystorePropFile = file("keystore/keystoreConfig.properties")
+
+            if (keystorePropFile.exists()) {
+                /** local check */
+                keystorePropFile.inputStream().use { keystoreProp.load(it) }
+                storeFile = file("$keystorePropFile.storeFile")
+                storePassword = "$keystorePropFile.storePassword"
+                keyAlias = "$keystorePropFile.keyAlias"
+                keyPassword = "$keystorePropFile.keyPassword"
+            } else {
+                /** CI github check */
+
+            }
         }
     }
     namespace = "com.example.scheduleappk"
