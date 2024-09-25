@@ -14,7 +14,7 @@ env:
 jobs:
 
   build_apk:
-    if: startsWith(github.head_ref, 'master/') == true
+    if: startsWith(github.head_ref, 'release/') == true || startsWith(github.ref, 'refs/heads/master') == true
     name: Build release artifacts
     runs-on: ubuntu-latest
     steps:
