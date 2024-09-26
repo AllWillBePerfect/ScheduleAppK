@@ -71,7 +71,9 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/transparent"
             app:tabContentStart="56dp"
-            app:tabMode="scrollable" />
+            app:tabMode="scrollable"
+
+            />
 
         <com.schedule.views.CustomSwipeRefreshLayout
             android:id="@+id/swipeRefresh"

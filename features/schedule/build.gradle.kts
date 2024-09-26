@@ -70,6 +70,8 @@ dependencies {
     api(project(":core:values"))
     api(project(":core:views"))
     implementation(project(":core:data"))
+    api(project(":core:utils"))
+
 
 
 }

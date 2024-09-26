@@ -11,22 +11,27 @@ import android.view.animation.Transformation
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.PathParser
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.R
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayoutMediator
+import com.schedule.schedule.databinding.CustomTabBinding
 import com.schedule.schedule.databinding.V2FragmentScheduleBinding
 import com.schedule.schedule.v2.adapter.viewpager.RecyclerViewDayCurrentDelegate
 import com.schedule.schedule.v2.adapter.viewpager.RecyclerViewDayDelegate
 import com.schedule.schedule.v2.adapter.viewpager.model.ViewPagerItem
 import com.schedule.schedule.v2.container.NavigationDrawerContainerFragment
 import com.schedule.schedule.v2.search.SearchFragment
+import com.schedule.utils.sources.DateUtils
 import com.schedule.views.BaseFragment
 import com.schedule.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class ScheduleFragmentV2V2 :
@@ -37,9 +42,16 @@ class ScheduleFragmentV2V2 :
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var adapter: UniversalRecyclerViewAdapter<ViewPagerItem>
 
+    private var currentWeek by Delegates.notNull<Int>()
+
+    private var baseTextColor by Delegates.notNull<Int>()
+    private var primaryTextColor by Delegates.notNull<Int>()
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setColors()
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar)
         val toolbar = getToolbar()
@@ -80,113 +92,21 @@ class ScheduleFragmentV2V2 :
         binding.viewPager.offscreenPageLimit = 6
 
         TabLayoutMediator(binding.daysBottomTabLayout, binding.viewPager) { tab, position ->
+            val tabBinding = CustomTabBinding.inflate(layoutInflater)
             when (position) {
-                0 -> tab.text = "ПН"
-                1 -> tab.text = "ВТ"
-                2 -> tab.text = "СР"
-                3 -> tab.text = "ЧТ"
-                4 -> tab.text = "ПТ"
-                5 -> tab.text = "СБ"
-            }
-        }.attach()
+                0 -> tabBinding.tabText.text = "ПН"
+                1 -> tabBinding.tabText.text = "ВТ"
+                2 -> tabBinding.tabText.text = "СР"
+                3 -> tabBinding.tabText.text = "ЧТ"
+                4 -> tabBinding.tabText.text = "ПТ"
 
-//        viewModel.initLiveData.observe(viewLifecycleOwner) { event ->
-//            event.eventForCheck?.let {
-//                binding.weeksTabLayout.visibility = View.INVISIBLE
-//                when (it) {
-//                    is Result.Success -> {
-//                        adapter.items = it.data.scheduleList
-//                        binding.viewPager.post {
-//                            val index =
-//                                it.data.scheduleList.indexOfFirst { item -> item is ViewPagerItem.RecyclerViewCurrentDay }
-//                            if (index != -1)
-//                                binding.viewPager.setCurrentItem(index, true)
-//                        }
-//
-//                        binding.weeksTabLayout.clearOnTabSelectedListeners()
-//                        binding.weeksTabLayout.removeAllTabs()
-//                        binding.weeksTabLayout.post {
-//                            for (i in 1..it.data.weeks.size)
-//                                binding.weeksTabLayout.addTab(
-//                                    binding.weeksTabLayout.newTab().setText("$i Нед.")
-//                                )
-//                        }
-//                        handler.post {
-//                            binding.weeksTabLayout.post {
-//                                binding.weeksTabLayout.getTabAt(it.data.currentWeek - 1)
-//                                    ?.select()
-//                                binding.weeksTabLayout.addOnTabSelectedListener(WeekTabListener { week ->
-//                                    viewModel.fetchByWeek((week + 1).toString())
-//                                })
-//                                enableTabClicks(true)
-//                                binding.weeksTabLayout.visibility = View.VISIBLE
-//                            }
-//                        }
-//                        binding.toolbar.textSwitcher.setText(viewModel.getTitle())
-//
-//                    }
-//
-//                    is Result.Error -> {
-//                        Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT)
-//                            .show()
-//                        binding.toolbar.textSwitcher.setText(viewModel.getTitle())
-//                        enableTabClicks(true)
-//                        binding.weeksTabLayout.visibility = View.VISIBLE
-//                    }
-//
-//                    is Result.Loading -> {
-//                        binding.toolbar.textSwitcher.setText("Загрузка...")
-//                        enableTabClicks(false)
-//                    }
-//
-//                }
-//            }
-//        }
-//
-//        viewModel.weekFetchLiveData.observe(viewLifecycleOwner) { event ->
-//            event.event?.let {
-//                when (it) {
-//                    is Result.Success -> {
-//                        adapter.items = it.data.scheduleList
-//                        binding.viewPager.post {
-//                            val index =
-//                                it.data.scheduleList.indexOfFirst { item -> item is ViewPagerItem.RecyclerViewCurrentDay }
-//                            if (index != -1)
-//                                binding.viewPager.setCurrentItem(index, true)
-//                        }
-//
-//                        handler.post {
-//                            binding.weeksTabLayout.post {
-//                                binding.weeksTabLayout.getTabAt(it.data.currentWeek - 1)
-//                                    ?.select()
-//                                enableTabClicks(true)
-//                            }
-//                        }
-//                        binding.toolbar.textSwitcher.setText(viewModel.getTitle())
-//                    }
-//
-//                    is Result.Error -> {
-//                        Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT)
-//                            .show()
-//                        binding.toolbar.textSwitcher.setText(viewModel.getTitle())
-//                        enableTabClicks(true)
-//                    }
-//
-//                    is Result.Loading -> {
-//                        binding.toolbar.textSwitcher.setText("Загрузка...")
-//                        enableTabClicks(false)
-//                    }
-//                }
-//            }
-//        }
-//
-//        viewModel.backStackRestoreLiveData.observe(viewLifecycleOwner) {
-//
-//        }
-//
-//        viewModel.refreshServiceLiveData.observe(viewLifecycleOwner) {
-//            it.event?.let { viewModel.init() }
-//        }
+                5 -> tabBinding.tabText.text = "СБ"
+            }
+            if (DateUtils.getCurrentDayOfWeek() - 1 == position)
+                tabBinding.tabText.setTextColor(primaryTextColor)
+
+            tab.customView = tabBinding.root
+        }.attach()
 
 
         viewModel.appBarLoadingLiveData.observe(viewLifecycleOwner) { state ->
@@ -204,7 +124,7 @@ class ScheduleFragmentV2V2 :
             }
         }
 
-        viewModel.tabsLayoutLiveData.observe(viewLifecycleOwner) {state ->
+        viewModel.tabsLayoutLiveData.observe(viewLifecycleOwner) { state ->
             state.event?.let {
                 when (it) {
                     is ScheduleViewModelV2V2.TabsLayoutLiveDataState.SuccessInit -> {
@@ -215,47 +135,70 @@ class ScheduleFragmentV2V2 :
                                 binding.weeksTabLayout.addTab(
                                     binding.weeksTabLayout.newTab().setText("$i Нед.")
                                 )
-                        }
-                        handler.post {
-                            binding.weeksTabLayout.post {
-                                binding.weeksTabLayout.getTabAt(it.data.currentWeek - 1)
-                                    ?.select()
-                                binding.weeksTabLayout.addOnTabSelectedListener(WeekTabListener { week ->
-                                    viewModel.fetchByWeekV2((week + 1).toString())
-                                })
-                                enableTabClicks(true)
+                            currentWeek = it.data.currentWeek
+                            for (i in 0 until binding.weeksTabLayout.tabCount) {
+                                val tab = binding.weeksTabLayout.getTabAt(i)
+                                tab?.let { letTab ->
+                                    val tabBinding = CustomTabBinding.inflate(layoutInflater)
+                                    tabBinding.tabText.text = letTab.text
+                                    if (i == currentWeek - 1) tabBinding.tabText.setTextColor(primaryTextColor)
+                                    tab.setCustomView(tabBinding.root)
+                                }
+                            }
 
-                                viewModel.setAppBarLoadingLiveDataLoadedState()
+                            handler.post {
+                                binding.weeksTabLayout.post {
+                                    binding.weeksTabLayout.getTabAt(it.data.currentWeek - 1)
+                                        ?.select()
+                                    binding.weeksTabLayout.addOnTabSelectedListener(
+                                        WeekTabListener(
+                                            currentWeek
+                                        ) { week ->
+                                            viewModel.fetchByWeekV2((week + 1).toString())
+                                        })
+                                    enableTabClicks(true)
+                                    viewModel.setAppBarLoadingLiveDataLoadedState()
+                                }
                             }
                         }
+
                     }
+
                     is ScheduleViewModelV2V2.TabsLayoutLiveDataState.SuccessWeekFetch -> {
                         binding.weeksTabLayout.clearOnTabSelectedListeners()
                         handler.post {
                             binding.weeksTabLayout.getTabAt(it.data.currentWeek - 1)
                                 ?.select()
-                            binding.weeksTabLayout.addOnTabSelectedListener(WeekTabListener { week ->
-                                viewModel.fetchByWeekV2((week + 1).toString())
-                            })
+                            binding.weeksTabLayout.addOnTabSelectedListener(
+                                WeekTabListener(
+                                    currentWeek
+                                ) { week ->
+                                    viewModel.fetchByWeekV2((week + 1).toString())
+                                })
                             enableTabClicks(true)
 
                             viewModel.setAppBarLoadingLiveDataLoadedState()
                         }
                     }
+
                     is ScheduleViewModelV2V2.TabsLayoutLiveDataState.Error -> {}
                     is ScheduleViewModelV2V2.TabsLayoutLiveDataState.NotLoadedWeekError -> {
                         binding.weeksTabLayout.clearOnTabSelectedListeners()
                         handler.post {
                             binding.weeksTabLayout.getTabAt(it.oldValue - 1)
                                 ?.select()
-                            binding.weeksTabLayout.addOnTabSelectedListener(WeekTabListener { week ->
-                                viewModel.fetchByWeekV2((week + 1).toString())
-                            })
+                            binding.weeksTabLayout.addOnTabSelectedListener(
+                                WeekTabListener(
+                                    currentWeek
+                                ) { week ->
+                                    viewModel.fetchByWeekV2((week + 1).toString())
+                                })
                             enableTabClicks(true)
 
                             viewModel.setAppBarLoadingLiveDataLoadedState()
                         }
                     }
+
                     ScheduleViewModelV2V2.TabsLayoutLiveDataState.Loading -> {
                         enableTabClicks(false)
                     }
@@ -267,7 +210,7 @@ class ScheduleFragmentV2V2 :
             }
         }
 
-        viewModel.adapterLiveData.observe(viewLifecycleOwner) {state ->
+        viewModel.adapterLiveData.observe(viewLifecycleOwner) { state ->
             state.event?.let {
                 when (it) {
                     is ScheduleViewModelV2V2.AdapterLiveDataState.Success -> {
@@ -280,6 +223,7 @@ class ScheduleFragmentV2V2 :
                             binding.viewPager.visibility = View.VISIBLE
                         }
                     }
+
                     is ScheduleViewModelV2V2.AdapterLiveDataState.Error -> {
                         viewModel.setAppBarLoadingLiveDataLoadedState()
                         Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT)
@@ -287,6 +231,7 @@ class ScheduleFragmentV2V2 :
                         binding.viewPager.visibility = View.VISIBLE
 
                     }
+
                     ScheduleViewModelV2V2.AdapterLiveDataState.Loading -> {
 //                        binding.viewPager.visibility = View.INVISIBLE
                     }
@@ -314,6 +259,35 @@ class ScheduleFragmentV2V2 :
 
         viewModel.restoreStatePopBackStack()
 
+
+
+
+    }
+
+    private fun setColors() {
+        val typedValue = TypedValue()
+        val theme = requireContext().theme
+        val attr = R.attr.colorOnSurfaceVariant
+        theme.resolveAttribute(
+            attr,
+            typedValue,
+            true
+        )
+        baseTextColor = if (typedValue.resourceId != 0)
+            ContextCompat.getColor(requireContext(), typedValue.resourceId)
+        else typedValue.data
+
+        val typedValue2 = TypedValue()
+        val theme2 = requireContext().theme
+        val attr2 = R.attr.colorPrimary
+        theme2.resolveAttribute(
+            attr2,
+            typedValue2,
+            true
+        )
+        primaryTextColor = if (typedValue2.resourceId != 0)
+            ContextCompat.getColor(requireContext(), typedValue2.resourceId)
+        else typedValue2.data
     }
 
     private fun enableTabClicks(isEnable: Boolean) {
@@ -406,14 +380,33 @@ class ScheduleFragmentV2V2 :
     fun showToolbar() = expand()
 
     private inner class WeekTabListener(
+        private val currentWeek: Int,
         private val tabSelected: (Int) -> Unit
     ) : OnTabSelectedListener {
 
-        override fun onTabSelected(p0: TabLayout.Tab?) =
+        override fun onTabSelected(p0: TabLayout.Tab?) {
+            val customView = p0?.customView
+            customView?.let {
+                val tabBinding = CustomTabBinding.bind(it)
+                if (p0.position == currentWeek - 1)
+                    tabBinding.tabText.setTextColor(primaryTextColor)
+                else
+                    tabBinding.tabText.setTextColor(baseTextColor)
+            }
             tabSelected.invoke(p0?.position ?: 0)
+        }
 
 
-        override fun onTabUnselected(p0: TabLayout.Tab?) = Unit
+        override fun onTabUnselected(p0: TabLayout.Tab?) {
+            val customView = p0?.customView
+            customView?.let {
+                val tabBinding = CustomTabBinding.bind(it)
+                if (p0.position == currentWeek - 1)
+                    tabBinding.tabText.setTextColor(primaryTextColor)
+                else
+                    tabBinding.tabText.setTextColor(baseTextColor)
+            }
+        }
 
 
         override fun onTabReselected(p0: TabLayout.Tab?) = Unit
