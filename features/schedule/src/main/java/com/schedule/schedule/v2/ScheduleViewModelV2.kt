@@ -87,7 +87,7 @@ class ScheduleViewModelV2 @Inject constructor(
                         it.currentWeek,
                         lastWeekConfig != null
                     )
-                    lastScheduleList = mapList(it.scheduleList)
+//                    lastScheduleList = mapList(it.scheduleList)
                     _weeksLiveData.value = (ResultWeeksConfig.Success(lastWeekConfig!!))
                     _testLiveData.value = (Result.Success(lastScheduleList!!))
                 },
@@ -125,7 +125,7 @@ class ScheduleViewModelV2 @Inject constructor(
                 onSuccess = {
                     Log.d("ScheduleViewModelV2", "fetchByWeek onSuccess")
                     lastWeekConfig = LastWeeksConfig(it.weeks, it.currentWeek, true)
-                    lastScheduleList = mapList(it.scheduleList)
+//                    lastScheduleList = mapList(it.scheduleList)
                     _weeksLiveData.value = (ResultWeeksConfig.Success(lastWeekConfig!!))
                     _testLiveData.value = (Result.Success(lastScheduleList!!))
 
@@ -156,60 +156,60 @@ class ScheduleViewModelV2 @Inject constructor(
 
     fun restoreAdapter() {
         val value = scheduleRepository.restore() ?: return
-        _testLiveData.value = Result.Success(mapList(value))
+//        _testLiveData.value = Result.Success(mapList(value))
     }
 
     fun navigateToSettingsScreen() = router.navigateToSettingsScreen()
 
-    private fun mapList(list: List<ViewPagerItemDomain>): List<ViewPagerItem> {
-        return list.map { item ->
-            when (item) {
-                is ViewPagerItemDomain.RecyclerViewDay -> ViewPagerItem.RecyclerViewDay(
-                    mapItems(
-                        item.lessons
-                    )
-                )
-
-                is ViewPagerItemDomain.RecyclerViewCurrentDay -> ViewPagerItem.RecyclerViewCurrentDay(
-                    mapItems(item.lessons)
-                )
-            }
-        }
-    }
-
-    private fun mapItems(list: List<TimetableItemDomain>): List<TimetableItem> {
-        return list.map { item ->
-            when (item) {
-                is TimetableItemDomain.Title -> TimetableItem.Title(
-                    item.date,
-                    item.dayOfWeekName,
-                    item.groupName,
-                    item.isTitleEnabled
-                )
-
-                is TimetableItemDomain.Lesson -> TimetableItem.Lesson(item.time, item.lessonName)
-                is TimetableItemDomain.Break -> TimetableItem.Break(
-                    item.time,
-                    item.lessonName,
-                    item.progressValue
-                )
-
-                is TimetableItemDomain.LessonCurrent -> TimetableItem.LessonCurrent(
-                    item.time,
-                    item.lessonName,
-                    item.progressValue
-                )
-
-                is TimetableItemDomain.TitleCurrent -> TimetableItem.TitleCurrent(
-                    item.date,
-                    item.dayOfWeekName,
-                    item.groupName,
-                    item.isTitleEnabled
-                )
-            }
-        }
-
-    }
+//    private fun mapList(list: List<ViewPagerItemDomain>): List<ViewPagerItem> {
+//        return list.map { item ->
+//            when (item) {
+//                is ViewPagerItemDomain.RecyclerViewDay -> ViewPagerItem.RecyclerViewDay(
+//                    mapItems(
+//                        item.lessons
+//                    )
+//                )
+//
+//                is ViewPagerItemDomain.RecyclerViewCurrentDay -> ViewPagerItem.RecyclerViewCurrentDay(
+//                    mapItems(item.lessons)
+//                )
+//            }
+//        }
+//    }
+//
+//    private fun mapItems(list: List<TimetableItemDomain>): List<TimetableItem> {
+//        return list.map { item ->
+//            when (item) {
+//                is TimetableItemDomain.Title -> TimetableItem.Title(
+//                    item.date,
+//                    item.dayOfWeekName,
+//                    item.groupName,
+//                    item.isTitleEnabled
+//                )
+//
+//                is TimetableItemDomain.Lesson -> TimetableItem.Lesson(item.time, item.lessonName, mapItems(item.lessonContentTypeDomain))
+//                is TimetableItemDomain.Break -> TimetableItem.Break(
+//                    item.time,
+//                    item.lessonName,
+//                    item.progressValue
+//                )
+//
+//                is TimetableItemDomain.LessonCurrent -> TimetableItem.LessonCurrent(
+//                    item.time,
+//                    item.lessonName,
+//                    item.progressValue
+//                )
+//
+//                is TimetableItemDomain.TitleCurrent -> TimetableItem.TitleCurrent(
+//                    item.date,
+//                    item.dayOfWeekName,
+//                    item.groupName,
+//                    item.isTitleEnabled
+//                )
+//            }
+//        }
+//
+//    }
 
     fun getTitle() = appConfigRepositoryV2.getTitle()
 

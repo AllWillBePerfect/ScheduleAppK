@@ -99,7 +99,6 @@ class ScheduleFragmentV2V2 :
                 2 -> tabBinding.tabText.text = "СР"
                 3 -> tabBinding.tabText.text = "ЧТ"
                 4 -> tabBinding.tabText.text = "ПТ"
-
                 5 -> tabBinding.tabText.text = "СБ"
             }
             if (DateUtils.getCurrentDayOfWeek() - 1 == position)

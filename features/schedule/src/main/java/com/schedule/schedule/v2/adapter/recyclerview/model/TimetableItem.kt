@@ -6,12 +6,14 @@ sealed class TimetableItem {
     data class Lesson(
         val time: String,
         val lessonName: String,
+        val lessonContentType: ContentType
     ) : TimetableItem()
 
     data class LessonCurrent(
         val time: String,
         val lessonName: String,
-        val progressValue: Int
+        val progressValue: Int,
+        val lessonContentType: ContentType
     ) : TimetableItem()
 
     data class Break(
@@ -75,5 +77,9 @@ sealed class TimetableItem {
             oldList: List<TimetableItem>,
             newList: List<TimetableItem>
         ): Any? = null
+    }
+
+    enum class ContentType {
+        NONE, ONLINE, OFFLINE
     }
 }

@@ -166,7 +166,8 @@ interface ScheduleRepository {
                 list.add(
                     TimetableItemDomain.Lesson(
                         time = generateTimeForLessons(index),
-                        lessonName = lessons[index]
+                        lessonName = lessons[index],
+                        getLessonContentType(lessons[index])
                     )
                 )
             }
@@ -321,11 +322,20 @@ interface ScheduleRepository {
                 list.add(
                     TimetableItemDomain.Lesson(
                         time = generateTimeForLessons(index),
-                        lessonName = lessons[index]
+                        lessonName = lessons[index],
+                        lessonContentTypeDomain = getLessonContentType(lessons[index])
                     )
                 )
             }
             return list
+        }
+
+        private fun getLessonContentType(lessonContent: String): TimetableItemDomain.Companion.ContentTypeDomain {
+            return when {
+                lessonContent.isEmpty() -> TimetableItemDomain.Companion.ContentTypeDomain.NONE
+                Regex("LMS").containsMatchIn(lessonContent) -> TimetableItemDomain.Companion.ContentTypeDomain.ONLINE
+                else -> TimetableItemDomain.Companion.ContentTypeDomain.OFFLINE
+            }
         }
 
 
@@ -335,7 +345,8 @@ interface ScheduleRepository {
         ) = TimetableItemDomain.LessonCurrent(
             time = lesson.time,
             lessonName = lesson.lessonName,
-            progressValue = progressValue
+            progressValue = progressValue,
+            lessonContentTypeDomain = getLessonContentType(lesson.lessonName)
         )
 
         private fun createCurrentTimetableItemBreak(

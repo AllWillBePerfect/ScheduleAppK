@@ -41,7 +41,8 @@ class ScheduleViewModelV2V2 @Inject constructor(
     private val _weekFetchLiveData = SingleMutableLiveData<Result<ScheduleInitConfig>>()
     val weekFetchLiveData: SingleLiveData<Result<ScheduleInitConfig>> = _weekFetchLiveData
 
-    val refreshServiceLiveData: LiveData<SingleEvent<Boolean>> = refreshEventManager.getRefreshLiveData()
+    val refreshServiceLiveData: LiveData<SingleEvent<Boolean>> =
+        refreshEventManager.getRefreshLiveData()
 
     private val _backStackRestoreLiveData = SingleMutableLiveData<ScheduleInitConfig>()
     val backStackRestoreLiveData: SingleLiveData<ScheduleInitConfig> = _backStackRestoreLiveData
@@ -135,7 +136,8 @@ class ScheduleViewModelV2V2 @Inject constructor(
                 },
                 onError = {
                     Log.d("ScheduleViewModelV2V2", "fetchByWeek onError:${it} ${it.message}")
-                    _tabsLayoutLiveData.value = SingleEvent(TabsLayoutLiveDataState.NotLoadedWeekError(scheduleInitConfigV2!!.currentWeek))
+                    _tabsLayoutLiveData.value =
+                        SingleEvent(TabsLayoutLiveDataState.NotLoadedWeekError(scheduleInitConfigV2!!.currentWeek))
                 }
             )
             .addTo(disposables)
@@ -271,7 +273,12 @@ class ScheduleViewModelV2V2 @Inject constructor(
                     item.isTitleEnabled
                 )
 
-                is TimetableItemDomain.Lesson -> TimetableItem.Lesson(item.time, item.lessonName)
+                is TimetableItemDomain.Lesson -> TimetableItem.Lesson(
+                    item.time,
+                    item.lessonName,
+                    mapContentType(item.lessonContentTypeDomain)
+                )
+
                 is TimetableItemDomain.Break -> TimetableItem.Break(
                     item.time,
                     item.lessonName,
@@ -281,7 +288,8 @@ class ScheduleViewModelV2V2 @Inject constructor(
                 is TimetableItemDomain.LessonCurrent -> TimetableItem.LessonCurrent(
                     item.time,
                     item.lessonName,
-                    item.progressValue
+                    item.progressValue,
+                    mapContentType(item.lessonContentTypeDomain)
                 )
 
                 is TimetableItemDomain.TitleCurrent -> TimetableItem.TitleCurrent(
@@ -293,6 +301,14 @@ class ScheduleViewModelV2V2 @Inject constructor(
             }
         }
 
+    }
+
+    private fun mapContentType(domain: TimetableItemDomain.Companion.ContentTypeDomain): TimetableItem.ContentType {
+        return when (domain) {
+            TimetableItemDomain.Companion.ContentTypeDomain.NONE -> TimetableItem.ContentType.NONE
+            TimetableItemDomain.Companion.ContentTypeDomain.ONLINE -> TimetableItem.ContentType.ONLINE
+            TimetableItemDomain.Companion.ContentTypeDomain.OFFLINE -> TimetableItem.ContentType.OFFLINE
+        }
     }
 
     override fun onCleared() {
