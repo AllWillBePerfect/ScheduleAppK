@@ -12,6 +12,8 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.schedule.data.event_manager.RestoreDialogEventManager
 import com.schedule.settings.adapter.PressExpandableOptionDelegate
 import com.schedule.settings.adapter.PressOptionDelegate
@@ -25,8 +27,6 @@ import com.schedule.settings.dialogs.single.SingleOptionDialog
 import com.schedule.values.R
 import com.schedule.views.BaseFragment
 import com.schedule.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -58,26 +58,25 @@ class SettingsFragment :
         )
 
         binding.recyclerView.adapter = adapter
-        adapter.items = createGroupSection() + createStyleSection()
-//        + createKillerFeaturesSection()
+        adapter.items = concatenateSection()
 
         viewModel.updateUiLiveData.observe(viewLifecycleOwner) {
-            it.eventForCheck.let { adapter.items = createGroupSection() + createStyleSection()
-//                + createKillerFeaturesSection()
-            }
+            it.eventForCheck.let { adapter.items = concatenateSection() }
         }
 
         viewModel.restoreDialogLiveData.observe(viewLifecycleOwner) {
-            it.event?.let {event ->
+            it.event?.let { event ->
                 when (event) {
                     RestoreDialogEventManager.Companion.RestoreDialogState.Single -> {
                         val dialog = SingleOptionDialog()
                         dialog.show(requireActivity().supportFragmentManager, "singleOption")
                     }
+
                     RestoreDialogEventManager.Companion.RestoreDialogState.Replace -> {
                         val dialog = ReplaceOptionDialog()
                         dialog.show(requireActivity().supportFragmentManager, "replaceOption")
                     }
+
                     RestoreDialogEventManager.Companion.RestoreDialogState.Multiple -> {
                         val dialog = MultipleOptionDialog()
                         dialog.show(requireActivity().supportFragmentManager, "multipleOption")
@@ -91,6 +90,9 @@ class SettingsFragment :
             requireActivity().supportFragmentManager.popBackStack()
         }
     }
+
+    fun concatenateSection(): List<SettingsItem> =
+        createGroupSection() + createStyleSection() + createAdditionOptionsSection()
 
     private fun setupAppBar() {
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
@@ -228,7 +230,7 @@ class SettingsFragment :
                 SettingsItem.Section("Оформление"),
                 SettingsItem.SwitchOption(
                     title = "Dynamic colors",
-                    subtitle = "Активировируйте динамические цвета",
+                    subtitle = "Активируйте динамические цвета",
                     icon = R.drawable.palette,
                     isChecked = viewModel.getDynamicColors(),
                     cornersType = SettingsItem.CornersType.TOP,
@@ -250,6 +252,20 @@ class SettingsFragment :
                 cornersType = SettingsItem.CornersType.SINGLE
             ) { setupNightModeDialog() },
         )
+
+    var ischecked = true
+
+    private fun createAdditionOptionsSection(): List<SettingsItem> = listOf(
+        SettingsItem.Section("Дополнительно"),
+        SettingsItem.SwitchOption(
+            title = "Много групп: быстрое переключение",
+            subtitle = "Нажмите на название нужной группы на панели снизу на экране расписания, чтобы пролистать список",
+            icon = R.drawable.baseline_settings_24,
+            isChecked = viewModel.getMultipleGroupTabLayoutState(),
+            cornersType = SettingsItem.CornersType.SINGLE,
+            action = viewModel::switchMultipleGroupTabLayoutState
+        )
+    )
 
 
     private fun createKillerFeaturesSection(): List<SettingsItem> = listOf(

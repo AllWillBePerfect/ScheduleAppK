@@ -1,5 +1,6 @@
 package com.schedule.sharpref.di
 
+import com.schedule.sharpref.sources.AdditionalOptionsContract
 import com.schedule.sharpref.sources.v1.AppConfigContract
 import com.schedule.sharpref.sources.v1.AppConfigContractImpl
 import com.schedule.sharpref.sources.DynamicColorsContract
@@ -30,4 +31,8 @@ interface SharedPreferencesModule {
     @Binds
     @Singleton
     fun bindAppConfigV2Settings(appConfigV2ContractImpl: AppConfigV2Contract.Impl): AppConfigV2Contract
+
+    @Binds
+    @Singleton
+    fun bindAdditionalOptionsSettings(additionalOptionsContract: AdditionalOptionsContract.Impl): AdditionalOptionsContract
 }

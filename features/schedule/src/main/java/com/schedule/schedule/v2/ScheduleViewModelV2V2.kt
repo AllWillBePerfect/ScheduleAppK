@@ -8,6 +8,8 @@ import com.schedule.data.repositories.v2.schedule.repository.impl.AppConfigRepos
 import com.schedule.data.repositories.v2.schedule.repository.ScheduleRepository
 import com.schedule.data.event_manager.RefreshEventManager
 import com.schedule.data.event_manager.RestoreAfterPopBackStackEventManager
+import com.schedule.data.repositories.settings.AdditionalOptionRepository
+import com.schedule.models.sharpref.v2.AppStateV2
 import com.schedule.models.ui.v2.schedule.TimetableItemDomain
 import com.schedule.models.ui.v2.schedule.ViewPagerItemDomain
 import com.schedule.schedule.v1.ScheduleFragmentContract
@@ -29,6 +31,7 @@ class ScheduleViewModelV2V2 @Inject constructor(
     private val router: ScheduleFragmentContract,
     @ContainerImplementation private val scheduleRepository: ScheduleRepository,
     private val appConfigRepositoryV2: AppConfigRepositoryV2,
+    private val additionalOptionRepository: AdditionalOptionRepository,
     private val refreshEventManager: RefreshEventManager,
     private val restoreAfterPopBackStackEventManager: RestoreAfterPopBackStackEventManager
 ) : ViewModel() {
@@ -183,6 +186,16 @@ class ScheduleViewModelV2V2 @Inject constructor(
     fun restoreStatePopBackStack() {
         if (refreshEventManager.getRefreshLiveData().value?.eventForCheck == null) {
             restoreAfterPopBackStackEventManager.setRestoreStateAfterPopBackStackLiveData()
+        }
+    }
+
+    fun manageViewMultipleScrollTabLayout(show: () -> Unit, hide: () -> Unit) {
+        val state = appConfigRepositoryV2.getAppState()
+        when (state) {
+            is AppStateV2.Single -> hide.invoke()
+            is AppStateV2.Multiple -> if (additionalOptionRepository.getMultipleGroupFastScrollState()) show.invoke() else hide.invoke()
+            is AppStateV2.Replace -> hide.invoke()
+            is AppStateV2.Unselected -> hide.invoke()
         }
     }
 

@@ -42,12 +42,12 @@ class RecyclerViewDayCurrentDelegate(
     }
 
 
-    inner class RecyclerViewDayCurrentViewHolder(private val binding: V2ItemRecyclerViewDayBinding) :
+    class RecyclerViewDayCurrentViewHolder(val binding: V2ItemRecyclerViewDayBinding) :
         ViewHolder(binding.root) {
         var adapter: UniversalRecyclerViewAdapter<TimetableItem> = UniversalRecyclerViewAdapter(
             delegates = listOf(
                 LessonDelegate(),
-                LessonCurrentDelegate {onItemClickListener.invoke()},
+                LessonCurrentDelegate(),
                 TitleDelegate(),
                 TitleCurrentDelegate(),
                 BreakDelegate()
@@ -57,11 +57,19 @@ class RecyclerViewDayCurrentDelegate(
 
         init {
             binding.recyclerView.adapter = adapter
+            binding.recyclerView.addOnItemTouchListener(RecyclerViewDayDelegate.RecyclerViewDayViewHolder.CustomOnItemTouchListener())
+
         }
 
         fun bind(item: ViewPagerItem.RecyclerViewCurrentDay) {
             adapter.items = item.lessons
         }
 
+        fun scrollToPosition(position: Int) {
+            binding.recyclerView.scrollToPosition(position)
+        }
+
+
     }
+
 }

@@ -27,7 +27,7 @@ class TitleCurrentDelegate: AdapterItemDelegate<TimetableItem> {
         (viewHolder as TitleCurrentViewHolder).bind(item as TimetableItem.TitleCurrent)
     }
 
-    inner class TitleCurrentViewHolder(private val binding: V2ItemTitleCurrentBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class TitleCurrentViewHolder(val binding: V2ItemTitleCurrentBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TimetableItem.TitleCurrent) {
             binding.dateTextView.text = item.date
             binding.dayOfWeekNameTextView.text = item.dayOfWeekName

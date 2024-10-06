@@ -1,5 +1,6 @@
 package com.schedule.schedule.v2
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,14 +17,20 @@ import androidx.core.graphics.PathParser
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.schedule.schedule.databinding.CustomTabBinding
 import com.schedule.schedule.databinding.V2FragmentScheduleBinding
+import com.schedule.schedule.v2.adapter.recyclerview.model.TimetableItem
 import com.schedule.schedule.v2.adapter.viewpager.RecyclerViewDayCurrentDelegate
 import com.schedule.schedule.v2.adapter.viewpager.RecyclerViewDayDelegate
+import com.schedule.schedule.v2.adapter.viewpager.adapter.RecyclerViewDayAdapter
 import com.schedule.schedule.v2.adapter.viewpager.model.ViewPagerItem
 import com.schedule.schedule.v2.container.NavigationDrawerContainerFragment
 import com.schedule.schedule.v2.search.SearchFragment
@@ -40,7 +47,9 @@ class ScheduleFragmentV2V2 :
     private val viewModel by activityViewModels<ScheduleViewModelV2V2>()
 
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var adapter: UniversalRecyclerViewAdapter<ViewPagerItem>
+
+    //    private lateinit var adapter: UniversalRecyclerViewAdapter<ViewPagerItem>
+    private lateinit var adapter: RecyclerViewDayAdapter
 
     private var currentWeek by Delegates.notNull<Int>()
 
@@ -82,12 +91,14 @@ class ScheduleFragmentV2V2 :
         }
 
 
-        adapter = UniversalRecyclerViewAdapter(
-            delegates = listOf(RecyclerViewDayDelegate(), RecyclerViewDayCurrentDelegate {
-//                viewModel.initializeSchedule()
-            }),
-            diffUtilCallback = ViewPagerItem.ViewPagerItemDiffUtil()
-        )
+//        adapter = UniversalRecyclerViewAdapter(
+//            delegates = listOf(RecyclerViewDayDelegate(), RecyclerViewDayCurrentDelegate {
+////                viewModel.initializeSchedule()
+//            }),
+//            diffUtilCallback = ViewPagerItem.ViewPagerItemDiffUtil()
+//        )
+
+        adapter = RecyclerViewDayAdapter()
         binding.viewPager.adapter = adapter
         binding.viewPager.offscreenPageLimit = 6
 
@@ -106,6 +117,12 @@ class ScheduleFragmentV2V2 :
 
             tab.customView = tabBinding.root
         }.attach()
+
+        viewModel.manageViewMultipleScrollTabLayout({
+            binding.multipleGroupBottomTabLayout.visibility = View.VISIBLE
+        }, {
+            binding.multipleGroupBottomTabLayout.visibility = View.GONE
+        })
 
 
         viewModel.appBarLoadingLiveData.observe(viewLifecycleOwner) { state ->
@@ -140,7 +157,9 @@ class ScheduleFragmentV2V2 :
                                 tab?.let { letTab ->
                                     val tabBinding = CustomTabBinding.inflate(layoutInflater)
                                     tabBinding.tabText.text = letTab.text
-                                    if (i == currentWeek - 1) tabBinding.tabText.setTextColor(primaryTextColor)
+                                    if (i == currentWeek - 1) tabBinding.tabText.setTextColor(
+                                        primaryTextColor
+                                    )
                                     tab.setCustomView(tabBinding.root)
                                 }
                             }
@@ -220,6 +239,95 @@ class ScheduleFragmentV2V2 :
                             if (index != -1)
                                 binding.viewPager.setCurrentItem(index, true)
                             binding.viewPager.visibility = View.VISIBLE
+
+                            val groups = it.data.scheduleList[0].let { item ->
+                                when (item) {
+                                    is ViewPagerItem.RecyclerViewDay -> {
+                                        item.lessons.filterIsInstance<TimetableItem.Title>()
+                                            .map { it.groupName }
+                                    }
+
+                                    is ViewPagerItem.RecyclerViewCurrentDay -> {
+                                        item.lessons.filterIsInstance<TimetableItem.TitleCurrent>()
+                                            .map { it.groupName }
+                                    }
+                                }
+                            }
+                            binding.multipleGroupBottomTabLayout.removeAllTabs()
+                            for (i in groups) {
+                                binding.multipleGroupBottomTabLayout.addTab(
+                                    binding.multipleGroupBottomTabLayout.newTab().setText(i)
+                                )
+                            }
+                            binding.multipleGroupBottomTabLayout.clearOnTabSelectedListeners()
+                            binding.multipleGroupBottomTabLayout.addOnTabSelectedListener(
+                                GroupScrollTabListener { groupName ->
+                                    for (i in 0 until adapter.items.size) {
+                                        val viewHolder = adapter.getViewHolder(i)
+                                        if (viewHolder is RecyclerViewDayDelegate.RecyclerViewDayViewHolder) {
+                                            val items =
+                                                (viewHolder.binding.recyclerView.adapter as UniversalRecyclerViewAdapter<TimetableItem>).items
+
+                                            for (j in items.indices) {
+                                                val item = items[j]
+                                                if (item is TimetableItem.Title) {
+                                                    if (item.groupName == groupName) {
+                                                        val position = j
+                                                        viewHolder.binding.recyclerView.smoothScrollToPositionWithOffset(
+                                                            position,
+                                                            0
+                                                        )
+                                                        break
+                                                    }
+                                                }
+                                            }
+                                        } else if (viewHolder is RecyclerViewDayCurrentDelegate.RecyclerViewDayCurrentViewHolder) {
+                                            for (j in 0 until viewHolder.binding.recyclerView.childCount) {
+                                                val items =
+                                                    (viewHolder.binding.recyclerView.adapter as UniversalRecyclerViewAdapter<TimetableItem>).items
+
+                                                for (j in items.indices) {
+                                                    val item = items[j]
+                                                    if (item is TimetableItem.TitleCurrent) {
+                                                        if (item.groupName == groupName) {
+                                                            val position = j
+                                                            (viewHolder.binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                                                                position,
+                                                                0
+                                                            )
+                                                            break
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+//                            for (i in 0 until adapter.items.size) {
+//                                when (val viewHolder = adapter.getViewHolder(i)) {
+//                                    is RecyclerViewDayDelegate.RecyclerViewDayViewHolder -> {
+//                                        viewHolder.binding.recyclerView.addOnScrollListener(object :
+//                                            OnScrollListener() {
+//                                            override fun onScrolled(
+//                                                recyclerView: RecyclerView,
+//                                                dx: Int,
+//                                                dy: Int
+//                                            ) {
+//                                                super.onScrolled(recyclerView, dx, dy)
+//
+//                                                val firstVisiblePosition =
+//                                                    (viewHolder.binding.recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+//
+//                                            }
+//                                        })
+//                                    }
+//
+//                                    is RecyclerViewDayCurrentDelegate.RecyclerViewDayCurrentViewHolder -> {
+//
+//                                    }
+//                                }
+//                            }
+
                         }
                     }
 
@@ -243,6 +351,20 @@ class ScheduleFragmentV2V2 :
 
         }
 
+//        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+//            override fun onPageSelected(position: Int) {
+//                for (i in 0 until adapter.items.size) {
+//                    val viewHolder = adapter.getViewHolder(i)
+//                    if (viewHolder is RecyclerViewDayDelegate.RecyclerViewDayViewHolder) {
+//                        viewHolder.binding.recyclerView.scrollToPosition(4)
+//                    } else if (viewHolder is RecyclerViewDayCurrentDelegate.RecyclerViewDayCurrentViewHolder) {
+//                        viewHolder.binding.recyclerView.scrollToPosition(4)
+//                    }
+//                }
+//            }
+//        })
+
+
         viewModel.refreshServiceLiveData.observe(viewLifecycleOwner) {
             it.event?.let { viewModel.initV2() }
         }
@@ -257,8 +379,6 @@ class ScheduleFragmentV2V2 :
         }
 
         viewModel.restoreStatePopBackStack()
-
-
 
 
     }
@@ -411,6 +531,38 @@ class ScheduleFragmentV2V2 :
         override fun onTabReselected(p0: TabLayout.Tab?) = Unit
     }
 
+    private inner class GroupScrollTabListener(
+        private val groupSelected: (String) -> Unit
+    ) : OnTabSelectedListener {
+
+        override fun onTabSelected(p0: TabLayout.Tab?) {
+            val tabPosition = p0?.position
+            tabPosition?.let {
+                val groupName = binding.multipleGroupBottomTabLayout.getTabAt(it)?.text
+//                Toast.makeText(requireContext(), groupName, Toast.LENGTH_SHORT).show()
+                groupName?.let {
+                    groupSelected.invoke(it.toString())
+                }
+            }
+
+        }
+
+
+        override fun onTabUnselected(p0: TabLayout.Tab?) = Unit
+
+
+        override fun onTabReselected(p0: TabLayout.Tab?) {
+            val tabPosition = p0?.position
+            tabPosition?.let {
+                val groupName = binding.multipleGroupBottomTabLayout.getTabAt(it)?.text
+//                Toast.makeText(requireContext(), groupName, Toast.LENGTH_SHORT).show()
+                groupName?.let {
+                    groupSelected.invoke(it.toString())
+                }
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacksAndMessages(null)
@@ -429,6 +581,48 @@ class ScheduleFragmentV2V2 :
 
     companion object {
         private const val TAG = "ScheduleFragmentV2V2"
+    }
+
+    fun scrollToPositionInInnerMostRecyclerView(
+        outerPosition: Int,
+        innerPosition: Int,
+        innerMostPosition: Int
+    ) {
+        val outerRecyclerView = binding.viewPager
+    }
+
+    class CustomSmoothScroller(context: Context, private val offset: Int) :
+        LinearSmoothScroller(context) {
+        override fun getVerticalSnapPreference(): Int {
+            return SNAP_TO_START // Устанавливаем чтобы элемент появлялся в начале
+        }
+
+        override fun calculateDyToMakeVisible(view: View?, snapPreference: Int): Int {
+            // Задаем свой оффсет
+            return super.calculateDyToMakeVisible(view, snapPreference) - offset
+        }
+
+
+    }
+
+    // Функция для плавной прокрутки с оффсетом
+    private fun RecyclerView.smoothScrollToPositionWithOffset(position: Int, offset: Int) {
+        val layoutManager = this.layoutManager as? LinearLayoutManager
+        layoutManager?.let {
+            val smoothScroller: RecyclerView.SmoothScroller =
+                CustomSmoothScroller(this.context, offset)
+            smoothScroller.targetPosition = position
+            it.startSmoothScroll(smoothScroller)
+        }
+    }
+
+    data class GroupsScrollsPosition(
+        val listGroup: List<String>,
+        val listPositions: List<Int>
+    )
+
+    fun updateGroupsScrollsPositionIndexes(listPositions: List<String>, updateList: Boolean = false) {
+
     }
 
 }

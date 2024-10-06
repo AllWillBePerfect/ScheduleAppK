@@ -26,7 +26,7 @@ class TitleDelegate : AdapterItemDelegate<TimetableItem> {
         (viewHolder as TitleViewHolder).bind(item as TimetableItem.Title)
     }
 
-    inner class TitleViewHolder(private val binding: V2ItemTitleBinding) :
+    inner class TitleViewHolder(val binding: V2ItemTitleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: TimetableItem.Title) {
             binding.dateTextView.text = item.date

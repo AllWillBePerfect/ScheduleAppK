@@ -52,6 +52,15 @@
     </com.schedule.views.CustomSwipeRefreshLayout>
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/multipleGroup_bottomTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:tabMode="auto"
+        />
+
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/days_bottomTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

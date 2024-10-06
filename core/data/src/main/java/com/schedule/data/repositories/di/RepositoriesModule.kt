@@ -9,6 +9,7 @@ import com.schedule.data.repositories.ScheduleItemListRepositoryV2
 import com.schedule.data.repositories.ScheduleItemListRepositoryV3
 import com.schedule.data.repositories.SettingsOptionRepository
 import com.schedule.data.repositories.TimeProgressIndicatorRepository
+import com.schedule.data.repositories.settings.AdditionalOptionRepository
 import com.schedule.data.repositories.settings.DynamicColorsRepository
 import com.schedule.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
 import com.schedule.data.repositories.v2.schedule.services.WriteAndSearchListOfGroupsService
@@ -68,6 +69,10 @@ interface RepositoriesModule {
     @Binds
     @Singleton
     fun bindsDynamicColorsRepository(impl: DynamicColorsRepository.Impl): DynamicColorsRepository
+
+    @Binds
+    @Singleton
+    fun bindsAdditionalOptionsRepository(impl: AdditionalOptionRepository.Impl): AdditionalOptionRepository
 
 
     @Binds

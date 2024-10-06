@@ -42,12 +42,12 @@ class RecyclerViewDayDelegate : AdapterItemDelegate<ViewPagerItem> {
     }
 
 
-    inner class RecyclerViewDayViewHolder(private val binding: V2ItemRecyclerViewDayBinding) :
+    class RecyclerViewDayViewHolder(val binding: V2ItemRecyclerViewDayBinding) :
         ViewHolder(binding.root) {
         var adapter: UniversalRecyclerViewAdapter<TimetableItem> = UniversalRecyclerViewAdapter(
             delegates = listOf(
                 LessonDelegate(),
-                LessonCurrentDelegate {},
+                LessonCurrentDelegate(),
                 TitleDelegate(),
                 TitleCurrentDelegate(),
                 BreakDelegate()
@@ -65,7 +65,7 @@ class RecyclerViewDayDelegate : AdapterItemDelegate<ViewPagerItem> {
             adapter.items = item.lessons
         }
 
-        inner class CustomOnItemTouchListener() : OnItemTouchListener {
+        class CustomOnItemTouchListener() : OnItemTouchListener {
 
             private var startX = 0f
             private var startY = 0f

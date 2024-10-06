@@ -14,6 +14,7 @@ import com.schedule.data.repositories.settings.DynamicColorsRepository
 import com.schedule.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
 import com.schedule.enter.EnterFragment
 import com.schedule.models.sharpref.v1.AppState
+import com.schedule.schedule.test_scroll.TestScrollFragment
 import com.schedule.schedule.v1.ScheduleFragment
 import com.schedule.schedule.v2.container.NavigationDrawerContainerFragment
 import com.schedule.scheduleappk.databinding.ActivityMainBinding
@@ -100,6 +101,11 @@ class MainActivity : AppCompatActivity() {
                 launchEnterScreen()
         }
         SomeWorkManager.launchPeriodicalWorkRequest(this)
+
+//        supportFragmentManager.beginTransaction().apply {
+//            replace(R.id.container_main, TestScrollFragment())
+//            commit()
+//        }
         
     }
 

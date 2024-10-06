@@ -6,6 +6,7 @@ import com.schedule.data.repositories.settings.DynamicColorsRepository
 import com.schedule.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
 import com.schedule.data.event_manager.RefreshEventManager
 import com.schedule.data.event_manager.RestoreDialogEventManager
+import com.schedule.data.repositories.settings.AdditionalOptionRepository
 import com.schedule.models.sharpref.NightMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -15,6 +16,7 @@ class SettingsViewModel @Inject constructor(
     private val settingsOptionRepository: SettingsOptionRepository,
     private val dynamicColorsRepository: DynamicColorsRepository,
     private val appConfigRepositoryV2: AppConfigRepositoryV2,
+    private val additionalOptionRepository: AdditionalOptionRepository,
     private val refreshEventManager: RefreshEventManager,
     private val restoreDialogEventManager: RestoreDialogEventManager
 ) : ViewModel() {
@@ -46,6 +48,12 @@ class SettingsViewModel @Inject constructor(
     fun singleGroupStateCheck(): Boolean = appConfigRepositoryV2.getSingleAppStateOrNull() != null
     fun replaceGroupStateCheck(): Boolean = appConfigRepositoryV2.getReplaceAppStateOrNull() != null
     fun multipleGroupStateCheck(): Boolean = appConfigRepositoryV2.getMultipleAppStateOrNull() != null
+
+    fun getMultipleGroupTabLayoutState(): Boolean = additionalOptionRepository.getMultipleGroupFastScrollState()
+    fun switchMultipleGroupTabLayoutState() {
+        additionalOptionRepository.switchMultipleGroupFastScrollState()
+        refreshEventManager.setRefreshLiveData()
+    }
 
 
 }

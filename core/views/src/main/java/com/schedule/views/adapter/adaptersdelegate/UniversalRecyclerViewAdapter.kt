@@ -34,4 +34,39 @@ class UniversalRecyclerViewAdapter<T>(
 
     override fun getItemViewType(position: Int): Int =
         delegates.indexOfFirst { delegate -> delegate.forItem(items[position]) }
+
+
+}
+
+class UniversalRecyclerViewAdapterWithInnerRecyclerView<T>(
+    private val delegates: List<AdapterItemDelegateWithInnerRecyclerView<T>>,
+    private val diffUtilCallback: CustomDiffUtilCallback<T>
+) : RecyclerView.Adapter<ViewHolder>() {
+
+    var items: List<T> = emptyList()
+        get() = field
+        set(value) {
+            val sd = DelegateDiffResult(diffUtilCallback)
+            val diffResult = DiffUtil.calculateDiff(sd.getCallback(field, value))
+            field = value
+//            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this)
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        delegates[viewType].getViewHolder(parent)
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) =
+        delegates[getItemViewType(position)].bindViewHolder(
+            holder,
+            items[position],
+            mutableListOf()
+        )
+
+    override fun getItemCount(): Int = items.size
+
+    override fun getItemViewType(position: Int): Int =
+        delegates.indexOfFirst { delegate -> delegate.forItem(items[position]) }
+
+
 }
