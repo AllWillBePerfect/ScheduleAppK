@@ -5,11 +5,6 @@
     <group android:id="@+id/group1">
         <item android:title="Навигация">
             <menu>
-<!--                <item-->
-<!--                    android:id="@+id/brs_option"-->
-<!--                    android:icon="@drawable/baseline_account_circle_24"-->
-<!--                    android:title="БРС" />-->
-
                 <item
                     android:id="@+id/settings_option"
                     android:icon="@drawable/baseline_settings_24"
@@ -17,7 +12,41 @@
             </menu>
         </item>
 
+        <item android:title="Web-сервисы ИКТИБ">
+            <menu>
+                <item
+                    android:id="@+id/brs_option"
+                    android:icon="@drawable/grade"
+                    android:title="БРС" />
+
+                <item
+                    android:id="@+id/lms_option"
+                    android:icon="@drawable/moodle"
+                    android:title="ЛМС" />
+
+                <item
+                    android:id="@+id/ictis_option"
+                    android:icon="@drawable/online"
+                    android:title="Сайт ИКТИБа" />
+            </menu>
+        </item>
+
+        <item android:title="Web-сервисы расписания">
+            <menu>
+                <item
+                    android:id="@+id/ictisru_option"
+                    android:icon="@drawable/trophy"
+                    android:title="ICTIS.RU" />
+
+                <item
+                    android:id="@+id/official_option"
+                    android:icon="@drawable/baseline_settings_24"
+                    android:title="Официальное" />
+            </menu>
+        </item>
+
     </group>
+
 
     <group
         android:id="@+id/group_fast_mode"

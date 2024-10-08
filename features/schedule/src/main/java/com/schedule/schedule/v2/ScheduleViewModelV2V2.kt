@@ -172,12 +172,14 @@ class ScheduleViewModelV2V2 @Inject constructor(
         scheduleInitConfigV2?.let {
             val config: ScheduleInitConfig = if (scheduleRepository.restoreEntity() == null)
                 it
-            else
+            else {
+                val entity = scheduleRepository.restoreEntity()!!
                 ScheduleInitConfig(
-                    scheduleList = scheduleInitConfigV2!!.scheduleList,
-                    weeks = it.weeks,
-                    currentWeek = it.currentWeek
+                    scheduleList = mapList(entity.scheduleList),
+                    weeks = entity.weeks,
+                    currentWeek = entity.currentWeek
                 )
+            }
             _adapterLiveData.value = SingleEvent(AdapterLiveDataState.Success(config))
             _tabsLayoutLiveData.value = SingleEvent(TabsLayoutLiveDataState.SuccessInit(config))
         }

@@ -50,7 +50,7 @@ class LessonCurrentDelegate(
                 TimetableItem.ContentType.ONLINE -> {
                     binding.LessonStateColor.visibility = View.VISIBLE
                     binding.LessonStateText.visibility = View.VISIBLE
-                    binding.LessonStateColor.setImageResource(com.schedule.schedule.R.drawable.online)
+                    binding.LessonStateColor.setImageResource(com.schedule.values.R.drawable.online)
                     binding.LessonStateText.text = "Онлайн"
 
                 }
@@ -58,7 +58,7 @@ class LessonCurrentDelegate(
                 TimetableItem.ContentType.OFFLINE -> {
                     binding.LessonStateColor.visibility = View.VISIBLE
                     binding.LessonStateText.visibility = View.VISIBLE
-                    binding.LessonStateColor.setImageResource(com.schedule.schedule.R.drawable.offline)
+                    binding.LessonStateColor.setImageResource(com.schedule.values.R.drawable.offline)
                     binding.LessonStateText.text = "Очно"
                 }
             }
