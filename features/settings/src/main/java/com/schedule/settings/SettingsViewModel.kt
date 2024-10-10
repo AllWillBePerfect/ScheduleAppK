@@ -55,5 +55,11 @@ class SettingsViewModel @Inject constructor(
         refreshEventManager.setRefreshLiveData()
     }
 
+    fun getLaunchInWebView(): Boolean = additionalOptionRepository.getLaunchInWebViewState()
+    fun switchLaunchInWebView() {
+        additionalOptionRepository.switchLaunchInWebViewState()
+        refreshEventManager.setRefreshLiveData()
+    }
+
 
 }

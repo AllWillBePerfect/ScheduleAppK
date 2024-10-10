@@ -11,11 +11,12 @@ import javax.inject.Inject
 
 class SHCAdditionalOptions @Inject constructor(@ApplicationContext context: Context) :
     SettingsHolderConfig<AdditionalOptions, AdditionalOptionsSPContainer>(context) {
-    override fun getSPValueName(): String = "additional_options_sp"
+    override fun getSPValueName(): String = "additional_options_sp_v2"
 
     override fun getDefaultValue(): AdditionalOptionsSPContainer = AdditionalOptionsSPContainer(
         AdditionalOptions(
-            multipleGroupFastScroll = true
+            multipleGroupFastScroll = true,
+            launchInWebView = false
         )
     )
 

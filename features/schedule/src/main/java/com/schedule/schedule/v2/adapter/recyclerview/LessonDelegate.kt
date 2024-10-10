@@ -1,10 +1,8 @@
 package com.schedule.schedule.v2.adapter.recyclerview
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.schedule.schedule.databinding.V2ItemLessonBinding
 import com.schedule.schedule.v2.adapter.recyclerview.model.TimetableItem

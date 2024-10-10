@@ -262,8 +262,16 @@ class SettingsFragment :
             subtitle = "Нажмите на название нужной группы на панели снизу на экране расписания, чтобы пролистать список",
             icon = R.drawable.baseline_settings_24,
             isChecked = viewModel.getMultipleGroupTabLayoutState(),
-            cornersType = SettingsItem.CornersType.SINGLE,
+            cornersType = SettingsItem.CornersType.TOP,
             action = viewModel::switchMultipleGroupTabLayoutState
+        ),
+        SettingsItem.SwitchOption(
+            title = "Открывать ссылки в браузере приложения",
+            subtitle = "Если активно, то ссылки будут открываться в браузере приложения",
+            icon = R.drawable.baseline_settings_24,
+            isChecked = viewModel.getLaunchInWebView(),
+            cornersType = SettingsItem.CornersType.BOTTOM,
+            action = viewModel::switchLaunchInWebView
         )
     )
 

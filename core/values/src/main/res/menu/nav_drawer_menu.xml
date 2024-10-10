@@ -2,9 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <group android:id="@+id/group1">
-        <item android:title="Навигация">
-            <menu>
+        <item android:title="Навигация" android:checkableBehavior="single">
+            <menu android:checkableBehavior="single" >
                 <item
                     android:id="@+id/settings_option"
                     android:icon="@drawable/baseline_settings_24"
@@ -12,8 +11,8 @@
             </menu>
         </item>
 
-        <item android:title="Web-сервисы ИКТИБ">
-            <menu>
+        <item android:title="Web-сервисы ИКТИБ" android:checkableBehavior="single">
+            <menu android:checkableBehavior="single">
                 <item
                     android:id="@+id/brs_option"
                     android:icon="@drawable/grade"
@@ -31,22 +30,19 @@
             </menu>
         </item>
 
-        <item android:title="Web-сервисы расписания">
+        <item android:title="Web-расписания">
             <menu>
+                <item
+                    android:id="@+id/official_option"
+                    android:icon="@drawable/ictis"
+                    android:title="Официальное" />
                 <item
                     android:id="@+id/ictisru_option"
                     android:icon="@drawable/trophy"
                     android:title="ICTIS.RU" />
 
-                <item
-                    android:id="@+id/official_option"
-                    android:icon="@drawable/baseline_settings_24"
-                    android:title="Официальное" />
             </menu>
         </item>
-
-    </group>
-
 
     <group
         android:id="@+id/group_fast_mode"

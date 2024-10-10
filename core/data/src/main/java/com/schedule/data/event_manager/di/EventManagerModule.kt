@@ -1,5 +1,6 @@
 package com.schedule.data.event_manager.di
 
+import com.schedule.data.event_manager.LaunchWebViewEventManager
 import com.schedule.data.event_manager.RefreshEventManager
 import com.schedule.data.event_manager.RestoreAfterPopBackStackEventManager
 import com.schedule.data.event_manager.RestoreDialogEventManager
@@ -24,5 +25,10 @@ interface EventManagerModule {
     @Singleton
     @Binds
     fun bindsRestoreDialogEventManager(impl: RestoreDialogEventManager.Impl): RestoreDialogEventManager
+
+
+    @Singleton
+    @Binds
+    fun bindsLaunchWebViewEventManager(impl: LaunchWebViewEventManager.Impl): LaunchWebViewEventManager
 
 }
