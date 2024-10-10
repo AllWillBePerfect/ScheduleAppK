@@ -1,5 +1,6 @@
 package com.schedule.data.repositories.v2.schedule.repository.impl
 
+import android.util.Log
 import com.schedule.models.sharpref.v2.AppConfigV2
 import com.schedule.models.sharpref.v2.AppStateV2
 import com.schedule.models.sharpref.v2.MultipleStorage
@@ -26,6 +27,7 @@ interface AppConfigRepositoryV2 {
 
     fun getReplaceGroupReplaceDays(): List<Int>
     fun changeReplaceGroupReplaceDays(list: List<Int>)
+    fun findAndChangeReplaceGroupReplaceDays(groupName: String, vpkName: String, list: List<Int>)
     fun changeReplaceGroupIsGlobalState(isGlobal: Boolean)
 
     fun addReplaceGroupAndSetState(groupName: String, vpkName: String, replaceDays: List<Int>)
@@ -99,6 +101,27 @@ interface AppConfigRepositoryV2 {
         override fun changeReplaceGroupReplaceDays(list: List<Int>) {
             val replaceStorage = getReplaceStorage()
             appConfigV2Contract.setReplaceStorage(replaceStorage.copy(cachedGlobalReplacedDays = list))
+        }
+
+        override fun findAndChangeReplaceGroupReplaceDays(
+            groupName: String,
+            vpkName: String,
+            list: List<Int>
+        ) {
+            val replaceStorage = appConfigV2Contract.getReplaceStorage()
+            val listt = replaceStorage.cachedList.toMutableList()
+            val item = listt.find {it.groupName == groupName && it.vpkName == vpkName}
+            val index = listt.indexOfFirst { it.groupName == groupName && it.vpkName == vpkName }
+            if (index == -1 || item == null) return
+            listt[index] = item.copy(replaceDays = list)
+            appConfigV2Contract.setReplaceStorage(
+                replaceStorage.copy(cachedList = listt)
+            )
+            val state = getAppState()
+            if (state is AppStateV2.Replace) {
+                if (item.groupName == state.groupName && item.vpkName == state.vpkName)
+                    setReplaceConfig(groupName, vpkName, list)
+            }
         }
 
 

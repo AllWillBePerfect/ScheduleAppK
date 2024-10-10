@@ -75,13 +75,21 @@
         android:layout_marginTop="8dp"
         android:textSize="12sp"/>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/change_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/action_text"
+        android:text="|| Свайп вправо - изменить дни"
+        android:textSize="12sp"/>
+
     <Button
         android:id="@+id/navigate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Добавить"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/action_text"
+        app:layout_constraintTop_toBottomOf="@id/change_text"
         style="@style/Widget.Material3.Button.IconButton"
         android:layout_marginTop="16dp"/>
 

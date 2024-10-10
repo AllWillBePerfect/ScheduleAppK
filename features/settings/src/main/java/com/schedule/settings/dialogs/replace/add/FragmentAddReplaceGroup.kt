@@ -302,6 +302,7 @@ class FragmentAddReplaceGroup :
     override fun onDestroyView() {
         setupKeyboardAppearListener(false)
         viewModel.restoreReplaceDialog()
+        viewModel.nullViewModel()
         super.onDestroyView()
     }
 }

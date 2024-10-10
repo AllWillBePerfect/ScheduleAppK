@@ -20,7 +20,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.google.android.material.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -291,7 +290,7 @@ class ScheduleFragmentV2V2 :
                                                     if (item is TimetableItem.TitleCurrent) {
                                                         if (item.groupName == groupName) {
                                                             val position = j
-                                                            (viewHolder.binding.recyclerView.layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
+                                                            viewHolder.binding.recyclerView.smoothScrollToPositionWithOffset(
                                                                 position,
                                                                 0
                                                             )

@@ -1,6 +1,7 @@
 package com.schedule.scheduleappk.navigation.settings
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import com.schedule.enter.EnterFragment
 import com.schedule.schedule.v2.container.NavigationDrawerContainerFragment
 import com.schedule.scheduleappk.MainActivity
@@ -8,6 +9,7 @@ import com.schedule.scheduleappk.R
 import com.schedule.scheduleappk.navigation.NavigateRouter
 import com.schedule.settings.SettingsFragmentContract
 import com.schedule.settings.dialogs.replace.add.FragmentAddReplaceGroup
+import com.schedule.settings.modal.ChangeDaysModal
 import com.schedule.settings.options.multiple_group.MultipleGroupOptionFragment
 import javax.inject.Inject
 
@@ -77,6 +79,11 @@ class SettingsFragmentContractImpl @Inject constructor(
             addToBackStack(null)
             commit()
         }
+    }
+
+    override fun launchChangeModal() {
+        val modal = ChangeDaysModal()
+        modal.show(navigateRouter.requireActivity().supportFragmentManager, ChangeDaysModal.TAG)
     }
 
     override fun popBackStack() {

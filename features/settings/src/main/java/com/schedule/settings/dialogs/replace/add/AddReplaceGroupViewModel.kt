@@ -103,6 +103,10 @@ class AddReplaceGroupViewModel @Inject constructor(
         _resultConfigLiveData.value = SingleEvent(_resultConfigLiveData.value!!.eventForCheck!!.copy(vpkName = vpkName, isVpkCorrect = true))
     }
 
+    fun nullViewModel() {
+        _resultConfigLiveData.value = SingleEvent(null)
+    }
+
     fun addReplaceConfig(groupName: String, vpkName: String) {
         val list = _daysAdapterListLiveData.value!!.eventForCheck!!
         val replaceDays = mutableListOf<Int>()

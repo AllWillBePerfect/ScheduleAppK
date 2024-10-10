@@ -6,6 +6,7 @@ import com.schedule.settings.databinding.V2SingleConfigModalBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
+@Deprecated("Need to remove")
 class SingleOptionConfigModal : BaseBottomSheetDialogFragment<V2SingleConfigModalBinding>(V2SingleConfigModalBinding::inflate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

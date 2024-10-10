@@ -73,7 +73,7 @@ class ReplaceOptionDialog :
             dialog?.dismiss()
         }
 
-        val itemTouchHelper = ItemTouchHelper(ReplaceDialogSwipe(adapter, requireContext(), viewModel::deleteGroup))
+        val itemTouchHelper = ItemTouchHelper(ReplaceDialogSwipe(adapter, requireContext(), viewModel::deleteGroup, viewModel::changeGroupReplacedDays))
         itemTouchHelper.attachToRecyclerView(dialogBinding.recyclerView)
 
 
@@ -91,8 +91,15 @@ class ReplaceOptionDialog :
             }
         }
 
+        viewModel.refreshLiveData.observe(viewLifecycleOwner) {
+            it.eventForCheck?.let {
+                viewModel.setList()
+            }
+        }
+
         viewModel.setReplaceDaysLiveData()
         viewModel.setList()
 
     }
+
 }

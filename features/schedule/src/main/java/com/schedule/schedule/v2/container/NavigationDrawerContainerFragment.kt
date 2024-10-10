@@ -145,7 +145,7 @@ class NavigationDrawerContainerFragment :
         SettingsDrawerItem.PressItem("Официальное", R.drawable.schedule) {launchUrl("https://ictis.sfedu.ru/schedule/")},
         SettingsDrawerItem.PressItem("ictis.ru", R.drawable.schedule) {launchUrl("https://ictis.ru/")},
         SettingsDrawerItem.PressItem("ictis.netlify.app", R.drawable.schedule) {launchUrl("https://ictis.netlify.app/")},
-        SettingsDrawerItem.PressItem("neyt6.github.io/schedule", R.drawable.schedule) {launchUrl("https://neyt6.github.io/schedule/")},
+        SettingsDrawerItem.PressItem("neyt6.schedule", R.drawable.schedule) {launchUrl("https://neyt6.github.io/schedule/")},
     )
 
     companion object {

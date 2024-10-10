@@ -9,11 +9,11 @@ plugins {
     alias(libs.plugins.hiltAndroid)
 }
 
-var versionMajor by extra(0)
-var versionMinor by extra(9)
-var versionPatch by extra(2)
+var versionMajor by extra(1)
+var versionMinor by extra(0)
+var versionPatch by extra(0)
 var versionClassifier: String? by extra(null)
-var isSnapshot by extra(true)
+var isSnapshot by extra(false)
 
 //change this flag to "true" if you need clear storage data after realise new app version
 var clearStorageFlag by extra(false)

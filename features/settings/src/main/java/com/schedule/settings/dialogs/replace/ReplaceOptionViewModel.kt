@@ -1,8 +1,9 @@
 package com.schedule.settings.dialogs.replace
 
 import androidx.lifecycle.ViewModel
-import com.schedule.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
+import com.schedule.data.event_manager.ChangeReplaceItemDaysEventManager
 import com.schedule.data.event_manager.RefreshEventManager
+import com.schedule.data.repositories.v2.schedule.repository.impl.AppConfigRepositoryV2
 import com.schedule.models.sharpref.v2.ReplaceStorage
 import com.schedule.settings.SettingsFragmentContract
 import com.schedule.settings.dialogs.adapter.model.GroupItem
@@ -17,6 +18,7 @@ import javax.inject.Inject
 class ReplaceOptionViewModel @Inject constructor(
     private val appConfigRepositoryV2: AppConfigRepositoryV2,
     private val refreshEventManager: RefreshEventManager,
+    private val changeReplaceItemDaysEventManager: ChangeReplaceItemDaysEventManager,
     private val router: SettingsFragmentContract
 ) : ViewModel() {
 
@@ -29,20 +31,25 @@ class ReplaceOptionViewModel @Inject constructor(
     private val _updateUiLiveData = SingleMutableLiveData<ReplaceUiConfig>()
     val updateUiLiveData: SingleLiveData<ReplaceUiConfig> = _updateUiLiveData
     fun setList() {
-        _updateUiLiveData.value = SingleEvent(mapToUiList(appConfigRepositoryV2.getReplaceStorage().cachedList))
+        _updateUiLiveData.value =
+            SingleEvent(mapToUiList(appConfigRepositoryV2.getReplaceStorage().cachedList))
     }
+
+    val refreshLiveData = refreshEventManager.getRefreshLiveData()
 
     private fun mapToUiList(list: List<ReplaceStorage.ReplaceItem>): ReplaceUiConfig {
         val state = appConfigRepositoryV2.getReplaceStorage().isGlobal
         return ReplaceUiConfig(
             isShared = state,
-            adapterList = list.map { GroupItem.Replace(
-                groupName = it.groupName,
-                vpkName = it.vpkName,
-                replacedDays = it.replaceDays,
-                isSelected = isSelected(it.groupName, it.vpkName),
-                isShowDays = !state
-            ) }
+            adapterList = list.map {
+                GroupItem.Replace(
+                    groupName = it.groupName,
+                    vpkName = it.vpkName,
+                    replacedDays = it.replaceDays,
+                    isSelected = isSelected(it.groupName, it.vpkName),
+                    isShowDays = !state
+                )
+            }
         )
     }
 
@@ -107,6 +114,17 @@ class ReplaceOptionViewModel @Inject constructor(
         appConfigRepositoryV2.removeReplaceGroup(replace.groupName, replace.vpkName)
         refreshEventManager.setRefreshLiveData()
         setList()
+    }
+
+    fun changeGroupReplacedDays(replace: GroupItem.Replace) {
+        changeReplaceItemDaysEventManager.setChangeReplaceItemDays(
+            ChangeReplaceItemDaysEventManager.ReplacedDaysItem(
+                replace.groupName,
+                replace.vpkName,
+                replace.replacedDays
+            )
+        )
+        router.launchChangeModal()
     }
 
     fun isSelected(groupName: String, vpkName: String): Boolean {

@@ -109,7 +109,7 @@ class SettingsFragment :
     private fun setupDynamicColorsDialog() {
         val string = if (viewModel.getDynamicColors()) "Отключить" else "Активировать"
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Dynamic Colors")
+            .setTitle("Динамическая цветовая схема")
             .setMessage("Эта опция активирует/отключает цветовую палитру из акцентных цветов темы устройства")
             .setPositiveButton(string) { _, _ ->
                 viewModel.changeDynamicColors()
@@ -229,7 +229,7 @@ class SettingsFragment :
             listOf(
                 SettingsItem.Section("Оформление"),
                 SettingsItem.SwitchOption(
-                    title = "Dynamic colors",
+                    title = "Динамическая цветовая схема",
                     subtitle = "Активируйте динамические цвета",
                     icon = R.drawable.palette,
                     isChecked = viewModel.getDynamicColors(),
