@@ -208,21 +208,19 @@ fun getCurrentFlavor(): String {
     val gradle = gradle
     val tskReqStr = gradle.startParameter.taskRequests.toString()
 
-    var pattern: Pattern? = null
-
-    pattern = if (tskReqStr.contains("assemble")) // to run ./gradlew assembleRelease to build APK
-        Pattern.compile("assemble(\\w+)(Release|Debug)")
-    else if (tskReqStr.contains("bundle")) // to run ./gradlew bundleRelease to build .aab
-        Pattern.compile("bundle(\\w+)(Release|Debug)")
-    else
-        Pattern.compile("generate(\\w+)(Release|Debug)")
+    val pattern = when {
+        tskReqStr.contains("assemble") -> Pattern.compile("assemble([A-Za-z0-9_\\-]+)?(Release|Debug)")
+        tskReqStr.contains("bundle") -> Pattern.compile("bundle([A-Za-z0-9_\\-]+)?(Release|Debug)")
+        else -> Pattern.compile("generate([A-Za-z0-9_\\-]+)?(Release|Debug)")
+    }
 
     val matcher = pattern.matcher(tskReqStr)
 
-    if (matcher.find())
-        return matcher.group(1).toLowerCase()
-    else {
-        println("NO MATCH FOUND")
-        return ""
+    return if (matcher.find()) {
+        // Если flavor указан, возвращаем его в нижнем регистре
+        matcher.group(1)?.lowercase() ?: "full" // Возвращаем "full" по умолчанию, если flavor не найден
+    } else {
+        println("NO FLAVOR FOUND, using default flavor 'full'.")
+        "full" // Возвращаем "full" по умолчанию
     }
 }

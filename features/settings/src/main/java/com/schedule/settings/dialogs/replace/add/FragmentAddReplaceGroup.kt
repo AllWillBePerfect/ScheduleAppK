@@ -16,6 +16,8 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import com.google.android.material.appbar.MaterialToolbar
 import com.schedule.settings.databinding.V2FragmentAddReplaceGroupBinding
 import com.schedule.settings.dialogs.replace.adapter.model.ClickableChooseDayDelegate
 import com.schedule.settings.dialogs.replace.adapter.model.DayChooseItem
@@ -23,14 +25,13 @@ import com.schedule.utils.Result
 import com.schedule.views.BaseFragment
 import com.schedule.views.adapter.GroupChooseAdapter
 import com.schedule.views.adapter.adaptersdelegate.UniversalRecyclerViewAdapter
-import com.google.android.material.appbar.MaterialToolbar
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.Unregistrar
 
 class FragmentAddReplaceGroup :
     BaseFragment<V2FragmentAddReplaceGroupBinding>(V2FragmentAddReplaceGroupBinding::inflate) {
 
-    private val viewModel by activityViewModels<AddReplaceGroupViewModel>()
+    private val viewModel: AddReplaceGroupViewModel by activityViewModels()
 
     private lateinit var rect: Rect
     private lateinit var keyboardListener: Unregistrar
@@ -105,6 +106,7 @@ class FragmentAddReplaceGroup :
                     viewModel.setAdapterListGroup(it.data)
                     binding.recyclerView.scrollToPosition(0)
                 }
+
                 is Result.Loading -> {}
                 is Result.Error -> {
                     Log.e("FragmentAddReplaceGroup", "Error: ${it.exception.message}")
@@ -118,6 +120,7 @@ class FragmentAddReplaceGroup :
                     viewModel.setAdapterListVpk(it.data)
                     binding.recyclerView.scrollToPosition(0)
                 }
+
                 is Result.Loading -> {}
                 is Result.Error -> {
                     Log.e("FragmentAddReplaceGroup", "Error: ${it.exception.message}")
@@ -126,13 +129,14 @@ class FragmentAddReplaceGroup :
         }
 
         viewModel.groupFetchLiveData.observe(viewLifecycleOwner) {
-            it.event?.let {event ->
+            it.event?.let { event ->
                 when (event) {
                     is Result.Success -> {
                         Toast.makeText(requireContext(), event.data.name, Toast.LENGTH_SHORT).show()
                         binding.groupTextInputEditText.setText(event.data.name)
                         viewModel.setGroupNameParams(event.data.name)
                     }
+
                     is Result.Loading -> {}
                     is Result.Error -> {
                         Log.e("FragmentAddReplaceGroup", "Error: ${event.exception.message}")
@@ -142,13 +146,14 @@ class FragmentAddReplaceGroup :
         }
 
         viewModel.vpkFetchLiveData.observe(viewLifecycleOwner) {
-            it.event?.let {event ->
+            it.event?.let { event ->
                 when (event) {
                     is Result.Success -> {
                         Toast.makeText(requireContext(), event.data.name, Toast.LENGTH_SHORT).show()
                         binding.vpkTextInputEditText.setText(event.data.name)
                         viewModel.setVpkParams(event.data.name)
                     }
+
                     is Result.Loading -> {}
                     is Result.Error -> {
                         Log.e("FragmentAddReplaceGroup", "Error: ${event.exception.message}")
@@ -159,14 +164,17 @@ class FragmentAddReplaceGroup :
 
 
         viewModel.adapterListLiveData.observe(viewLifecycleOwner) {
-            it.eventForCheck?.let { list -> when (list) {
-                is AddReplaceGroupViewModel.EditTextEvent.ToGroupEditText -> {
-                    if (binding.groupTextInputEditText.hasFocus()) adapterGroup.submitList(list.value)
+            it.eventForCheck?.let { list ->
+                when (list) {
+                    is AddReplaceGroupViewModel.EditTextEvent.ToGroupEditText -> {
+                        if (binding.groupTextInputEditText.hasFocus()) adapterGroup.submitList(list.value)
+                    }
+
+                    is AddReplaceGroupViewModel.EditTextEvent.ToVpkEditText -> {
+                        if (binding.vpkTextInputLayout.hasFocus()) adapterGroup.submitList(list.value)
+                    }
                 }
-                is AddReplaceGroupViewModel.EditTextEvent.ToVpkEditText -> {
-                    if (binding.vpkTextInputLayout.hasFocus()) adapterGroup.submitList(list.value)
-                }
-            } }
+            }
         }
 
         viewModel.resultConfigLiveData.observe(viewLifecycleOwner) {

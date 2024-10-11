@@ -104,7 +104,7 @@ class AddReplaceGroupViewModel @Inject constructor(
     }
 
     fun nullViewModel() {
-        _resultConfigLiveData.value = SingleEvent(null)
+        _resultConfigLiveData.value = SingleEvent(ResultConfig())
     }
 
     fun addReplaceConfig(groupName: String, vpkName: String) {

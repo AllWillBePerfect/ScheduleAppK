@@ -195,7 +195,7 @@ class ScheduleViewModelV2V2 @Inject constructor(
         val state = appConfigRepositoryV2.getAppState()
         when (state) {
             is AppStateV2.Single -> hide.invoke()
-            is AppStateV2.Multiple -> if (additionalOptionRepository.getMultipleGroupFastScrollState()) show.invoke() else hide.invoke()
+            is AppStateV2.Multiple -> if (additionalOptionRepository.getMultipleGroupFastScrollState() && appConfigRepositoryV2.getMultipleCurrentSize() > 1) show.invoke() else hide.invoke()
             is AppStateV2.Replace -> hide.invoke()
             is AppStateV2.Unselected -> hide.invoke()
         }

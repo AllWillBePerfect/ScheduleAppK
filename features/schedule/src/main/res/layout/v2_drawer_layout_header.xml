@@ -6,13 +6,11 @@
     android:orientation="vertical">
     
     <ImageView
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/tree"
+        android:layout_marginStart="4dp"
         app:tint="?attr/colorOnSurfaceVariant"
-        android:scaleX="2"
-        android:scaleY="2"
-        android:layout_margin="16dp"
         />
 
     <androidx.recyclerview.widget.RecyclerView

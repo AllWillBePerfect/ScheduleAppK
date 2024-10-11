@@ -24,6 +24,7 @@ interface AppConfigRepositoryV2 {
     fun moveMultipleGroup(list: List<String>)
     fun selectMultipleGroup()
     fun selectMultipleGroupAndSetState()
+    fun getMultipleCurrentSize(): Int
 
     fun getReplaceGroupReplaceDays(): List<Int>
     fun changeReplaceGroupReplaceDays(list: List<Int>)
@@ -93,6 +94,12 @@ interface AppConfigRepositoryV2 {
             val list = getMultipleStorage().cachedList
             if (list.isEmpty()) return
             setMultiConfig(getMultipleStorage().cachedList)
+        }
+
+        override fun getMultipleCurrentSize(): Int {
+            val state = getAppState()
+            if (state !is AppStateV2.Multiple) return 0
+            return state.groupNames.size
         }
 
         override fun getReplaceGroupReplaceDays(): List<Int> =
