@@ -63,6 +63,12 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.rxjava2)
+    testImplementation(libs.rxkotlin2)
+    testImplementation(libs.rxandroid)
+
     api(project(":core:models"))
 
 

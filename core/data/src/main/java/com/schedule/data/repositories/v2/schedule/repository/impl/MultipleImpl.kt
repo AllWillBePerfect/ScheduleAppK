@@ -32,7 +32,7 @@ class MultipleImpl @Inject constructor(
                                 ?: list.first()).group)
                     }
             )
-        }.subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
+        }.buffer(groupNameList.size).subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
 
         val lessonsProgressObservable =
             Single.just(currentLessonRepository.getCurrentLesson()).observeOn(Schedulers.io())
@@ -40,7 +40,7 @@ class MultipleImpl @Inject constructor(
 
         val resultObservable =
             Single.zip(
-                fetchObservable.toList(),
+                fetchObservable.singleOrError(),
                 lessonsProgressObservable
             ) { schedule, lessonProgress ->
                 cacheScheduleEntity = schedule
@@ -75,7 +75,7 @@ class MultipleImpl @Inject constructor(
                             ?: list.first()).group), week)
                     }
             )
-        }.subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
+        }.buffer(htmGroupList.size).subscribeOn(Schedulers.io()).observeOn(Schedulers.io())
 
         val lessonsProgressObservable =
             Single.just(currentLessonRepository.getCurrentLesson()).observeOn(Schedulers.io())
@@ -83,7 +83,7 @@ class MultipleImpl @Inject constructor(
 
         val resultObservable =
             Single.zip(
-                fetchObservable.toList(),
+                fetchObservable.singleOrError(),
                 lessonsProgressObservable
             ) { schedule, lessonProgress ->
                 cacheScheduleEntity = schedule

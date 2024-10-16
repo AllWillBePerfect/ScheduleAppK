@@ -167,6 +167,13 @@ dependencies {
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.shimmer)
 
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.rxjava2)
+    testImplementation(libs.rxkotlin2)
+    testImplementation(libs.rxandroid)
+
+
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))

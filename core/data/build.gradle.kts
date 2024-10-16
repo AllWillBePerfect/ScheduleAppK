@@ -72,6 +72,12 @@ dependencies {
     kapt(libs.androidx.room.room.compiler)
     implementation(libs.androidx.room.rxjava2)
 
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.rxjava2)
+    testImplementation(libs.rxkotlin2)
+    testImplementation(libs.rxandroid)
+
 
     implementation(project(":core:network"))
     implementation(project(":core:database"))

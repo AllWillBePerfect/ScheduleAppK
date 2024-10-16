@@ -10,7 +10,6 @@ import android.view.animation.Animation
 import android.view.animation.PathInterpolator
 import android.view.animation.Transformation
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.PathParser
@@ -117,11 +116,7 @@ class ScheduleFragmentV2V2 :
             tab.customView = tabBinding.root
         }.attach()
 
-        viewModel.manageViewMultipleScrollTabLayout({
-            binding.multipleGroupBottomTabLayout.visibility = View.VISIBLE
-        }, {
-            binding.multipleGroupBottomTabLayout.visibility = View.GONE
-        })
+        manageMultScrollTabLayout()
 
 
         viewModel.appBarLoadingLiveData.observe(viewLifecycleOwner) { state ->
@@ -332,8 +327,8 @@ class ScheduleFragmentV2V2 :
 
                     is ScheduleViewModelV2V2.AdapterLiveDataState.Error -> {
                         viewModel.setAppBarLoadingLiveDataLoadedState()
-                        Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT)
-                            .show()
+//                        Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT)
+//                            .show()
                         binding.viewPager.visibility = View.VISIBLE
 
                     }
@@ -365,7 +360,10 @@ class ScheduleFragmentV2V2 :
 
 
         viewModel.refreshServiceLiveData.observe(viewLifecycleOwner) {
-            it.event?.let { viewModel.initV2() }
+            it.event?.let {
+                viewModel.initV2()
+                manageMultScrollTabLayout()
+            }
         }
 
         viewModel.restoreAfterPopBackStackServiceLiveData.observe(viewLifecycleOwner) {
@@ -380,6 +378,14 @@ class ScheduleFragmentV2V2 :
         viewModel.restoreStatePopBackStack()
 
 
+    }
+
+    private fun manageMultScrollTabLayout() {
+        viewModel.manageViewMultipleScrollTabLayout({
+            binding.multipleGroupBottomTabLayout.visibility = View.VISIBLE
+        }, {
+            binding.multipleGroupBottomTabLayout.visibility = View.GONE
+        })
     }
 
     private fun setColors() {
@@ -620,7 +626,10 @@ class ScheduleFragmentV2V2 :
         val listPositions: List<Int>
     )
 
-    fun updateGroupsScrollsPositionIndexes(listPositions: List<String>, updateList: Boolean = false) {
+    fun updateGroupsScrollsPositionIndexes(
+        listPositions: List<String>,
+        updateList: Boolean = false
+    ) {
 
     }
 

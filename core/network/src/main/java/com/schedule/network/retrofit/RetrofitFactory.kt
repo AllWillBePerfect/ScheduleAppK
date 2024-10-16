@@ -1,6 +1,5 @@
 package com.schedule.network.retrofit
 
-import com.schedule.network.retrofit.repositories.ScheduleApiSingle
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,10 +33,10 @@ object RetrofitFactory {
         return retrofitSingle!!
     }
 
-    fun getScheduleApi(): ScheduleApi {
-        return getClient(url).create(ScheduleApi::class.java)
+    fun getScheduleApi(): ScheduleApiRx {
+        return getClient(url).create(ScheduleApiRx::class.java)
     }
 
-    fun getScheduleApiSingle(): ScheduleApiSingle =
-        getSingleClient(url).create(ScheduleApiSingle::class.java)
+    fun getScheduleApiSingle(): ScheduleApi =
+        getSingleClient(url).create(ScheduleApi::class.java)
 }
