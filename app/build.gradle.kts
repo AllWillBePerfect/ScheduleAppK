@@ -21,7 +21,8 @@ var clearStorageFlag by extra(false)
 val minSdkVer: Int by rootProject.extra
 val targetSdkVer: Int by rootProject.extra
 val compileSdkVer: Int by rootProject.extra
-
+val packageGroupName: String by rootProject.extra
+val moduleAppArtifactName = "scheduleappk"
 android {
     signingConfigs {
         create("release") {
@@ -44,11 +45,11 @@ android {
             }
         }
     }
-    namespace = "com.schedule.scheduleappk"
+    namespace = "$packageGroupName.$moduleAppArtifactName"
     compileSdk = compileSdkVer
 
     defaultConfig {
-        applicationId = "com.schedule.scheduleappk"
+        applicationId = "$packageGroupName.$moduleAppArtifactName"
         minSdk = minSdkVer
         targetSdk = targetSdkVer
         versionCode = generateVersionCode()
@@ -67,7 +68,7 @@ android {
             )
             signingConfig = signingConfigs.getByName("release")
             if (getCurrentFlavor().lowercase() == "full")
-                resValue("string", "app_name", "Расписание ИКТИБ")
+                resValue("string", "app_name", "ИКТИБ Расписание")
             if (getCurrentFlavor().lowercase() == "demo")
                 resValue("string", "app_name", "FScheduleAppK")
 
@@ -211,10 +212,6 @@ fun generateVersionName(): String {
 
 }
 
-tasks.register("fullBuild") {
-    dependsOn("assembleRelease", "bundleRelease")
-}
-
 fun getCurrentFlavor(): String {
     val gradle = gradle
     val tskReqStr = gradle.startParameter.taskRequests.toString()
@@ -234,4 +231,8 @@ fun getCurrentFlavor(): String {
         println("NO FLAVOR FOUND, using default flavor 'full'.")
         "full" // Возвращаем "full" по умолчанию
     }
+}
+
+tasks.register("fullBuild") {
+    dependsOn("assembleRelease", "bundleRelease")
 }

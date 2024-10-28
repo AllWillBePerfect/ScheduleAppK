@@ -12,4 +12,6 @@ val minSdkVer: Int by rootProject.extra{24}
 val targetSdkVer: Int by rootProject.extra{34}
 val compileSdkVer: Int by rootProject.extra{34}
 
+val packageGroupName: String by rootProject.extra{"com.schedulev2"}
+
 

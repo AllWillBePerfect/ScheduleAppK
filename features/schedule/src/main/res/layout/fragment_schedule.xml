@@ -75,7 +75,7 @@
 
             />
 
-        <com.schedule.views.CustomSwipeRefreshLayout
+        <com.schedulev2.views.CustomSwipeRefreshLayout
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -86,7 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </com.schedule.views.CustomSwipeRefreshLayout>
+        </com.schedulev2.views.CustomSwipeRefreshLayout>
 
 
         <com.google.android.material.tabs.TabLayout

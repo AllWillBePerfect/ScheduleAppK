@@ -5,9 +5,10 @@ plugins {
 
 val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
+val packageGroupName: String by rootProject.extra
 
 android {
-    namespace = "com.schedule.utils"
+    namespace = "$packageGroupName.utils"
     compileSdk = compileSdkVer
 
     defaultConfig {
