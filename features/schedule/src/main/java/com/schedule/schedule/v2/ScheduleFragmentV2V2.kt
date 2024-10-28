@@ -13,6 +13,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.PathParser
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.activityViewModels
@@ -117,6 +118,7 @@ class ScheduleFragmentV2V2 :
         }.attach()
 
         manageMultScrollTabLayout()
+
 
 
         viewModel.appBarLoadingLiveData.observe(viewLifecycleOwner) { state ->

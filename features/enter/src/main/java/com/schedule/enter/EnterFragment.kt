@@ -86,10 +86,10 @@ class EnterFragment : Fragment() {
         if (funcMode == FuncMode.ENTER) {
             (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
             val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
-            toolbar?.title = "Enter"
+            toolbar?.title = "enter"
             toolbar?.setDisplayHomeAsUpEnabled(false)
             toolbar?.setDisplayShowTitleEnabled(false)
-            binding.toolbar.textSwitcher.setText("Enter")
+            binding.toolbar.textSwitcher.setText("Введите группу")
         } else if (funcMode == FuncMode.ADD_SINGLE || funcMode == FuncMode.ADD_MULTIPLE) {
             (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar.toolbar as MaterialToolbar)
             val toolbar = (requireActivity() as AppCompatActivity).supportActionBar
@@ -168,7 +168,7 @@ class EnterFragment : Fragment() {
             } else {
                 if (!isLoading) return@observe
                 if (funcMode == FuncMode.ENTER)
-                    binding.toolbar.textSwitcher.setText("Enter")
+                    binding.toolbar.textSwitcher.setText("Введите группу")
                 else
                     binding.toolbar.textSwitcher.setText("Добавить группу")
                 isLoading = false

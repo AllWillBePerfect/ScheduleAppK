@@ -11,7 +11,7 @@ plugins {
 
 var versionMajor by extra(1)
 var versionMinor by extra(0)
-var versionPatch by extra(0)
+var versionPatch by extra(1)
 var versionClassifier: String? by extra(null)
 var isSnapshot by extra(false)
 
@@ -209,6 +209,10 @@ fun generateVersionName(): String {
 
     return versionName
 
+}
+
+tasks.register("fullBuild") {
+    dependsOn("assembleRelease", "bundleRelease")
 }
 
 fun getCurrentFlavor(): String {

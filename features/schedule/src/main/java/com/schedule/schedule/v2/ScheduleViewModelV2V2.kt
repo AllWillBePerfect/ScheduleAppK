@@ -80,6 +80,7 @@ class ScheduleViewModelV2V2 @Inject constructor(
 
 
     fun initV2() {
+        disposables.clear()
         Log.d("ScheduleViewModelV2V2", "init")
         setAppBarLoadingLiveDataLoadingState()
         _tabsLayoutLiveData.value = SingleEvent(TabsLayoutLiveDataState.LoadingShimmer)
@@ -116,6 +117,7 @@ class ScheduleViewModelV2V2 @Inject constructor(
     }
 
     fun fetchByWeekV2(week: String) {
+        disposables.clear()
         Log.d("ScheduleViewModelV2V2", "fetchByWeek: $week")
         setAppBarLoadingLiveDataLoadingState()
         _tabsLayoutLiveData.value = SingleEvent(TabsLayoutLiveDataState.Loading)

@@ -11,6 +11,9 @@ import androidx.activity.addCallback
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -59,6 +62,14 @@ class SettingsFragment :
 
         binding.recyclerView.adapter = adapter
         adapter.items = concatenateSection()
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout) {v, insets ->
+            val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
+            v.updatePadding(top = statusBarHeight)
+            insets
+        }
+
+
 
         viewModel.updateUiLiveData.observe(viewLifecycleOwner) {
             it.eventForCheck.let { adapter.items = concatenateSection() }

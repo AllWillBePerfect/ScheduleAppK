@@ -36,10 +36,12 @@ class EnterViewModel @Inject constructor(
     private val restoreDialogEventManager: RestoreDialogEventManager
 ) : ViewModel() {
 
+    val defaultSearchValue = "КТбо1"
+
     private val scheduleApi = scheduleApiRepository
     val disposables = CompositeDisposable()
 
-    private val editTextSubject = PublishSubject.create<CharSequence>()
+    private val editTextSubject = BehaviorSubject.createDefault<CharSequence>(defaultSearchValue)
     private fun getEditTextSubject(): Observable<CharSequence> = editTextSubject.hide().share()
     fun editTextSet(charSequence: CharSequence) {
         editTextSubject.onNext(charSequence)
@@ -64,7 +66,7 @@ class EnterViewModel @Inject constructor(
         getEditTextSubject()
             .map {
                 _loadingAppBarLiveData.postValue(true)
-                it
+                it.ifEmpty { defaultSearchValue }
             }
             .filter {
                 val value = it.isNotEmpty()

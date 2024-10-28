@@ -32,8 +32,8 @@ abstract class BaseFragment<T : ViewBinding>(private val inflate: (LayoutInflate
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
 //        Log.d(javaClass.simpleName, "onDestroyView")
     }
 
