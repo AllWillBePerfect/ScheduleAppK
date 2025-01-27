@@ -1,6 +1,6 @@
 package com.example.data
 
-import com.example.data.repositories.TimeProgressIndicatorRepository
+import com.schedulev2.data.repositories.TimeProgressIndicatorRepository
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -4,8 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.database.dao.ScheduleDao
-import com.example.database.entities.ScheduleDbo
+import com.schedulev2.database.AppDatabase
+import com.schedulev2.database.dao.ScheduleDao
+import com.schedulev2.database.entities.ScheduleDbo
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
