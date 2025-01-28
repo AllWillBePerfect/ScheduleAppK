@@ -39,3 +39,20 @@
    ├── enter
    ├── schedule
    ├── settings
+```
+- models - здесь содержаться сущности, которые используются во всех слоях.
+- sharpref, database, network - слой данных для получения данных из сети (retrofit), из базы данных (room), из shared preferences (для экрана настроек).
+- data, domain - слой данных для выполнения операций над данными и предоставления функций в слой представления.
+- features - fragments, viewmodels и все остальное, связанное с представлением.
+- values - стили, строки, темы и прочее в xml формате.
+- views - различные view, которое могут переиспользоваться в модулях.
+- utils - kotlin расширения, basefragment и прочее классы для слоя представления.
+```markdown
+					features   
+	↙	      ↙         ↓        ↘ 
+utils	   views       data     domain
+		      ↓          ↓  ↓  ↓  ↓  ↓  ↘   ↘   ↘   
+		   values	   sharpref   database   network
+						  ↓  ↓  ↓  ↓   ↓  ↓  ↓  ↓
+								  models
+```
