@@ -22,6 +22,7 @@
 
 ## Функционал
 ![Enter](docs/records/enter.gif)
+![Search](docs/records/search.gif)
 
 ## Модульная архитектура
 В проекте используется подход с разделением частей приложения на модули с помощью gradle. Архитектура взята с проекта google [Now in Android](https://github.com/android/nowinandroid).
