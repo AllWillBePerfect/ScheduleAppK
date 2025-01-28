@@ -22,7 +22,9 @@
 
 ## Функционал
 ![Enter](docs/records/enter.gif)
+
 Пример
+
 ![Search](docs/records/search.gif)
 
 ## Модульная архитектура
