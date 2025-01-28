@@ -21,7 +21,7 @@
 - View based
 
 ## Функционал
-<video src="docs/records/enter.mp4" width="30%" autoplay loop muted playsinline></video>
+![Enter](docs/records/enter.gif)
 
 ## Модульная архитектура
 В проекте используется подход с разделением частей приложения на модули с помощью gradle. Архитектура взята с проекта google [Now in Android](https://github.com/android/nowinandroid).
