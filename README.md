@@ -1,5 +1,5 @@
 ## ScheduleAppK (ИКТИБ Расписание)
-Приложение, которое получает расписание учебных групп ИКТИБа
+Приложение, которое получает расписание учебных групп ИКТИБа.
 
 ## Скриншоты
 <div>
@@ -12,7 +12,7 @@
 <img src="docs/groups_add.png" width="30%" />
 </div>
 
-## Библиотеки и зависимости
+## Библиотеки, зависимости и архитектурные подходы
 - Retrofit
 - Room
 - RxKotlin
@@ -20,9 +20,12 @@
 - MVVM
 - View based
 
+## Функционал
+<video src="docs/records/enter.mp4" width="30%" autoplay loop muted playsinline></video>
+
 ## Модульная архитектура
 В проекте используется подход с разделением частей приложения на модули с помощью gradle. Архитектура взята с проекта google [Now in Android](https://github.com/android/nowinandroid).
-Глобально проект делится на core (всю логику приложения) и features (fragments и прочий код представления)
+Глобально, проект делится на core (всю логику приложения) и features (fragments и прочий код представления).
 
    ```markdown
    core
