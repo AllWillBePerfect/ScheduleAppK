@@ -48,11 +48,11 @@
 - views - различные view, которое могут переиспользоваться в модулях.
 - utils - kotlin расширения, basefragment и прочее классы для слоя представления.
 ```markdown
-					features   
-	↙	      ↙         ↓        ↘ 
+                    features   
+   ↙	      ↙         ↓        ↘ 
 utils	   views       data     domain
-		      ↓          ↓  ↓  ↓  ↓  ↓  ↘   ↘   ↘   
-		   values	   sharpref   database   network
-						  ↓  ↓  ↓  ↓   ↓  ↓  ↓  ↓
-								  models
+		        ↓          ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  
+		      values	  sharpref   database   network
+                                   ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓ 
+                                              models
 ```
