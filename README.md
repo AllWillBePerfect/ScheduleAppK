@@ -51,8 +51,8 @@
                     features   
    ↙	      ↙         ↓        ↘ 
 utils	   views       data     domain
-		        ↓          ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  
-		      values	  sharpref   database   network
-                                   ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓ 
-                                              models
+             ↓          ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  
+           values	sharpref   database   network
+                        ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓ 
+                                  models
 ```
