@@ -21,6 +21,8 @@
 - View based
 
 ## Модульная архитектура
+В проекте используется подход с разделением частей приложения на модули с помощью gradle. Архитектура взята с проекта google [Now in Android](https://github.com/android/nowinandroid).
+Глобально проект делится на core (всю логику приложения) и features (fragments и прочий код представления)
 
    ```markdown
    core
