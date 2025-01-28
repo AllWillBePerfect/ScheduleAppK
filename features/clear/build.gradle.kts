@@ -7,9 +7,10 @@ plugins {
 
 val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
+val packageGroupName: String by rootProject.extra
 
 android {
-    namespace = "com.schedule.clear"
+    namespace = "$packageGroupName.clear"
     compileSdk = compileSdkVer
 
     defaultConfig {

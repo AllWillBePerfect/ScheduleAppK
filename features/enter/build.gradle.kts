@@ -6,9 +6,10 @@ plugins {
 
 val compileSdkVer: Int by rootProject.extra
 val minSdkVer: Int by rootProject.extra
+val packageGroupName: String by rootProject.extra
 
 android {
-    namespace = "com.schedule.enter"
+    namespace = "$packageGroupName.enter"
     compileSdk = compileSdkVer
 
     defaultConfig {
