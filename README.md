@@ -1,5 +1,6 @@
 ## ScheduleAppK (ИКТИБ Расписание)
 Приложение, которое получает расписание учебных групп ИКТИБа.
+[![D](https://img.shields.io/badge/Ссылка_на_apk_файл-blue)](https://disk.yandex.ru/d/AtRw1MZd2yNwWQ) 
 
 ## Скриншоты
 <div>
