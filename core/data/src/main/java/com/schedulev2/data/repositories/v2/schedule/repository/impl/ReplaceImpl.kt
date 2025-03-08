@@ -50,12 +50,44 @@ class ReplaceImpl @Inject constructor(
                 fetchObservable.toList(),
                 lessonsProgressObservable
             ) { schedule, lessonProgress ->
-                var scheduleCopy = schedule[0].copy()
+                /*var scheduleCopy = schedule[0].copy()
                 for (i in replaceDays) {
                     val table = scheduleCopy.table.toMutableList()
                     table[i + 1] = schedule[1].table[i + 1]
                     scheduleCopy = scheduleCopy.copy(table = table)
+                }*/
+
+                var scheduleCopy = schedule[0].copy()
+                val tableCopy = scheduleCopy.table.toMutableList()
+
+                replaceDays.forEach { dayIndex ->
+                    val updatedRow = tableCopy[dayIndex + 1].toMutableList()
+                    val secondRow = schedule[1].table[dayIndex + 1]
+
+                    updatedRow.forEachIndexed { index, value ->
+                        if (value.contains("впк", ignoreCase = true)) {
+                            updatedRow[index] = secondRow[index]
+                        }
+                    }
+
+                    tableCopy[dayIndex + 1] = updatedRow
                 }
+
+                scheduleCopy = scheduleCopy.copy(table = tableCopy)
+
+                /*val groupSchedule = schedule[0].copy()
+                val vpkSchedule = schedule[1].copy()
+                replaceDays.forEach {
+                    val dayIndex = it + 1
+                    val updatedRow = groupSchedule.table[dayIndex].toMutableList()
+                    val secondRow = vpkSchedule.table[dayIndex]
+                    updatedRow.forEachIndexed { index, value ->
+                        if (value.contains("впк", ignoreCase = true)) {
+                            updatedRow[index] = secondRow[index]
+                        }
+                    }
+
+                }*/
                 cacheScheduleEntity = scheduleCopy
                 cacheScheduleEntities = schedule
                 Pair(cacheScheduleEntity!!, lessonProgress)
@@ -103,12 +135,31 @@ class ReplaceImpl @Inject constructor(
                 fetchObservable.toList(),
                 lessonsProgressObservable
             ) { schedule, lessonProgress ->
-                var scheduleCopy = schedule[0].copy()
+                /*var scheduleCopy = schedule[0].copy()
                 for (i in replaceDays) {
                     val table = scheduleCopy.table.toMutableList()
                     table[i + 1] = schedule[1].table[i + 1]
                     scheduleCopy = scheduleCopy.copy(table = table)
+                }*/
+
+                var scheduleCopy = schedule[0].copy()
+                val tableCopy = scheduleCopy.table.toMutableList()
+
+                replaceDays.forEach { dayIndex ->
+                    val updatedRow = tableCopy[dayIndex + 1].toMutableList()
+                    val secondRow = schedule[1].table[dayIndex + 1]
+
+                    updatedRow.forEachIndexed { index, value ->
+                        if (value.contains("впк", ignoreCase = true)) {
+                            updatedRow[index] = secondRow[index]
+                        }
+                    }
+
+                    tableCopy[dayIndex + 1] = updatedRow
                 }
+
+                scheduleCopy = scheduleCopy.copy(table = tableCopy)
+
                 cacheScheduleEntity = scheduleCopy
                 cacheScheduleEntities = schedule
                 Pair(cacheScheduleEntity!!, lessonProgress)
