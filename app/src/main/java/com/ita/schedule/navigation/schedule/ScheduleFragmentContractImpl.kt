@@ -1,8 +1,8 @@
-package com.schedulev2.scheduleappk.navigation.schedule
+package com.ita.schedule.navigation.schedule
 
 import com.schedulev2.schedule.v1.ScheduleFragmentContract
-import com.schedulev2.scheduleappk.R
-import com.schedulev2.scheduleappk.navigation.NavigateRouter
+import com.ita.schedule.R
+import com.ita.schedule.navigation.NavigateRouter
 import com.schedulev2.settings.SettingsFragment
 import javax.inject.Inject
 

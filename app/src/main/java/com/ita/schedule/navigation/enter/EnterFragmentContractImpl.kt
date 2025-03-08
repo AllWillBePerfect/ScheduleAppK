@@ -1,10 +1,10 @@
-package com.schedulev2.scheduleappk.navigation.enter
+package com.ita.schedule.navigation.enter
 
 import android.os.Bundle
 import com.schedulev2.enter.EnterFragmentContract
 import com.schedulev2.schedule.v2.ScheduleFragmentV2
-import com.schedulev2.scheduleappk.R
-import com.schedulev2.scheduleappk.navigation.NavigateRouter
+import com.ita.schedule.R
+import com.ita.schedule.navigation.NavigateRouter
 import javax.inject.Inject
 
 class EnterFragmentContractImpl @Inject constructor(

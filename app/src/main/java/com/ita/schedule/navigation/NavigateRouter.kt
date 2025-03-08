@@ -1,4 +1,4 @@
-package com.schedulev2.scheduleappk.navigation
+package com.ita.schedule.navigation
 
 import androidx.fragment.app.FragmentActivity
 import javax.inject.Inject

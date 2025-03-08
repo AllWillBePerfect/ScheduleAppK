@@ -1,9 +1,8 @@
-package com.schedulev2.scheduleappk.navigation.schedule
+package com.ita.schedule.navigation.schedule
 
 import com.schedulev2.schedule.v2.ScheduleFragmentContractV2
 import com.schedulev2.schedule.v2.webview.WebViewFragment
-import com.schedulev2.scheduleappk.R
-import com.schedulev2.scheduleappk.navigation.NavigateRouter
+import com.ita.schedule.navigation.NavigateRouter
 import javax.inject.Inject
 
 class ScheduleFragmentContractV2Impl @Inject constructor(

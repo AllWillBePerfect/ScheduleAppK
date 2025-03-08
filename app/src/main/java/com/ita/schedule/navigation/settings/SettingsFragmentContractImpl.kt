@@ -1,11 +1,11 @@
-package com.schedulev2.scheduleappk.navigation.settings
+package com.ita.schedule.navigation.settings
 
 import android.content.Intent
 import com.schedulev2.enter.EnterFragment
 import com.schedulev2.schedule.v2.container.NavigationDrawerContainerFragment
-import com.schedulev2.scheduleappk.MainActivity
-import com.schedulev2.scheduleappk.R
-import com.schedulev2.scheduleappk.navigation.NavigateRouter
+import com.ita.schedule.MainActivity
+import com.ita.schedule.R
+import com.ita.schedule.navigation.NavigateRouter
 import com.schedulev2.settings.SettingsFragmentContract
 import com.schedulev2.settings.dialogs.replace.add.FragmentAddReplaceGroup
 import com.schedulev2.settings.modal.ChangeDaysModal

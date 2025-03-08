@@ -1,9 +1,9 @@
-package com.schedulev2.scheduleappk.navigation.clear
+package com.ita.schedule.navigation.clear
 
 import com.schedulev2.clear.ClearFragmentContract
 import com.schedulev2.enter.EnterFragment
-import com.schedulev2.scheduleappk.R
-import com.schedulev2.scheduleappk.navigation.NavigateRouter
+import com.ita.schedule.R
+import com.ita.schedule.navigation.NavigateRouter
 import javax.inject.Inject
 
 class ClearFragmentContractImpl @Inject constructor(

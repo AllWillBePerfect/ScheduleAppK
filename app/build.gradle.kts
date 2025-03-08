@@ -22,7 +22,7 @@ val minSdkVer: Int by rootProject.extra
 val targetSdkVer: Int by rootProject.extra
 val compileSdkVer: Int by rootProject.extra
 val packageGroupName: String by rootProject.extra
-val moduleAppArtifactName = "scheduleappk"
+val moduleAppArtifactName = "schedule"
 android {
     signingConfigs {
         create("release") {
@@ -45,11 +45,11 @@ android {
             }
         }
     }
-    namespace = "$packageGroupName.$moduleAppArtifactName"
+    namespace = "com.ita.$moduleAppArtifactName"
     compileSdk = compileSdkVer
 
     defaultConfig {
-        applicationId = "$packageGroupName.$moduleAppArtifactName"
+        applicationId = "com.ita.$moduleAppArtifactName"
         minSdk = minSdkVer
         targetSdk = targetSdkVer
         versionCode = generateVersionCode()
@@ -94,7 +94,7 @@ android {
 
         create("full") {
             dimension = "app_type"
-            applicationIdSuffix = ".full"
+            /*applicationIdSuffix = ".full"*/
         }
     }
 

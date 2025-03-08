@@ -1,4 +1,4 @@
-package com.schedulev2.scheduleappk
+package com.ita.schedule
 
 import android.os.Bundle
 import android.util.Log
@@ -16,9 +16,9 @@ import com.schedulev2.enter.EnterFragment
 import com.schedulev2.models.sharpref.v1.AppState
 import com.schedulev2.schedule.v1.ScheduleFragment
 import com.schedulev2.schedule.v2.container.NavigationDrawerContainerFragment
-import com.schedulev2.scheduleappk.databinding.ActivityMainBinding
-import com.schedulev2.scheduleappk.navigation.ActivityRequired
-import com.schedulev2.scheduleappk.workmanager.SomeWorkManager
+import com.ita.schedule.navigation.ActivityRequired
+import com.ita.schedule.workmanager.SomeWorkManager
+import com.ita.schedule.databinding.ActivityMainBinding
 import com.schedulev2.utils.nightmode.NightModeUtils.setupNightMode
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn

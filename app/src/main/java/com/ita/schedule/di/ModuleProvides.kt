@@ -1,7 +1,7 @@
-package com.schedulev2.scheduleappk.di
+package com.ita.schedule.di
 
-import com.schedulev2.scheduleappk.navigation.ActivityRequired
-import com.schedulev2.scheduleappk.navigation.NavigateRouter
+import com.ita.schedule.navigation.ActivityRequired
+import com.ita.schedule.navigation.NavigateRouter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
