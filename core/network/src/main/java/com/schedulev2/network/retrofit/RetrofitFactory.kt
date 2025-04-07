@@ -8,7 +8,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 object RetrofitFactory {
     private var retrofit: Retrofit? = null
     private var retrofitSingle: Retrofit? = null
-    private const val url = "https://webictis.sfedu.ru/"
+    private const val url = "https://shedule.rdcenter.ru/"
 
     private fun getClient(baseUrl: String): Retrofit {
         if (retrofit == null) {
