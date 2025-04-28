@@ -1,8 +1,29 @@
+
+<div align="center">
+
+<img width="160" height="160" src="docs/logo.png" align="center" style="border-radius: 20%;" />
+
+# ИКТИБ РАСПИСАНИЕ
+</div>
+
+
+<div align="center">
+
+[![Download](https://custom-icon-badges.herokuapp.com/badge/Сайт--визитка-blue?style=for-the-badge&logo=download&logoColor=white)](https://app.ictis.ru/)
+
+</div>
+
+<div align="center">
+
+[![Google Play](https://img.shields.io/badge/Скачать-в_Google_Play-3DDC84?style=for-the-badge&logo=google-play&logoColor=white)](https://play.google.com/store/apps/details?id=com.ita.schedule&pli=1)
+[![RuStore](https://img.shields.io/badge/Скачать-в_RuStore-blue?style=for-the-badge&logoColor=white)](https://www.rustore.ru/catalog/app/com.ita.schedule)
+[![Telegram](https://img.shields.io/badge/Подписаться-в_Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/ictis_timetable)
+
+</div>
+
 ## ScheduleAppK (ИКТИБ Расписание)
 Приложение, которое получает расписание учебных групп ИКТИБа.
 
-
-[![D](https://img.shields.io/badge/Ссылка_на_apk_файл-blue)](https://disk.yandex.ru/d/AtRw1MZd2yNwWQ) 
 
 ## Скриншоты
 <div>
@@ -77,3 +98,4 @@ utils	   views       data     domain
                         ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓  ↓ 
                                   models
 ```
+</div>
